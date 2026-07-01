@@ -1,0 +1,119 @@
+{
+  "theme": "Light",
+  "archetype": "1 (Organic & Earthy)",
+  "brand": {
+    "name": "Utkarsh Corporation",
+    "domain": "Ayurvedic e-commerce, herbal medicines, wellness, health camps",
+    "tone": "trustworthy, natural, rooted in Indian Ayurvedic tradition, premium, editorial",
+    "mission": "Helping every person progress toward better health. Local for Vocal."
+  },
+  "typography": {
+    "headings": {
+      "fontFamily": "Cormorant Garamond, serif",
+      "weights": ["400", "500", "600"],
+      "strategy": "Used for hero texts, section titles, and mission statements. Must be tracking-tight for larger sizes to feel editorial and premium. Reflects ancient wisdom and heritage."
+    },
+    "body": {
+      "fontFamily": "Manrope, sans-serif",
+      "weights": ["300", "400", "500", "600"],
+      "strategy": "Clean, highly readable sans-serif for product descriptions, navigation, and functional UI. Provides a modern counterbalance to the traditional headings."
+    },
+    "scale": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl tracking-tight",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl tracking-tight",
+      "h3": "text-xl sm:text-2xl",
+      "h4": "text-lg sm:text-xl",
+      "body": "text-base",
+      "small": "text-sm",
+      "overline": "text-xs uppercase tracking-[0.2em]"
+    }
+  },
+  "color_palette": {
+    "primary": "#1A3626",
+    "primary_foreground": "#F9F6F0",
+    "secondary": "#C5A059",
+    "secondary_foreground": "#1A3626",
+    "background": "#F9F6F0",
+    "surface": "#FFFFFF",
+    "accent_brown": "#5C4033",
+    "border": "rgba(26, 54, 38, 0.1)",
+    "strategy": "Nature Distilled. Cream/Off-white base (#F9F6F0) with Deep Forest Green (#1A3626) for structure/text. Mustard Gold (#C5A059) for key actions, trust badges, and highlights. Warm brown (#5C4033) for subtle accents."
+  },
+  "spacing_and_layout": {
+    "strategy": "Anti-grid fluid flow mixed with structured Bento blocks for categories. Generous white space (p-8 to p-16) to allow products to breathe.",
+    "container_padding": "px-4 sm:px-8 lg:px-16",
+    "gap": "gap-8 lg:gap-12",
+    "radius": "rounded-2xl"
+  },
+  "components": {
+    "buttons": {
+      "primary": "rounded-full px-8 py-3 bg-[#1A3626] text-[#F9F6F0] hover:bg-[#2C4C3B] transition-colors duration-300 font-medium",
+      "secondary": "rounded-full px-8 py-3 bg-transparent border border-[#1A3626] text-[#1A3626] hover:bg-[#1A3626]/5 transition-colors duration-300 font-medium"
+    },
+    "cards": "bg-white rounded-2xl shadow-sm border border-[#1A3626]/10 overflow-hidden",
+    "inputs": "bg-white border border-[#1A3626]/20 focus:border-[#1A3626] focus:ring-1 focus:ring-[#1A3626] outline-none py-2 px-3 rounded-lg transition-all",
+    "badges": "rounded-full bg-[#C5A059]/10 text-[#5C4033] px-3 py-1 text-xs font-semibold uppercase tracking-wider"
+  },
+  "motion_and_interactions": {
+    "hover": "Subtle scale-up (scale-105) for images in product cards, slight opacity shifts for text links.",
+    "page_transitions": "Smooth fade in.",
+    "scroll": "Smooth scrolling. Parallax effects on background leaf textures."
+  },
+  "media": {
+    "hero_images": [
+      {
+        "url": "https://images.unsplash.com/photo-1492552085122-36706c238263?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwxfHxheXVydmVkYSUyMG1vcnRhciUyMGhlcmJzfGVufDB8fHx8MTc4Mjg4MzIyMHww&ixlib=rb-4.1.0&q=85",
+        "description": "Person grinding herbs in mortar and pestle. Perfect for Hero section background or About mission.",
+        "category": "hero"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1615485499958-69973683793c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHw0fHxheXVydmVkYSUyMG1vcnRhciUyMGhlcmJzfGVufDB8fHx8MTc4Mjg4MzIyMHww&ixlib=rb-4.1.0&q=85",
+        "description": "Wooden mortar and pestle overhead shot. Great for ingredient storytelling or 'Local for Vocal' section.",
+        "category": "storytelling"
+      }
+    ],
+    "product_images": [
+      {
+        "url": "https://images.unsplash.com/photo-1664786908163-85ca46f85138?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHwzfHxoZXJiYWwlMjBzdXBwbGVtZW50JTIwYm90dGxlfGVufDB8fHx8MTc4Mjg4MzIyMHww&ixlib=rb-4.1.0&q=85",
+        "description": "White bottle of medicine. Supplement product thumbnail for Shop Grid.",
+        "category": "product"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1664216294580-079bc527ae49?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHwyfHxoZXJiYWwlMjBzdXBwbGVtZW50JTIwYm90dGxlfGVufDB8fHx8MTc4Mjg4MzIyMHww&ixlib=rb-4.1.0&q=85",
+        "description": "Minimal white bottle, clean background. Use for Skin Care or Immunity category.",
+        "category": "product"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1664216294573-b28282de564b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHw0fHxoZXJiYWwlMjBzdXBwbGVtZW50JTIwYm90dGxlfGVufDB8fHx8MTc4Mjg4MzIyMHww&ixlib=rb-4.1.0&q=85",
+        "description": "Bottle with herbal pills scattered. Ideal for Product Detail Page gallery.",
+        "category": "product_detail"
+      }
+    ],
+    "textures_and_backgrounds": [
+      {
+        "url": "https://images.unsplash.com/photo-1525923838299-2312b60f6d69?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTF8MHwxfHNlYXJjaHwzfHxncmVlbiUyMHRyb3BpY2FsJTIwbGVhdmVzJTIwdGV4dHVyZXxlbnwwfHx8fDE3ODI4ODMyMjB8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Palm leaves texture. Use as subtle background divider or footer background with low opacity.",
+        "category": "background"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1585328000852-779be6a6582b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTF8MHwxfHNlYXJjaHwyfHxncmVlbiUyMHRyb3BpY2FsJTIwbGVhdmVzJTIwdGV4dHVyZXxlbnwwfHx8fDE3ODI4ODMyMjB8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Macro green leaf texture. Good for category cards (e.g., Skin Care).",
+        "category": "texture"
+      }
+    ]
+  },
+  "testing_attributes": {
+    "rules": "All interactive and key informational elements MUST include a 'data-testid' attribute in kebab-case format based on their role, e.g., data-testid='add-to-cart-button', data-testid='checkout-form-submit'."
+  },
+  "instructions_to_main_agent": [
+    "JavaScript ONLY: Use .jsx/.js extensions for React components. Do not use TypeScript (.tsx/.ts) as this project uses JavaScript.",
+    "Icons: Install and use 'lucide-react' for all icons (cart, search, user account, whatsapp).",
+    "UI Library: Use Shadcn UI for forms, selects, and dialogs. Heavily customize them to remove the default Vercel-look by applying the #1A3626 / #F9F6F0 color palette, rounded-2xl radii, and earthy spacing.",
+    "Hero Overlay: The Hero section overlay must be minimal, e.g., bg-[#1A3626]/40 or a gentle gradient, ensuring the background imagery breathes while maintaining text contrast.",
+    "Layouts: Use BENTO grid layouts for category shortcuts on the homepage. Let images of roots/leaves break rigid grids.",
+    "Testing: Incorporate 'data-testid' on all buttons, forms, and key interaction points unconditionally.",
+    "Header: Sticky header with 'backdrop-blur-xl bg-[#F9F6F0]/80', containing Logo (Cormorant Garamond text or SVG), Search bar, Cart icon, and Account icon.",
+    "Contact: Create a Floating WhatsApp button fixed to the bottom right on all customer-facing pages.",
+    "Admin: The Admin dashboard should follow the 'Organic & Earthy' color scheme but structured tightly using Shadcn tables and card components for Data correlation."
+  ]
+}

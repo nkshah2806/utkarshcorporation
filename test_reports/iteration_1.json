@@ -1,0 +1,49 @@
+{
+  "summary": "First iteration full-stack testing for Utkarsh Corporation Ayurvedic e-commerce (React + FastAPI + MongoDB). Executed 32 pytest backend tests (all pass) covering catalog (6 categories, 18 products, filters/search/sort), auth (register/login/me with JWT bearer), checkout (COD + mocked Razorpay flow with stock decrement + mock-pay), reviews (aggregate rating update + auth required), health camps registration (counter increments), distributor inquiry, contact, newsletter (dedupe), and admin routes (stats, orders, products, distributor inquiries, order status update, RBAC 403/401). Ran Playwright UI tests on home, shop, product detail, cart persistence, register, admin login/dashboard tabs, health camps, distributor, contact, policies, checkout end-to-end with COD reaching /order-success. All critical user flows work. Only minor UI/UX observations found.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/products/{slug}/related", "issue": "Returns empty [] with 200 for unknown slug instead of 404. Acceptable but inconsistent with GET /products/{slug} which returns 404."},
+      {"endpoint": "PUT /api/admin/orders/{id}/status", "issue": "Status passed as query string (?status=xxx) rather than JSON body — works but unconventional REST design."},
+      {"endpoint": "GET /api/orders/{id}", "issue": "No auth check — anyone with an order UUID can fetch order details incl. address, email, items. Consider requiring auth or a short-lived signed token."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Shop page", "issue": "Search input (data-testid='shop-search-input') is wrapped in 'md:hidden' — hidden on desktop viewport. Desktop users must use header-search-input instead. Consider always showing a search on Shop or documenting.", "selector": "[data-testid='shop-search-input']", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Global", "issues": ["Earthy palette (deep green #1A3626 / gold #C5A059 / cream #F9F6F0) applied consistently; contrast on footer & hero looks good."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "(Optional) Auth-protect GET /api/orders/{id} or add signed access — currently PII leaks with only UUID.",
+    "(Optional) Show Shop page search input on desktop as well (currently md:hidden).",
+    "(Optional) Change PUT /api/admin/orders/{id}/status to accept JSON body {status} instead of query param.",
+    "Main agent may self-verify admin 'Add Product' modal end-to-end — pytest confirmed POST /api/products works with admin token; UI modal has ~10 required fields incl. category <select>, testing agent could not fully fill all placeholders programmatically (submission blocked by native HTML5 required validation)."
+  ],
+  "critical_code_review_comments": [
+    "seed_data.py idempotency should be verified — on repeated restart it must upsert admin & products without duplicating. Not tested in this iteration.",
+    "Bearer JWT is stored in localStorage ('uc_token'). Acceptable for MVP but susceptible to XSS. Consider httpOnly cookie path in future.",
+    "routes_orders.py: GET /api/orders/{id} lacks any auth. Sensitive.",
+    "auth_utils.py hash_password uses bcrypt.gensalt() (default cost 12) — good. bcrypt format $2b$ verified via login test.",
+    "server.py CORS defaults to '*' with allow_credentials=True — browsers reject credentials with wildcard, but since app uses Bearer token (not cookies) this works. If you ever move to cookies, tighten CORS_ORIGINS.",
+    "routes_products.py update_product uses find_one_and_update return_document=True but response may contain Mongo _id — currently pops via updated.pop('_id', None). OK.",
+    "routes_orders.py checkout does not lock stock atomically — race conditions possible for last unit under concurrency (out-of-scope for MVP)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (new)"
+  ],
+  "success_rate": {"backend": "100% (32/32 pytest)", "frontend": "~95% (all critical flows verified: home, shop, product detail, cart persistence + reload, COD checkout reaching /order-success, register+login, admin login+dashboard tabs, health-camps registration, distributor & contact page load, policy pages /policies/{return|shipping|terms|privacy})"},
+  "test_credentials": "Admin: admin@utkarshcorp.com / Admin@123 (works, role=admin). Test customer: register via POST /api/auth/register (Test@1234) — verified.",
+  "seed_data_creation": "Backend auto-seeds on startup: 6 categories, 18 products, 4 health camps, 1 admin user. Confirmed counts via /api/categories and /api/products.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend tests in /app/backend/tests/backend_test.py — run with `pytest -v backend/tests/` (uses pytest-xdist by default; already configured for parallel-safe fixtures). Live URL: https://herbal-commerce-10.preview.emergentagent.com. Note: TESTS ADD DATA — products, orders, camp registrations, reviews accumulate. Product count is asserted >=18 to handle this. Policy pages route is /policies/{slug} where slug in {return, shipping, terms, privacy} (NOT return-policy). Shop search input is mobile-only; use header-search-input for desktop.",
+  "rca of the issue": "No critical bugs identified. All P0/P1 flows functional. Minor: unauthenticated GET /api/orders/{id} could leak PII to anyone with UUID; recommended fix is to require auth or scope by order.user_id/email."
+}

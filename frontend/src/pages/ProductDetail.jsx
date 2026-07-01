@@ -1,0 +1,290 @@
+import { useEffect, useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import api, { formatApiError } from "@/lib/api";
+import ProductCard from "@/components/ProductCard";
+import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { Minus, Plus, ShoppingBag, Star, Leaf, ShieldCheck, Truck, HeartHandshake, Heart } from "lucide-react";
+import { toast } from "sonner";
+import { TID } from "@/constants/testIds";
+
+export default function ProductDetail() {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const { addItem } = useCart();
+  const { user, setUser } = useAuth();
+
+  const [product, setProduct] = useState(null);
+  const [related, setRelated] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [qty, setQty] = useState(1);
+  const [activeImg, setActiveImg] = useState(0);
+  const [reviewForm, setReviewForm] = useState({ rating: 5, title: "", body: "" });
+  const [posting, setPosting] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await api.get(`/products/${slug}`);
+        setProduct(data);
+        setActiveImg(0);
+        const [rel, rev] = await Promise.all([
+          api.get(`/products/${slug}/related`),
+          api.get(`/products/${data.id}/reviews`),
+        ]);
+        setRelated(rel.data);
+        setReviews(rev.data);
+      } catch {
+        navigate("/shop");
+      }
+    })();
+  }, [slug, navigate]);
+
+  if (!product) return <div className="max-w-7xl mx-auto p-8 text-[#1A3626]/60">Loading...</div>;
+
+  const inWishlist = user?.wishlist?.includes(product.id);
+  const discount = product.mrp > product.price ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
+
+  const addToCart = () => {
+    addItem(product, qty);
+    toast.success(`Added ${qty} × ${product.name}`);
+  };
+  const buyNow = () => {
+    addItem(product, qty);
+    navigate("/checkout");
+  };
+  const toggleWishlist = async () => {
+    if (!user) return navigate("/login");
+    try {
+      const { data } = await api.post(`/auth/wishlist/${product.id}`);
+      setUser(data);
+    } catch (e) { toast.error(formatApiError(e)); }
+  };
+  const submitReview = async (e) => {
+    e.preventDefault();
+    if (!user) return navigate("/login");
+    setPosting(true);
+    try {
+      await api.post(`/products/${product.id}/reviews`, reviewForm);
+      const { data } = await api.get(`/products/${product.id}/reviews`);
+      setReviews(data);
+      setReviewForm({ rating: 5, title: "", body: "" });
+      toast.success("Review posted!");
+    } catch (err) {
+      toast.error(formatApiError(err));
+    } finally {
+      setPosting(false);
+    }
+  };
+
+  return (
+    <div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+        <nav className="text-xs text-[#1A3626]/60 mb-6">
+          <Link to="/" className="hover:text-[#C5A059]">Home</Link> ·{" "}
+          <Link to="/shop" className="hover:text-[#C5A059]">Shop</Link> ·{" "}
+          <span className="text-[#1A3626]">{product.name}</span>
+        </nav>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+          {/* Gallery */}
+          <div>
+            <div className="aspect-square bg-white rounded-2xl overflow-hidden border border-[#1A3626]/10 mb-4">
+              <img src={product.images?.[activeImg]} alt={product.name} className="w-full h-full object-cover" />
+            </div>
+            <div className="flex gap-3">
+              {product.images?.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveImg(i)}
+                  className={`w-20 h-20 rounded-xl overflow-hidden border-2 ${activeImg === i ? "border-[#1A3626]" : "border-transparent"}`}
+                >
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Info */}
+          <div>
+            <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-2">
+              {product.category_slug?.replace(/-/g, " ")}
+            </div>
+            <h1 data-testid={TID.productTitle} className="font-serif-display text-4xl lg:text-5xl text-[#1A3626] mb-4">
+              {product.name}
+            </h1>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className={`w-4 h-4 ${i < Math.round(product.rating || 4.5) ? "fill-[#C5A059] text-[#C5A059]" : "text-[#1A3626]/20"}`} />
+                ))}
+              </div>
+              <span className="text-sm text-[#1A3626]/70">{product.rating || 4.5} · {product.review_count || 0} reviews</span>
+            </div>
+            <p className="text-[#1A3626]/80 leading-relaxed mb-6">{product.short_description}</p>
+
+            <div className="flex items-baseline gap-3 mb-2">
+              <span data-testid={TID.productPrice} className="text-4xl font-serif-display text-[#1A3626]">₹{product.price}</span>
+              {discount > 0 && (
+                <>
+                  <span className="text-lg text-[#1A3626]/50 line-through">₹{product.mrp}</span>
+                  <span className="text-sm font-semibold text-[#C5A059]">{discount}% OFF</span>
+                </>
+              )}
+            </div>
+            <div className="text-xs text-[#1A3626]/60 mb-8">Inclusive of all taxes · Free shipping over ₹499</div>
+
+            {/* Quantity + CTAs */}
+            <div className="flex flex-wrap gap-3 mb-8">
+              <div className="inline-flex items-center border border-[#1A3626]/20 rounded-full">
+                <button data-testid={TID.qtyDecrement} onClick={() => setQty(Math.max(1, qty - 1))} className="w-10 h-10 flex items-center justify-center hover:bg-[#F9F6F0]"><Minus className="w-4 h-4" /></button>
+                <span className="w-10 text-center text-sm font-semibold">{qty}</span>
+                <button data-testid={TID.qtyIncrement} onClick={() => setQty(qty + 1)} className="w-10 h-10 flex items-center justify-center hover:bg-[#F9F6F0]"><Plus className="w-4 h-4" /></button>
+              </div>
+              <button
+                data-testid={TID.addToCartBtn}
+                onClick={addToCart}
+                disabled={product.stock === 0}
+                className="rounded-full px-6 py-3 bg-transparent border border-[#1A3626] text-[#1A3626] font-semibold text-sm hover:bg-[#1A3626] hover:text-[#F9F6F0] transition inline-flex items-center gap-2 disabled:opacity-50"
+              >
+                <ShoppingBag className="w-4 h-4" /> Add to Cart
+              </button>
+              <button
+                data-testid={TID.buyNowBtn}
+                onClick={buyNow}
+                disabled={product.stock === 0}
+                className="rounded-full px-6 py-3 bg-[#1A3626] text-[#F9F6F0] font-semibold text-sm hover:bg-[#2C4C3B] transition disabled:opacity-50"
+              >
+                Buy Now
+              </button>
+              <button
+                onClick={toggleWishlist}
+                aria-label="Wishlist"
+                className={`w-11 h-11 rounded-full border flex items-center justify-center transition ${
+                  inWishlist ? "bg-[#C5A059] border-[#C5A059] text-[#1A3626]" : "border-[#1A3626]/20 text-[#1A3626] hover:bg-[#F9F6F0]"
+                }`}
+              >
+                <Heart className={`w-4 h-4 ${inWishlist ? "fill-current" : ""}`} />
+              </button>
+            </div>
+
+            {product.stock < 10 && product.stock > 0 && (
+              <div className="mb-6 text-sm text-[#5C4033] bg-[#C5A059]/15 rounded-lg px-4 py-2 inline-block">
+                Only {product.stock} left in stock — grab yours!
+              </div>
+            )}
+            {product.stock === 0 && <div className="mb-6 text-sm text-red-700 bg-red-50 rounded-lg px-4 py-2 inline-block">Out of stock</div>}
+
+            {/* Trust */}
+            <div className="grid grid-cols-2 gap-3 mb-8 bg-white border border-[#1A3626]/10 rounded-2xl p-4">
+              <div className="flex items-center gap-2 text-xs text-[#1A3626]"><Leaf className="w-4 h-4 text-[#C5A059]" /> 100% Natural</div>
+              <div className="flex items-center gap-2 text-xs text-[#1A3626]"><ShieldCheck className="w-4 h-4 text-[#C5A059]" /> GMP Certified</div>
+              <div className="flex items-center gap-2 text-xs text-[#1A3626]"><Truck className="w-4 h-4 text-[#C5A059]" /> Free Ship ₹499+</div>
+              <div className="flex items-center gap-2 text-xs text-[#1A3626]"><HeartHandshake className="w-4 h-4 text-[#C5A059]" /> Cash on Delivery</div>
+            </div>
+
+            {product.ailments?.length > 0 && (
+              <div className="mb-6">
+                <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-2">Helps with</div>
+                <div className="flex flex-wrap gap-2">
+                  {product.ailments.map((a) => (
+                    <span key={a} className="rounded-full bg-[#C5A059]/15 text-[#5C4033] px-3 py-1 text-xs font-semibold uppercase tracking-wider">{a}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Tabbed details */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="bg-white rounded-2xl p-6 border border-[#1A3626]/10">
+            <h3 className="font-serif-display text-xl text-[#1A3626] mb-3">Description</h3>
+            <p className="text-sm text-[#1A3626]/75 leading-relaxed whitespace-pre-line">{product.description}</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border border-[#1A3626]/10">
+            <h3 className="font-serif-display text-xl text-[#1A3626] mb-3">Ingredients</h3>
+            <p className="text-sm text-[#1A3626]/75 leading-relaxed">{product.ingredients}</p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border border-[#1A3626]/10">
+            <h3 className="font-serif-display text-xl text-[#1A3626] mb-3">How to Use</h3>
+            <p className="text-sm text-[#1A3626]/75 leading-relaxed">{product.usage}</p>
+          </div>
+        </div>
+
+        {/* Reviews */}
+        <div className="mt-16">
+          <h2 className="font-serif-display text-3xl text-[#1A3626] mb-6">Customer Reviews</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-4">
+              {reviews.length === 0 && <div className="text-sm text-[#1A3626]/60">No reviews yet — be the first to share.</div>}
+              {reviews.map((r) => (
+                <div key={r.id} className="bg-white rounded-2xl p-6 border border-[#1A3626]/10">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-semibold text-[#1A3626] text-sm">{r.user_name}</div>
+                    <div className="flex gap-0.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} className={`w-3.5 h-3.5 ${i < r.rating ? "fill-[#C5A059] text-[#C5A059]" : "text-[#1A3626]/20"}`} />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="font-semibold text-[#1A3626] mb-1">{r.title}</div>
+                  <div className="text-sm text-[#1A3626]/75">{r.body}</div>
+                </div>
+              ))}
+            </div>
+            <div className="bg-white rounded-2xl p-6 border border-[#1A3626]/10">
+              <h4 className="font-serif-display text-xl text-[#1A3626] mb-3">Write a review</h4>
+              {!user && <div className="text-xs text-[#5C4033] bg-[#C5A059]/15 rounded-lg px-3 py-2 mb-3">Please <Link to="/login" className="underline">sign in</Link> to review.</div>}
+              <form onSubmit={submitReview} className="space-y-3">
+                <div>
+                  <label className="text-xs text-[#1A3626]/70 block mb-1">Rating</label>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <button type="button" key={n} onClick={() => setReviewForm({ ...reviewForm, rating: n })}>
+                        <Star className={`w-5 h-5 ${n <= reviewForm.rating ? "fill-[#C5A059] text-[#C5A059]" : "text-[#1A3626]/20"}`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <input
+                  required
+                  placeholder="Title"
+                  value={reviewForm.title}
+                  onChange={(e) => setReviewForm({ ...reviewForm, title: e.target.value })}
+                  className="w-full bg-[#F9F6F0] border border-[#1A3626]/15 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#1A3626]"
+                />
+                <textarea
+                  required
+                  rows="4"
+                  placeholder="Share your experience..."
+                  value={reviewForm.body}
+                  onChange={(e) => setReviewForm({ ...reviewForm, body: e.target.value })}
+                  className="w-full bg-[#F9F6F0] border border-[#1A3626]/15 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#1A3626]"
+                />
+                <button
+                  type="submit"
+                  data-testid={TID.submitReview}
+                  disabled={!user || posting}
+                  className="w-full rounded-full py-2.5 bg-[#1A3626] text-[#F9F6F0] font-semibold text-sm hover:bg-[#2C4C3B] transition disabled:opacity-50"
+                >
+                  {posting ? "Posting..." : "Post Review"}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        {/* Related */}
+        {related.length > 0 && (
+          <div className="mt-20">
+            <h2 className="font-serif-display text-3xl text-[#1A3626] mb-6">You may also love</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {related.map((p) => <ProductCard key={p.id} product={p} />)}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

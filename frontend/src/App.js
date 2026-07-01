@@ -1,54 +1,56 @@
-import { useEffect } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import { Toaster } from "sonner";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
+import Layout from "@/components/Layout";
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+import Home from "@/pages/Home";
+import Shop from "@/pages/Shop";
+import ProductDetail from "@/pages/ProductDetail";
+import Cart from "@/pages/Cart";
+import Checkout from "@/pages/Checkout";
+import OrderSuccess from "@/pages/OrderSuccess";
+import About from "@/pages/About";
+import HealthCamps from "@/pages/HealthCamps";
+import Distributor from "@/pages/Distributor";
+import Contact from "@/pages/Contact";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import Account from "@/pages/Account";
+import AdminDashboard from "@/pages/AdminDashboard";
+import Policies from "@/pages/Policies";
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <Toaster position="top-right" richColors />
+            <Routes>
+              <Route element={<Layout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/shop" element={<Shop />} />
+                <Route path="/product/:slug" element={<ProductDetail />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/health-camps" element={<HealthCamps />} />
+                <Route path="/distributor" element={<Distributor />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/account" element={<Account />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/policies/:slug" element={<Policies />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </CartProvider>
+      </AuthProvider>
     </div>
   );
 }

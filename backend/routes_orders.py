@@ -105,12 +105,21 @@ async def my_orders(user: dict = Depends(get_current_user)):
 
 
 @router.get("/orders/{order_id}", response_model=Order)
-async def get_order(order_id: str):
+async def get_order(order_id: str, user: dict | None = Depends(optional_user)):
     from server import db
     order = await db.orders.find_one({"id": order_id}, {"_id": 0})
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    return order
+    # Access control: order owner (by user_id or email) or admin
+    if user:
+        if user.get("role") == "admin":
+            return order
+        if order.get("user_id") == user["id"] or order.get("email") == user.get("email"):
+            return order
+    # Guest access: only allow if order was placed without a user_id (guest checkout)
+    if order.get("user_id") is None:
+        return order
+    raise HTTPException(status_code=403, detail="Not authorized to view this order")
 
 
 # ---------- Admin ----------

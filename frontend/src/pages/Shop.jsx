@@ -77,15 +77,15 @@ export default function Shop() {
         <p className="mt-3 text-[#1A3626]/70 max-w-xl">Classical formulations, single herbs and wellness essentials — all crafted by trusted local partners.</p>
       </div>
 
-      {/* Search bar mobile */}
-      <div className="relative mb-6 md:hidden">
+      {/* Search bar */}
+      <div className="relative mb-6">
         <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#1A3626]/50" />
         <input
           data-testid={TID.shopSearchInput}
           value={q}
           onChange={(e) => setParam("q", e.target.value)}
           placeholder="Search products..."
-          className="w-full pl-9 pr-3 py-3 rounded-full bg-white border border-[#1A3626]/15 focus:border-[#1A3626] outline-none text-sm"
+          className="w-full md:max-w-md pl-9 pr-3 py-3 rounded-full bg-white border border-[#1A3626]/15 focus:border-[#1A3626] outline-none text-sm"
         />
       </div>
 

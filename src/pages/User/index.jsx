@@ -44,19 +44,19 @@ export default function User() {
       ),
     },
     {
-      key: "fullName",
+      key: "name",
       label: "Full Name",
       filterable: true,
     },
     { key: "email", label: "Email", filterable: true },
-    { key: "phoneNumber", label: "Phone Number", filterable: true },
+    { key: "phone", label: "Phone Number", filterable: true },
     {
-      key: "isAdmin",
+      key: "role",
       label: "Admin/User",
       filterable: true,
       render: (row) => (
-        <Badge variant={row.isAdmin ? "destructive" : ""}>
-          {row.isAdmin ? "Admin" : "User"}
+        <Badge variant={row.role === "admin" ? "destructive" : "default"} className="capitalize min-w-auto">
+          {row.role}
         </Badge>
       ),
     },

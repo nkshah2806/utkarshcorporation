@@ -17,8 +17,8 @@ export function TeamSwitcher() {
             {/* <GalleryVerticalEnd className="size-5" /> */}
           </div>
           <div className="grid flex-1 text-left text-md leading-tight">
-            <span className="truncate font-semibold">Stackable</span>
-            <span className="truncate text-xs">Moving & Packing</span>
+            <span className="truncate font-semibold">Uttkarsh</span>
+            <span className="truncate text-xs">Corporation</span>
           </div>
         </SidebarMenuButton>
       </SidebarMenuItem>

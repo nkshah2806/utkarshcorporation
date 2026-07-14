@@ -27,7 +27,7 @@ export function LoginForm({ className, ...props }) {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.post("auth/login", {
+      const response = await axiosInstance.post("user/login", {
         emailOrPhone: data.email,
         password: data.password,
       });

@@ -27,11 +27,11 @@ export const getAllUsers = async ({
       "sort[direction]": sort.direction,
     };
 
-    const response = await axiosInstance.get(`${ENDPOINT}/getAll`, {
-      params,
+    const response = await axiosInstance.get(`${ENDPOINT}`, {
+      // params,
     });
     return {
-      data: response.data.data.data.map((user, index) => {
+      data: response.data.data.map((user, index) => {
         const serialNumber = (page - 1) * limit + index + 1;
         return {
           ...user,
@@ -48,7 +48,7 @@ export const getAllUsers = async ({
             : "N/A",
         };
       }),
-      total: response.data.data.total,
+      total: response.data.data.count,
     };
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -62,7 +62,7 @@ export const toggleUserStatus = (id, body) =>
 
 // GET USER BY ID
 export const getUserById = async (id) => {
-  const response = await axiosInstance.get(`${ENDPOINT}/getByUserId/${id}`);
+  const response = await axiosInstance.get(`${ENDPOINT}/${id}`);
   return response.data.data;
 };
 

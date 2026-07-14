@@ -8,20 +8,8 @@ import ResetPassword from "./pages/ResetPassword/reset-password";
 import PrivateRoute from "./routes/private-route";
 import User from "./pages/User";
 import UserEdit from "./pages/User/create";
-import Services from "./pages/Services";
-import CreateService from "./pages/Services/create";
-import PinCode from "./pages/PinCode";
-import CreatePinCode from "./pages/PinCode/create";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import CreatePrivacyPolicy from "./pages/PrivacyPolicy/create";
-import Booking from "./pages/Booking";
-// import FCMToken from "./FCMToken";
-import Support from "./pages/Support";
-import BulkUploadServiceAvailability from "./pages/Services/BulkUploadServiceAvailability";
-import BookingDetails from "./pages/Booking/BookingDetails";
-import Payment from "./pages/Payment";
-import PaymentDetails from "./pages/Payment/PaymentDetails";
 import UserDetails from "./pages/User/UserDetails";
+import { DashboardOverview, ClientManagement, ReportEntry, ReportDesigner } from "./pages/HealthAnalysis";
 
 function App() {
   return (
@@ -35,38 +23,15 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<DashboardOverview />} />
+            <Route path="/health-dashboard" element={<DashboardOverview />} />
+            <Route path="/clients" element={<ClientManagement />} />
+            <Route path="/report-entry" element={<ReportEntry />} />
+            <Route path="/report-designer" element={<ReportDesigner />} />
             <Route path="/user">
               <Route index element={<User />} />
               <Route path="edit/:id" element={<UserEdit />} />
             </Route>
-            <Route path="/services">
-              <Route index element={<Services />} />
-              <Route path="create" element={<CreateService />} />
-              <Route path="edit/:id" element={<CreateService />} />
-            </Route>
-            <Route path="/pincode">
-              <Route index element={<PinCode />} />
-              <Route path="create" element={<CreatePinCode />} />
-              <Route path="edit/:id" element={<CreatePinCode />} />
-            </Route>
-            <Route path="/privacy-policy">
-              <Route index element={<PrivacyPolicy />} />
-              <Route path="edit/:id" element={<CreatePrivacyPolicy />} />
-            </Route>
-            <Route path="/booking">
-              <Route index element={<Booking />} />
-            </Route>
-            <Route path="/support">
-              <Route index element={<Support />} />
-            </Route>
-            <Route
-              path="/services/bulk-upload/:id"
-              element={<BulkUploadServiceAvailability />}
-            />
-            <Route path="/booking/:id" element={<BookingDetails />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/payment/:id" element={<PaymentDetails />} />
             <Route path="/user/:id" element={<UserDetails />} />
           </Route>
           <Route path="*" element={<div>404 Not Found</div>} />

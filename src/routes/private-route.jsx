@@ -4,7 +4,7 @@ import Layout from "@/layout/layout";
 
 function PrivateRoute() {
   const isLoggedIn = localStorage.getItem("isAuthenticated") === "true";
-  return isLoggedIn ? (
+  return isLoggedIn? (
     <Layout>
       <Outlet />
     </Layout>

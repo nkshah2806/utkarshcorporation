@@ -1,13 +1,5 @@
 import * as React from "react";
-import {
-  ArchiveRestore,
-  CircleHelp,
-  HandCoins,
-  MapPinCheckInside,
-  PackageCheck,
-  ScrollText,
-  User2Icon,
-} from "lucide-react";
+import { Activity, FileText, HeartPulse, User2Icon } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
@@ -32,7 +24,7 @@ export function AppSidebar({ ...props }) {
     const interval = setInterval(() => {
       const data = JSON.parse(localStorage.getItem("UserDetails"));
       setUserDetails((prev) =>
-        JSON.stringify(prev) !== JSON.stringify(data) ? data : prev
+        JSON.stringify(prev) !== JSON.stringify(data) ? data : prev,
       );
     }, 1000); // Check every 1 second
 
@@ -40,12 +32,12 @@ export function AppSidebar({ ...props }) {
   }, []);
 
   const initials = userDetails
-    ? `${userDetails?.firstname[0] ?? ""}${userDetails?.lastname[0] ?? ""}`.toUpperCase()
+    ? `${userDetails?.name[0] ?? ""}`.toUpperCase()
     : "";
 
   const data = {
     user: {
-      name: userDetails?.firstname,
+      name: userDetails?.name,
       lastname: userDetails?.lastname,
       email: userDetails?.email,
       avatar: `${Config.API_URL}${userDetails?.image}`,
@@ -53,13 +45,11 @@ export function AppSidebar({ ...props }) {
     },
     navMain: [
       { title: "Dashboard", url: "/dashboard", icon: DashboardIcon },
+      { title: "Health Dashboard", url: "/health-dashboard", icon: HeartPulse },
+      { title: "Client Management", url: "/clients", icon: User2Icon },
+      { title: "Report Entry", url: "/report-entry", icon: FileText },
+      { title: "PDF Designer", url: "/report-designer", icon: Activity },
       { title: "User", url: "/user", icon: User2Icon },
-      { title: "Services", url: "/services", icon: ArchiveRestore },
-      { title: "Zip Code", url: "/pincode", icon: MapPinCheckInside },
-      { title: "Privacy Policy", url: "/privacy-policy", icon: ScrollText },
-      { title: "Booking", url: "/booking", icon: PackageCheck },
-      { title: "Payment", url: "/payment", icon: HandCoins },
-      { title: "Support", url: "/support", icon: CircleHelp },
     ],
   };
 

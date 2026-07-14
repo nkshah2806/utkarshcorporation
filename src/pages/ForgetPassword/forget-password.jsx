@@ -13,7 +13,7 @@ export default function ForgetPassword() {
             <div className="flex h-15 w-15 items-center justify-center">
               <img src={logo} alt="" />
             </div>
-            Stackable Moving & Packing.
+            Uttkarsh Corporation.
           </a>
         </div>
         <div className="flex flex-1 items-center justify-center">

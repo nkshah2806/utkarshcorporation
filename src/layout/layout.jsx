@@ -5,17 +5,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-  getNotificationUserWise,
-  updateNotification
-} from "@/services/dashboardApi";
 import { Bell, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/components/theme-context";
 import { useEffect, useState } from "react";
 import { useApiMutation } from "@/hooks/useApiMutation";
-import MenuItem from '@mui/material/MenuItem';
-import Link from '@mui/material/Link';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
+import MenuItem from "@mui/material/MenuItem";
+import Link from "@mui/material/Link";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 export default function Layout(props) {
   const { theme, toggleTheme } = useTheme();
@@ -23,30 +19,28 @@ export default function Layout(props) {
   const [notificationList, setNotificationList] = useState([]);
   const [notificationOpen, setNotificationOpen] = useState(false);
 
-  useEffect(() => {
-    getNotificationUserMutation.mutate();
-  }, []);
+  // useEffect(() => {
+  //   getNotificationUserMutation.mutate();
+  // }, []);
 
-  const getNotificationUserMutation = useApiMutation(getNotificationUserWise, {
-    onSuccess: (data) => {
-      setNotificationUserWise(data.data);
-      setNotificationList(data.data); // <-- Set notificationList from API
-    },
-    onError: (err) => {
-      setError("apiError", {
-        type: "manual",
-        message: err?.response?.data?.message || "Something went wrong",
-      });
-    },
-  });
+  // const getNotificationUserMutation = useApiMutation(getNotificationUserWise, {
+  //   onSuccess: (data) => {
+  //     setNotificationUserWise(data.data);
+  //     setNotificationList(data.data); // <-- Set notificationList from API
+  //   },
+  //   onError: (err) => {
+  //   },
+  // });
 
   const handleMarkAllAsRead = async () => {
-    const unreadIds = notificationList.filter(n => !n.isRead).map(n => n._id);
+    const unreadIds = notificationList
+      .filter((n) => !n.isRead)
+      .map((n) => n._id);
     if (unreadIds.length === 0) return;
     try {
-      await updateNotification(unreadIds); // Send array of IDs
-      setNotificationList(prev =>
-        prev.map(notifi => ({ ...notifi, isRead: true }))
+      // await updateNotification(unreadIds); // Send array of IDs
+      setNotificationList((prev) =>
+        prev.map((notifi) => ({ ...notifi, isRead: true })),
       );
     } catch (error) {
       console.error("Failed to mark all as read:", error);
@@ -55,7 +49,7 @@ export default function Layout(props) {
 
   const handleUpdateNotification = async (notificationId) => {
     try {
-      await updateNotification(notificationId);
+      // await updateNotification(notificationId);
     } catch (error) {
       // Optionally handle error
       console.error("Failed to update notification:", error);
@@ -70,8 +64,8 @@ export default function Layout(props) {
     // Update local state
     setNotificationList((prev) =>
       prev.map((item) =>
-        item._id === notifi._id ? { ...item, isRead: true } : item
-      )
+        item._id === notifi._id ? { ...item, isRead: true } : item,
+      ),
     );
     // Your redirect logic here (if any)
   };
@@ -119,26 +113,35 @@ export default function Layout(props) {
                             sx={
                               !notifi.isRead
                                 ? {
-                                  backgroundColor: theme === "dark" ? "#3730a3" : "#eef2ff", // indigo-900/dark, indigo-50/light
-                                  "&:hover": {
-                                    backgroundColor: theme === "dark" ? "#312e81" : "#e0e7ff", // darker on hover
-                                  },
-                                }
+                                    backgroundColor:
+                                      theme === "dark" ? "#3730a3" : "#eef2ff", // indigo-900/dark, indigo-50/light
+                                    "&:hover": {
+                                      backgroundColor:
+                                        theme === "dark"
+                                          ? "#312e81"
+                                          : "#e0e7ff", // darker on hover
+                                    },
+                                  }
                                 : {}
                             }
-
                           >
                             {/* Remove the unread dot here */}
                             <div className="notification_box flex items-center gap-3 w-full">
                               <img
-                                src={'/favicon.svg' || "/default-avatar.png"}
+                                src={"/favicon.svg" || "/default-avatar.png"}
                                 alt=""
                                 className="flex-none w-8 h-8 rounded-full border border-gray-200"
                               />
                               <div className="notification_msg whitespace-break-spaces w-full">
-                                <div className="font-semibold text-sm mb-0.5">{notifi.notificationType}</div>
-                                <div className="text-xs mb-1">{notifi.notificationText}</div>
-                                <div className="text-xs">{new Date(notifi.createdAt).toLocaleString()}</div>
+                                <div className="font-semibold text-sm mb-0.5">
+                                  {notifi.notificationType}
+                                </div>
+                                <div className="text-xs mb-1">
+                                  {notifi.notificationText}
+                                </div>
+                                <div className="text-xs">
+                                  {new Date(notifi.createdAt).toLocaleString()}
+                                </div>
                               </div>
                             </div>
                           </MenuItem>

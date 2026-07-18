@@ -1,48 +1,52 @@
-// src/hooks/useApiMutation.js
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 /**
- * Generic reusable mutation hook with customizable behavior.
- * 
- * @param {Function} apiFn - The API function that returns a promise (e.g. axios call)
- * @param {Object} options - Optional callbacks and messages
- * @param {string} options.successMessage - Toast success message to show on success
- * @param {string} options.errorMessage - Toast error message to show on error
- * @param {Function} options.onSuccess - Callback on success (data, variables, context)
- * @param {Function} options.onError - Callback on error (error, variables, context)
- * @param {boolean} options.silentError - If true, suppress error toast
+ * Custom hook for API mutations with automatic error handling
+ * Shows toast on success and error, handles loading states
  */
-export const useApiMutation = (
-    apiFn,
-    {
-        successMessage,
-        errorMessage,
-        onSuccess,
-        onError,
-        silentError = false,
-    } = {}
-) => {
-    return useMutation( {
-        mutationFn: apiFn,
-        onSuccess: (data, variables, context) => {
-            if (successMessage) toast.success(successMessage);
-            if (onSuccess) onSuccess(data, variables, context);
-        },
-        onError: (error, variables, context) => {
-            if (!silentError) {
-                if (errorMessage) {
-                    toast.error(errorMessage);
-                } else {
-                    // Default error message from API or generic fallback
-                    const msg =
-                        error?.response?.data?.meta?.message ||
-                        error?.message ||
-                        'Something went wrong';
-                    toast.error(msg);
-                }
-            }
-            if (onError) onError(error, variables, context);
-        },
-    });
-};
+export function useApiMutation(
+  mutationFn,
+  options = {}
+) {
+  const { toast } = useToast();
+
+  const {
+    onSuccess,
+    onError,
+    successMessage = "Operation successful",
+    errorMessage = "Operation failed",
+    showSuccessToast = true,
+    showErrorToast = true,
+  } = options;
+
+  return useMutation({
+    mutationFn,
+    onSuccess: (data, variables, context) => {
+      if (showSuccessToast) {
+        toast({
+          title: "Success",
+          description: successMessage,
+          variant: "default",
+        });
+      }
+      onSuccess?.(data, variables, context);
+    },
+    onError: (error, variables, context) => {
+      if (showErrorToast) {
+        const errorMsg =
+          error?.response?.data?.message ||
+          error?.response?.data?.detail ||
+          error?.message ||
+          errorMessage;
+
+        toast({
+          title: "Error",
+          description: errorMsg,
+          variant: "destructive",
+        });
+      }
+      onError?.(error, variables, context);
+    },
+  });
+}

@@ -1,12 +1,9 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "build",
-  "env": {
-    "REACT_APP_BACKEND_URL": "@react_app_backend_url"
-  },
+  "outputDirectory": "dist",
   "headers": [
     {
-      "source": "/static/:type/:file",
+      "source": "/assets/:type/:file",
       "headers": [
         {
           "key": "Cache-Control",

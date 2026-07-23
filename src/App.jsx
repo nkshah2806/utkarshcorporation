@@ -4,7 +4,6 @@ import { Toaster } from "sonner";
 
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
-import Layout from "@/components/Layout";
 
 import Home from "@/pages/Home";
 import Shop from "@/pages/Shop";
@@ -16,11 +15,12 @@ import About from "@/pages/About";
 import HealthCamps from "@/pages/HealthCamps";
 import Distributor from "@/pages/Distributor";
 import Contact from "@/pages/Contact";
-import Login from "@/pages/Login";
+import Login from "./pages/Login";
 import Register from "@/pages/Register";
 import Account from "@/pages/Account";
 import AdminDashboard from "@/pages/AdminDashboard";
 import Policies from "@/pages/Policies";
+import Layout from "./components/Layout";
 
 function App() {
   return (

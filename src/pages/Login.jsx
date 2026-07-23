@@ -20,8 +20,9 @@ export default function Login() {
     setBusy(true);
     try {
       const u = await login(email, password);
-      toast.success(`Welcome back, ${u.name}`);
-      navigate(u.role === "admin" ? "/admin" : from);
+      const role = u?.role || (u?.isAdmin ? "admin" : "member");
+      toast.success(`Welcome back, ${u?.name || email}`);
+      navigate(role === "admin" ? "/" : from);
     } catch (err) {
       toast.error(formatApiError(err));
     } finally {

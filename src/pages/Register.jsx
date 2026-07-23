@@ -10,6 +10,7 @@ export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", email: "", phone: "", password: "" });
+  const [registerAsAdmin, setRegisterAsAdmin] = useState(false);
   const [busy, setBusy] = useState(false);
   const upd = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
@@ -17,9 +18,18 @@ export default function Register() {
     e.preventDefault();
     setBusy(true);
     try {
-      const u = await register(form);
-      toast.success(`Welcome, ${u.name}!`);
-      navigate("/");
+      const payload = {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        phoneNumber: form.phone,
+        password: form.password,
+        isAdmin: registerAsAdmin,
+      };
+      const u = await register(payload);
+      const role = u?.role || (u?.isAdmin ? "admin" : "member");
+      toast.success(`Welcome, ${u?.name || form.name}!`);
+      navigate(role === "admin" ? "/" : "/");
     } catch (err) {
       toast.error(formatApiError(err));
     } finally {
@@ -44,6 +54,10 @@ export default function Register() {
           <input data-testid={TID.registerEmail} type="email" required placeholder="Email" value={form.email} onChange={upd("email")} className={inputCls} />
           <input data-testid={TID.registerPhone} placeholder="Phone (optional)" value={form.phone} onChange={upd("phone")} className={inputCls} />
           <input data-testid={TID.registerPassword} type="password" required minLength="6" placeholder="Password (min 6 chars)" value={form.password} onChange={upd("password")} className={inputCls} />
+          <label className="flex items-center gap-2 text-sm text-[#1A3626]/80">
+            <input type="checkbox" checked={registerAsAdmin} onChange={(e) => setRegisterAsAdmin(e.target.checked)} className="h-4 w-4 rounded border-[#1A3626]/20" />
+            Register as admin
+          </label>
           <button
             data-testid={TID.registerSubmit}
             disabled={busy}

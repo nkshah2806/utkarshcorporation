@@ -1,4 +1,4 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { Search, ShoppingBag, User, Menu, X, LogOut, Leaf } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -15,11 +15,20 @@ export default function Header() {
   const [suggest, setSuggest] = useState([]);
   const [showSug, setShowSug] = useState(false);
   const [showAcct, setShowAcct] = useState(false);
-  const sugRef = useRef();
+  const sugRef = useRef(null);
+  const acctRef = useRef(null);
 
   useEffect(() => {
     const handler = (e) => {
       if (sugRef.current && !sugRef.current.contains(e.target)) setShowSug(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (acctRef.current && !acctRef.current.contains(e.target)) setShowAcct(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -70,12 +79,12 @@ export default function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-8">
-            <NavLink to="/" end className={linkCls} data-testid={TID.navHome}>Home</NavLink>
-            <NavLink to="/shop" className={linkCls} data-testid={TID.navShop}>Shop</NavLink>
-            <NavLink to="/health-camps" className={linkCls} data-testid={TID.navCamps}>Health Camps</NavLink>
-            <NavLink to="/distributor" className={linkCls} data-testid={TID.navDistributor}>Distributor</NavLink>
-            <NavLink to="/about" className={linkCls} data-testid={TID.navAbout}>About</NavLink>
-            <NavLink to="/contact" className={linkCls} data-testid={TID.navContact}>Contact</NavLink>
+            <Link to="/" end className={linkCls} data-testid={TID.navHome}>Home</Link>
+            <Link to="/shop" className={linkCls} data-testid={TID.navShop}>Shop</Link>
+            <Link to="/health-camps" className={linkCls} data-testid={TID.navCamps}>Health Camps</Link>
+            <Link to="/distributor" className={linkCls} data-testid={TID.navDistributor}>Distributor</Link>
+            <Link to="/about" className={linkCls} data-testid={TID.navAbout}>About</Link>
+            <Link to="/contact" className={linkCls} data-testid={TID.navContact}>Contact</Link>
           </nav>
 
           {/* Search + icons */}
@@ -112,30 +121,35 @@ export default function Header() {
             </form>
 
             {/* Account */}
-            <div className="relative">
+            <div className="relative" ref={acctRef}>
               <button
+                type="button"
                 data-testid={TID.accountIcon}
                 onClick={() => setShowAcct((s) => !s)}
-                onBlur={() => setTimeout(() => setShowAcct(false), 200)}
                 className="p-2 rounded-full hover:bg-[#1A3626]/5 transition"
                 aria-label="Account"
               >
                 <User className="w-5 h-5 text-[#1A3626]" />
               </button>
               {showAcct && (
-                <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-lg border border-[#1A3626]/10 py-2">
+                <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-lg border border-[#1A3626]/10 py-2 z-50">
                   {user ? (
                     <>
                       <div className="px-4 py-2 text-xs text-[#5C4033] border-b border-[#1A3626]/10">
                         Hi, <span className="font-semibold text-[#1A3626]">{user.name}</span>
                       </div>
-                      <Link to="/account" className="block px-4 py-2 text-sm hover:bg-[#F9F6F0]">My Account</Link>
+                      <Link to="/account" onClick={() => setShowAcct(false)} className="block px-4 py-2 text-sm hover:bg-[#F9F6F0]">My Account</Link>
                       {user.role === "admin" && (
-                        <Link to="/admin" className="block px-4 py-2 text-sm text-[#C5A059] hover:bg-[#F9F6F0] font-semibold">Admin Dashboard</Link>
+                        <Link to="/admin" onClick={() => setShowAcct(false)} className="block px-4 py-2 text-sm text-[#C5A059] hover:bg-[#F9F6F0] font-semibold">Admin Dashboard</Link>
                       )}
                       <button
+                        type="button"
                         data-testid={TID.logoutBtn}
-                        onClick={() => { logout(); navigate("/"); }}
+                        onClick={() => {
+                          setShowAcct(false);
+                          logout();
+                          navigate("/");
+                        }}
                         className="w-full text-left px-4 py-2 text-sm hover:bg-[#F9F6F0] flex items-center gap-2 text-[#5C4033]"
                       >
                         <LogOut className="w-4 h-4" /> Sign out
@@ -143,8 +157,8 @@ export default function Header() {
                     </>
                   ) : (
                     <>
-                      <Link to="/login" className="block px-4 py-2 text-sm hover:bg-[#F9F6F0]">Sign in</Link>
-                      <Link to="/register" className="block px-4 py-2 text-sm hover:bg-[#F9F6F0]">Create account</Link>
+                      <Link to="/login" onClick={() => setShowAcct(false)} className="block px-4 py-2 text-sm hover:bg-[#F9F6F0]">Sign in</Link>
+                      <Link to="/register" onClick={() => setShowAcct(false)} className="block px-4 py-2 text-sm hover:bg-[#F9F6F0]">Create account</Link>
                     </>
                   )}
                 </div>
@@ -179,12 +193,12 @@ export default function Header() {
         {menuOpen && (
           <div className="lg:hidden pb-4 border-t border-[#1A3626]/10">
             <div className="pt-4 flex flex-col gap-3">
-              <NavLink to="/" end className={linkCls} onClick={() => setMenuOpen(false)}>Home</NavLink>
-              <NavLink to="/shop" className={linkCls} onClick={() => setMenuOpen(false)}>Shop</NavLink>
-              <NavLink to="/health-camps" className={linkCls} onClick={() => setMenuOpen(false)}>Health Camps</NavLink>
-              <NavLink to="/distributor" className={linkCls} onClick={() => setMenuOpen(false)}>Distributor</NavLink>
-              <NavLink to="/about" className={linkCls} onClick={() => setMenuOpen(false)}>About</NavLink>
-              <NavLink to="/contact" className={linkCls} onClick={() => setMenuOpen(false)}>Contact</NavLink>
+              <Link to="/" end className={linkCls} onClick={() => setMenuOpen(false)}>Home</Link>
+              <Link to="/shop" className={linkCls} onClick={() => setMenuOpen(false)}>Shop</Link>
+              <Link to="/health-camps" className={linkCls} onClick={() => setMenuOpen(false)}>Health Camps</Link>
+              <Link to="/distributor" className={linkCls} onClick={() => setMenuOpen(false)}>Distributor</Link>
+              <Link to="/about" className={linkCls} onClick={() => setMenuOpen(false)}>About</Link>
+              <Link to="/contact" className={linkCls} onClick={() => setMenuOpen(false)}>Contact</Link>
             </div>
           </div>
         )}

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BACKEND_URL = "https://uttkarsh-backend.onrender.com";
+const BACKEND_URL = import.meta.env.VITE_API_URL || "https://uttkarsh-backend.onrender.com";
 export const API = `${BACKEND_URL}/api`;
 
 const api = axios.create({ baseURL: API });
@@ -13,7 +13,8 @@ api.interceptors.request.use((config) => {
 });
 
 export function formatApiError(err) {
-  const detail = err?.response?.data?.detail;
+  const payload = err?.response?.data;
+  const detail = payload?.detail || payload?.message || payload?.error;
   if (detail == null) return err?.message || "Something went wrong.";
   if (typeof detail === "string") return detail;
   if (Array.isArray(detail))

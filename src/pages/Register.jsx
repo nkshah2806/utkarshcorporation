@@ -1,16 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import api from "@/lib/api";
 import { formatApiError } from "@/lib/api";
 import { toast } from "sonner";
 import { TID } from "@/constants/testIds";
 import { Leaf } from "lucide-react";
 
 export default function Register() {
-  const { register } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "" });
-  const [registerAsAdmin, setRegisterAsAdmin] = useState(false);
+  const [form, setForm] = useState({ fullName: "", mobileNumber: "", email: "", address: "", city: "", state: "", pinCode: "", password: "" });
   const [busy, setBusy] = useState(false);
   const upd = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
@@ -18,18 +16,12 @@ export default function Register() {
     e.preventDefault();
     setBusy(true);
     try {
-      const payload = {
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        phoneNumber: form.phone,
-        password: form.password,
-        isAdmin: registerAsAdmin,
-      };
-      const u = await register(payload);
-      const role = u?.role || (u?.isAdmin ? "admin" : "member");
-      toast.success(`Welcome, ${u?.name || form.name}!`);
-      navigate(role === "admin" ? "/" : "/");
+      const { data } = await api.post("/members/register", form);
+      if (data?.token) {
+        localStorage.setItem("frenchies_member_token", data.token);
+      }
+      toast.success(data?.message || "Registration successful");
+      navigate("/login");
     } catch (err) {
       toast.error(formatApiError(err));
     } finally {
@@ -41,28 +33,26 @@ export default function Register() {
 
   return (
     <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
           <div className="w-12 h-12 rounded-full bg-[#1A3626] flex items-center justify-center mx-auto mb-4">
             <Leaf className="w-5 h-5 text-[#C5A059]" />
           </div>
-          <h1 className="font-serif-display text-4xl text-[#1A3626] mb-2">Join Utkarsh</h1>
-          <p className="text-sm text-[#1A3626]/70">Create your account to start shopping</p>
+          <h1 className="font-serif-display text-4xl text-[#1A3626] mb-2">Frenchies Member Registration</h1>
+          <p className="text-sm text-[#1A3626]/70">Create your Frenchies membership account</p>
         </div>
         <form onSubmit={submit} className="bg-white rounded-2xl border border-[#1A3626]/10 p-8 space-y-4">
-          <input data-testid={TID.registerName} required placeholder="Full name" value={form.name} onChange={upd("name")} className={inputCls} />
+          <input data-testid={TID.registerName} required placeholder="Full Name" value={form.fullName} onChange={upd("fullName")} className={inputCls} />
+          <input data-testid={TID.registerPhone} required placeholder="Mobile Number" value={form.mobileNumber} onChange={upd("mobileNumber")} className={inputCls} />
           <input data-testid={TID.registerEmail} type="email" required placeholder="Email" value={form.email} onChange={upd("email")} className={inputCls} />
-          <input data-testid={TID.registerPhone} placeholder="Phone (optional)" value={form.phone} onChange={upd("phone")} className={inputCls} />
-          <input data-testid={TID.registerPassword} type="password" required minLength="6" placeholder="Password (min 6 chars)" value={form.password} onChange={upd("password")} className={inputCls} />
-          <label className="flex items-center gap-2 text-sm text-[#1A3626]/80">
-            <input type="checkbox" checked={registerAsAdmin} onChange={(e) => setRegisterAsAdmin(e.target.checked)} className="h-4 w-4 rounded border-[#1A3626]/20" />
-            Register as admin
-          </label>
-          <button
-            data-testid={TID.registerSubmit}
-            disabled={busy}
-            className="w-full rounded-full py-3 bg-[#1A3626] text-[#F9F6F0] font-semibold text-sm hover:bg-[#2C4C3B] transition disabled:opacity-50"
-          >
+          <textarea required placeholder="Address" value={form.address} onChange={upd("address")} className={inputCls} rows="3" />
+          <div className="grid gap-4 md:grid-cols-2">
+            <input required placeholder="City" value={form.city} onChange={upd("city")} className={inputCls} />
+            <input required placeholder="State" value={form.state} onChange={upd("state")} className={inputCls} />
+          </div>
+          <input required placeholder="Pin Code" value={form.pinCode} onChange={upd("pinCode")} className={inputCls} />
+          <input data-testid={TID.registerPassword} type="password" required minLength="8" placeholder="Password (min 8 chars)" value={form.password} onChange={upd("password")} className={inputCls} />
+          <button data-testid={TID.registerSubmit} disabled={busy} className="w-full rounded-full py-3 bg-[#1A3626] text-[#F9F6F0] font-semibold text-sm hover:bg-[#2C4C3B] transition disabled:opacity-50">
             {busy ? "Creating..." : "Create Account"}
           </button>
           <div className="text-center text-sm text-[#1A3626]/70">

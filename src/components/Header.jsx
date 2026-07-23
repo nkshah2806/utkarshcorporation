@@ -120,6 +120,10 @@ export default function Header() {
               )}
             </form>
 
+            <Link to="/admin/login" className="hidden sm:inline-flex items-center rounded-full border border-[#1A3626]/15 px-3 py-2 text-sm font-medium text-[#1A3626] hover:bg-[#F9F6F0] transition">
+              Admin Login
+            </Link>
+
             {/* Account */}
             <div className="relative" ref={acctRef}>
               <button
@@ -139,9 +143,6 @@ export default function Header() {
                         Hi, <span className="font-semibold text-[#1A3626]">{user.name}</span>
                       </div>
                       <Link to="/account" onClick={() => setShowAcct(false)} className="block px-4 py-2 text-sm hover:bg-[#F9F6F0]">My Account</Link>
-                      {user.role === "admin" && (
-                        <Link to="/admin" onClick={() => setShowAcct(false)} className="block px-4 py-2 text-sm text-[#C5A059] hover:bg-[#F9F6F0] font-semibold">Admin Dashboard</Link>
-                      )}
                       <button
                         type="button"
                         data-testid={TID.logoutBtn}

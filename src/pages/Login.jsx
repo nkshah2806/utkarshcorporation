@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import api from "@/lib/api";
 import { formatApiError } from "@/lib/api";
 import { toast } from "sonner";
 import { TID } from "@/constants/testIds";
 import { Leaf } from "lucide-react";
 
 export default function Login() {
-  const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [email, setEmail] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const from = location.state?.from || "/";
@@ -19,10 +18,12 @@ export default function Login() {
     e.preventDefault();
     setBusy(true);
     try {
-      const u = await login(email, password);
-      const role = u?.role || (u?.isAdmin ? "admin" : "member");
-      toast.success(`Welcome back, ${u?.name || email}`);
-      navigate(role === "admin" ? "/" : from);
+      const { data } = await api.post("/members/login", { mobileNumber, password });
+      if (data?.token) {
+        localStorage.setItem("frenchies_member_token", data.token);
+      }
+      toast.success(data?.message || "Login successful");
+      navigate(from);
     } catch (err) {
       toast.error(formatApiError(err));
     } finally {
@@ -44,12 +45,12 @@ export default function Login() {
         </div>
         <form onSubmit={submit} className="bg-white rounded-2xl border border-[#1A3626]/10 p-8 space-y-4">
           <div>
-            <label className="text-xs text-[#5C4033] uppercase tracking-wider mb-1 block">Email</label>
+            <label className="text-xs text-[#5C4033] uppercase tracking-wider mb-1 block">Mobile Number</label>
             <input
               data-testid={TID.loginEmail}
-              type="email" required value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={inputCls} placeholder="you@example.com"
+              type="text" required value={mobileNumber}
+              onChange={(e) => setMobileNumber(e.target.value)}
+              className={inputCls} placeholder="10-digit mobile number"
             />
           </div>
           <div>

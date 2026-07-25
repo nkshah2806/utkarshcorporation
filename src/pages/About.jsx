@@ -1,15 +1,19 @@
 import { Leaf, ShieldCheck, HeartHandshake, Sparkles } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
 
 const IMG_MISSION = "https://images.unsplash.com/photo-1492552085122-36706c238263?crop=entropy&cs=srgb&fm=jpg&q=85&w=1600";
 const IMG_LEAF = "https://images.unsplash.com/photo-1525923838299-2312b60f6d69?crop=entropy&cs=srgb&fm=jpg&q=85&w=1600";
 
 export default function About() {
+  const { content } = useContent();
+  const { mission } = content;
+
   return (
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src={IMG_MISSION} alt="" className="w-full h-full object-cover" />
+          <img src={mission?.image || IMG_MISSION} alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 hero-overlay" />
         </div>
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-40 text-[#F9F6F0] text-center">
@@ -18,8 +22,7 @@ export default function About() {
             Progress for every family, <br />through the science of Ayurveda.
           </h1>
           <p className="text-lg text-[#F9F6F0]/85 max-w-2xl mx-auto">
-            Utkarsh Corporation is more than a brand. It is a movement — supporting India's small
-            Ayurvedic manufacturers, doctors and farmers to bring authentic wellness to every home.
+            {mission?.paragraph1 || "Utkarsh Corporation is more than a brand. It is a movement — supporting India's small Ayurvedic manufacturers, doctors and farmers to bring authentic wellness to every home."}
           </p>
         </div>
       </section>
@@ -29,20 +32,10 @@ export default function About() {
         <div className="prose prose-lg max-w-none text-[#1A3626]">
           <h2 className="font-serif-display text-3xl sm:text-4xl text-[#1A3626] mb-6">Rooted in tradition. Driven by purpose.</h2>
           <p className="text-[#1A3626]/85 leading-relaxed mb-6">
-            Utkarsh means <em>progress</em> — and that is our promise. We began with a simple belief:
-            every Indian family deserves access to authentic Ayurvedic products, and every small
-            manufacturer deserves a fair market to grow.
+            {mission?.paragraph1}
           </p>
           <p className="text-[#1A3626]/85 leading-relaxed mb-6">
-            Today, we partner with 120+ small manufacturers across India who follow classical
-            Ayurvedic preparation methods, apply modern quality controls, and preserve time-honored
-            recipes handed down through generations. Every product is verified for potency,
-            purity, and integrity.
-          </p>
-          <p className="text-[#1A3626]/85 leading-relaxed">
-            Beyond products, we organize free health camps in cities and villages — where trained
-            Ayurvedic doctors offer consultations, dosha assessments, and dietary guidance. We
-            believe true wellness begins with awareness.
+            {mission?.paragraph2}
           </p>
         </div>
       </section>

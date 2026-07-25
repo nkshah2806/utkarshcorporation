@@ -3,12 +3,16 @@ import { useState, useEffect, useRef } from "react";
 import { Search, ShoppingBag, User, Menu, X, LogOut, Leaf } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
+import { useContent } from "@/context/ContentContext";
 import { TID } from "@/constants/testIds";
 import api from "@/lib/api";
 
 export default function Header() {
   const { user, logout } = useAuth();
   const { count } = useCart();
+  const { content } = useContent();
+  const { header } = content;
+
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [q, setQ] = useState("");
@@ -60,8 +64,8 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#F9F6F0]/85 border-b border-[#1A3626]/10">
       {/* Top promo strip */}
-      <div className="bg-[#1A3626] text-[#F9F6F0] text-xs py-2 text-center tracking-wider uppercase">
-        Free Shipping on Orders Over ₹499 · 100% Natural · GMP Certified
+      <div className="bg-[#1A3626] text-[#F9F6F0] text-xs py-2 text-center tracking-wider uppercase px-4">
+        {header?.announcement || "Free Shipping on Orders Over ₹499 · 100% Natural · GMP Certified"}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,7 +100,7 @@ export default function Header() {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 onFocus={() => q && setShowSug(true)}
-                placeholder="Search herbs, remedies..."
+                placeholder={header?.searchPlaceholder || "Search herbs, remedies..."}
                 className="w-56 lg:w-72 pl-9 pr-3 py-2 text-sm rounded-full bg-white border border-[#1A3626]/15 focus:border-[#1A3626] focus:ring-1 focus:ring-[#1A3626] outline-none"
               />
               {showSug && suggest.length > 0 && (
@@ -121,7 +125,7 @@ export default function Header() {
             </form>
 
             <Link to="/admin/login" className="hidden sm:inline-flex items-center rounded-full border border-[#1A3626]/15 px-3 py-2 text-sm font-medium text-[#1A3626] hover:bg-[#F9F6F0] transition">
-              Admin Login
+              Admin Portal
             </Link>
 
             {/* Account */}

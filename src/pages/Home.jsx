@@ -5,17 +5,20 @@ import { categoriesService } from "@/services/categoriesService";
 import ProductCard from "@/components/ProductCard";
 import { ArrowRight, ShieldCheck, Leaf, Truck, HeartHandshake, Sparkles, Quote } from "lucide-react";
 import { TID } from "@/constants/testIds";
+import { useContent } from "@/context/ContentContext";
 
-const HERO_IMG = "https://images.unsplash.com/photo-1492552085122-36706c238263?crop=entropy&cs=srgb&fm=jpg&q=85&w=1800";
-const STORY_IMG = "https://images.unsplash.com/photo-1615485499958-69973683793c?crop=entropy&cs=srgb&fm=jpg&q=85&w=1400";
-
-const TESTIMONIALS = [
-  { name: "Anita R., Mumbai", body: "The Chyawanprash has become my daily ritual. My kids love it too — no cold this whole season.", stars: 5 },
-  { name: "Rajesh P., Pune", body: "Ashwagandha capsules genuinely helped with stress and sleep. Authentic, effective and reasonably priced.", stars: 5 },
-  { name: "Sonal M., Delhi", body: "Attended their free health camp — such warm, knowledgeable doctors. Trustworthy brand.", stars: 5 },
-];
+const ICON_MAP = {
+  ShieldCheck,
+  Leaf,
+  Truck,
+  HeartHandshake,
+  Sparkles,
+};
 
 export default function Home() {
+  const { content } = useContent();
+  const { hero, trustBadges, mission, testimonials, distributorCta } = content;
+
   const [featured, setFeatured] = useState([]);
   const [categories, setCategories] = useState([]);
   const [best, setBest] = useState([]);
@@ -28,9 +31,9 @@ export default function Home() {
           productsService.getProducts({ bestseller: true, limit: 4 }),
           categoriesService.getCategories(),
         ]);
-        setFeatured(featuredData);
-        setBest(bestData);
-        setCategories(categoriesData);
+        setFeatured(featuredData || []);
+        setBest(bestData || []);
+        setCategories(categoriesData || []);
       } catch (error) {
         console.error("Error loading home data:", error);
       }
@@ -43,35 +46,34 @@ export default function Home() {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src={HERO_IMG} alt="" className="w-full h-full object-cover" />
+          <img src={hero.bgImage} alt="Hero Banner" className="w-full h-full object-cover" />
           <div className="absolute inset-0 hero-overlay" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-36 lg:py-44">
           <div className="max-w-2xl text-[#F9F6F0]">
             <div className="inline-flex items-center gap-2 bg-[#C5A059]/20 backdrop-blur-sm border border-[#C5A059]/40 rounded-full px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-[#F9F6F0] mb-6">
-              <Leaf className="w-3.5 h-3.5" /> Local for Vocal · GMP Certified
+              <Leaf className="w-3.5 h-3.5" /> {hero.badge}
             </div>
             <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] mb-6">
-              Ancient wisdom.<br />
-              <span className="italic text-[#C5A059]">Everyday wellness.</span>
+              {hero.titleLine1}<br />
+              <span className="italic text-[#C5A059]">{hero.titleLine2}</span>
             </h1>
             <p className="text-lg text-[#F9F6F0]/85 max-w-lg mb-8 leading-relaxed">
-              Trusted Ayurvedic medicines and herbal essentials — crafted by local artisans, made for
-              every Indian family's progress toward better health.
+              {hero.description}
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
-                to="/shop"
+                to={hero.primaryCtaLink || "/shop"}
                 data-testid={TID.heroCta}
                 className="rounded-full px-8 py-3.5 bg-[#C5A059] text-[#1A3626] text-sm font-semibold hover:bg-[#d4b06a] transition-colors flex items-center gap-2"
               >
-                Shop the Collection <ArrowRight className="w-4 h-4" />
+                {hero.primaryCtaText} <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                to="/about"
+                to={hero.secondaryCtaLink || "/about"}
                 className="rounded-full px-8 py-3.5 bg-transparent border border-[#F9F6F0]/60 text-[#F9F6F0] text-sm font-semibold hover:bg-[#F9F6F0]/10 transition-colors"
               >
-                Our Story
+                {hero.secondaryCtaText}
               </Link>
             </div>
           </div>
@@ -80,10 +82,14 @@ export default function Home() {
         {/* Trust badges strip */}
         <div className="relative bg-[#1A3626] text-[#F9F6F0] py-4 border-t border-[#C5A059]/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs sm:text-sm">
-            <div className="flex items-center gap-3"><ShieldCheck className="w-5 h-5 text-[#C5A059]" /> GMP Certified</div>
-            <div className="flex items-center gap-3"><Leaf className="w-5 h-5 text-[#C5A059]" /> 100% Natural</div>
-            <div className="flex items-center gap-3"><Truck className="w-5 h-5 text-[#C5A059]" /> Free Shipping ₹499+</div>
-            <div className="flex items-center gap-3"><HeartHandshake className="w-5 h-5 text-[#C5A059]" /> COD Available</div>
+            {trustBadges.map((badge) => {
+              const IconComponent = ICON_MAP[badge.icon] || Leaf;
+              return (
+                <div key={badge.id || badge.text} className="flex items-center gap-3">
+                  <IconComponent className="w-5 h-5 text-[#C5A059]" /> {badge.text}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -147,36 +153,26 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="relative rounded-2xl overflow-hidden aspect-[4/5]">
-            <img src={STORY_IMG} alt="Herbs preparation" className="w-full h-full object-cover" />
+            <img src={mission.image} alt="Herbs preparation" className="w-full h-full object-cover" />
           </div>
           <div>
-            <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">Our Mission</div>
+            <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">{mission.badge}</div>
             <h2 className="font-serif-display text-3xl sm:text-4xl lg:text-5xl text-[#1A3626] mb-6 leading-tight">
-              Progress for every family, through <span className="italic text-[#C5A059]">health</span>.
+              {mission.title}
             </h2>
             <p className="text-[#1A3626]/80 leading-relaxed mb-4">
-              Utkarsh Corporation stands with India's small and domestic Ayurvedic manufacturers.
-              Every jar and bottle you receive supports local artisans, farmers and doctors — a
-              true <em>Local for Vocal</em> promise.
+              {mission.paragraph1}
             </p>
             <p className="text-[#1A3626]/80 leading-relaxed mb-8">
-              We host free health camps in cities and villages, mentor budding distributors, and
-              craft classical Ayurvedic products with modern quality controls — so wellness stays
-              accessible, affordable, and authentic.
+              {mission.paragraph2}
             </p>
             <div className="grid grid-cols-3 gap-6">
-              <div>
-                <div className="font-serif-display text-3xl text-[#1A3626]">50+</div>
-                <div className="text-xs text-[#5C4033] uppercase tracking-wider">Health Camps</div>
-              </div>
-              <div>
-                <div className="font-serif-display text-3xl text-[#1A3626]">40k</div>
-                <div className="text-xs text-[#5C4033] uppercase tracking-wider">Families Served</div>
-              </div>
-              <div>
-                <div className="font-serif-display text-3xl text-[#1A3626]">120+</div>
-                <div className="text-xs text-[#5C4033] uppercase tracking-wider">Local Partners</div>
-              </div>
+              {mission.stats?.map((stat, idx) => (
+                <div key={stat.id || idx}>
+                  <div className="font-serif-display text-3xl text-[#1A3626]">{stat.number}</div>
+                  <div className="text-xs text-[#5C4033] uppercase tracking-wider">{stat.label}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -213,14 +209,14 @@ export default function Home() {
           <h2 className="font-serif-display text-3xl sm:text-4xl lg:text-5xl text-[#1A3626]">What our customers say</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {TESTIMONIALS.map((t, i) => (
-            <div key={i} data-testid={TID.testimonial} className="bg-white rounded-2xl p-8 border border-[#1A3626]/10 relative">
+          {testimonials.map((t, i) => (
+            <div key={t.id || i} data-testid={TID.testimonial} className="bg-white rounded-2xl p-8 border border-[#1A3626]/10 relative">
               <Quote className="w-8 h-8 text-[#C5A059]/40 mb-4" />
               <p className="text-[#1A3626]/85 leading-relaxed mb-6">"{t.body}"</p>
               <div className="flex items-center justify-between">
                 <div className="text-sm font-semibold text-[#1A3626]">{t.name}</div>
                 <div className="flex gap-0.5">
-                  {Array.from({ length: t.stars }).map((_, k) => (
+                  {Array.from({ length: t.stars || 5 }).map((_, k) => (
                     <span key={k} className="text-[#C5A059]">★</span>
                   ))}
                 </div>
@@ -234,19 +230,18 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 lg:pb-28">
         <div className="relative rounded-2xl overflow-hidden bg-[#5C4033] p-10 md:p-16 text-[#F9F6F0]">
           <div className="max-w-2xl">
-            <div className="text-xs uppercase tracking-[0.2em] text-[#C5A059] mb-3">Business Opportunity</div>
+            <div className="text-xs uppercase tracking-[0.2em] text-[#C5A059] mb-3">{distributorCta.badge}</div>
             <h3 className="font-serif-display text-3xl md:text-4xl mb-4">
-              Grow with us. Become a distributor.
+              {distributorCta.title}
             </h3>
             <p className="text-[#F9F6F0]/80 mb-6 leading-relaxed">
-              Join 120+ partners across India selling trusted Ayurvedic products. Attractive margins,
-              full training, marketing support and a mission that matters.
+              {distributorCta.description}
             </p>
             <Link
-              to="/distributor"
+              to={distributorCta.ctaLink || "/distributor"}
               className="inline-flex items-center gap-2 rounded-full px-7 py-3 bg-[#C5A059] text-[#1A3626] text-sm font-semibold hover:bg-[#d4b06a] transition"
             >
-              Apply now <ArrowRight className="w-4 h-4" />
+              {distributorCta.ctaText} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>

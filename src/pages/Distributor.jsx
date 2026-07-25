@@ -3,8 +3,11 @@ import { contactService } from "@/services/contactService";
 import { useToast } from "@/hooks/use-toast";
 import { TID } from "@/constants/testIds";
 import { TrendingUp, Users, GraduationCap, Handshake, CheckCircle2 } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
 
 export default function Distributor() {
+  const { content } = useContent();
+  const { distributorCta } = content;
   const { toast } = useToast();
   const [form, setForm] = useState({
     name: "", phone: "", email: "", city: "", state: "", business_type: "", message: "",
@@ -46,13 +49,12 @@ export default function Distributor() {
       {/* Hero */}
       <section className="bg-[#5C4033] text-[#F9F6F0] py-20 lg:py-28">
         <div className="max-w-5xl mx-auto px-4 text-center">
-          <div className="text-xs uppercase tracking-[0.2em] text-[#C5A059] mb-3">Business Opportunity</div>
+          <div className="text-xs uppercase tracking-[0.2em] text-[#C5A059] mb-3">{distributorCta?.badge || "Business Opportunity"}</div>
           <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl mb-4">
-            Become an Utkarsh <span className="italic text-[#C5A059]">Distributor</span>
+            {distributorCta?.title || "Become an Utkarsh Distributor"}
           </h1>
           <p className="text-[#F9F6F0]/85 max-w-2xl mx-auto">
-            Build a rewarding business selling India's most trusted Ayurvedic products. Attractive
-            margins, complete training, marketing support — and a mission that matters.
+            {distributorCta?.description || "Build a rewarding business selling India's most trusted Ayurvedic products. Attractive margins, complete training, marketing support — and a mission that matters."}
           </p>
         </div>
       </section>

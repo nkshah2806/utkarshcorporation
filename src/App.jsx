@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
+import { ContentProvider } from "@/context/ContentContext";
 
 import Home from "@/pages/Home";
 import Shop from "@/pages/Shop";
@@ -28,8 +29,9 @@ function App() {
     <div className="App">
       <AuthProvider>
         <CartProvider>
-          <BrowserRouter>
-            <Toaster position="top-right" richColors />
+          <ContentProvider>
+            <BrowserRouter>
+              <Toaster position="top-right" richColors />
             <Routes>
               <Route element={<Layout />}>
                 <Route path="/" element={<Home />} />
@@ -51,8 +53,9 @@ function App() {
               </Route>
             </Routes>
           </BrowserRouter>
-        </CartProvider>
-      </AuthProvider>
+        </ContentProvider>
+      </CartProvider>
+    </AuthProvider>
     </div>
   );
 }

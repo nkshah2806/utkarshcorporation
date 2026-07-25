@@ -4,8 +4,11 @@ import { useState } from "react";
 import api, { formatApiError } from "@/lib/api";
 import { toast } from "sonner";
 import { TID } from "@/constants/testIds";
+import { useContent } from "@/context/ContentContext";
 
 export default function Footer() {
+  const { content } = useContent();
+  const { footer } = content;
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -40,13 +43,12 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-sm text-[#F9F6F0]/70 leading-relaxed">
-              Rooted in ancient Ayurvedic wisdom, we craft trusted herbal products for the progress
-              of every Indian family — from local hands to your home.
+              {footer?.brandDescription || "Rooted in ancient Ayurvedic wisdom, we craft trusted herbal products for the progress of every Indian family — from local hands to your home."}
             </p>
             <div className="flex gap-3 mt-6">
-              <a href="#" className="w-9 h-9 rounded-full border border-[#F9F6F0]/20 flex items-center justify-center hover:bg-[#C5A059] hover:border-[#C5A059] hover:text-[#1A3626] transition"><Instagram className="w-4 h-4" /></a>
-              <a href="#" className="w-9 h-9 rounded-full border border-[#F9F6F0]/20 flex items-center justify-center hover:bg-[#C5A059] hover:border-[#C5A059] hover:text-[#1A3626] transition"><Facebook className="w-4 h-4" /></a>
-              <a href="#" className="w-9 h-9 rounded-full border border-[#F9F6F0]/20 flex items-center justify-center hover:bg-[#C5A059] hover:border-[#C5A059] hover:text-[#1A3626] transition"><Youtube className="w-4 h-4" /></a>
+              <a href={footer?.instagramUrl || "#"} target="_blank" rel="noreferrer" className="w-9 h-9 rounded-full border border-[#F9F6F0]/20 flex items-center justify-center hover:bg-[#C5A059] hover:border-[#C5A059] hover:text-[#1A3626] transition"><Instagram className="w-4 h-4" /></a>
+              <a href={footer?.facebookUrl || "#"} target="_blank" rel="noreferrer" className="w-9 h-9 rounded-full border border-[#F9F6F0]/20 flex items-center justify-center hover:bg-[#C5A059] hover:border-[#C5A059] hover:text-[#1A3626] transition"><Facebook className="w-4 h-4" /></a>
+              <a href={footer?.youtubeUrl || "#"} target="_blank" rel="noreferrer" className="w-9 h-9 rounded-full border border-[#F9F6F0]/20 flex items-center justify-center hover:bg-[#C5A059] hover:border-[#C5A059] hover:text-[#1A3626] transition"><Youtube className="w-4 h-4" /></a>
             </div>
           </div>
 
@@ -100,15 +102,15 @@ export default function Footer() {
               </button>
             </form>
             <ul className="space-y-2 text-sm text-[#F9F6F0]/70">
-              <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-[#C5A059]" /> +91 99999 99999</li>
-              <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-[#C5A059]" /> care@utkarshcorp.com</li>
-              <li className="flex items-start gap-2"><MapPin className="w-4 h-4 text-[#C5A059] mt-0.5" /> Nashik, Maharashtra, India</li>
+              <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-[#C5A059]" /> {footer?.phone || "+91 99999 99999"}</li>
+              <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-[#C5A059]" /> {footer?.email || "care@utkarshcorp.com"}</li>
+              <li className="flex items-start gap-2"><MapPin className="w-4 h-4 text-[#C5A059] mt-0.5" /> {footer?.address || "Nashik, Maharashtra, India"}</li>
             </ul>
           </div>
         </div>
 
         <div className="mt-14 pt-6 border-t border-[#F9F6F0]/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#F9F6F0]/50">
-          <div>© {new Date().getFullYear()} Utkarsh Corporation. All rights reserved.</div>
+          <div>© {new Date().getFullYear()} {footer?.copyrightText || "Utkarsh Corporation. All rights reserved."}</div>
           <div className="flex gap-4">
             <span>GMP Certified</span>
             <span>·</span>

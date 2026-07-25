@@ -215,8 +215,6 @@ export default function Header() {
                     {/* Link 3: Register */}
                     <a
                       href="/register"
-                      target="_blank"
-                      rel="noreferrer"
                       onClick={() => setShowAcct(false)}
                       className="flex items-center justify-between px-4 py-2.5 text-sm font-bold text-[#C5A059] hover:bg-[#F9F6F0] transition group border-t border-[#1A3626]/5 mt-1"
                     >

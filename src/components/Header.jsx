@@ -214,7 +214,7 @@ export default function Header() {
 
                     {/* Link 3: Register */}
                     <a
-                      href="https://uttkarsh-member.vercel.app/"
+                      href="/register"
                       target="_blank"
                       rel="noreferrer"
                       onClick={() => setShowAcct(false)}

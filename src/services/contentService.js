@@ -60,30 +60,41 @@ export const DEFAULT_CONTENT = {
   }
 };
 
+const mergeContent = (dbData) => {
+  if (!dbData || typeof dbData !== "object") return DEFAULT_CONTENT;
+  return {
+    header: { ...DEFAULT_CONTENT.header, ...(dbData.header || {}) },
+    hero: { ...DEFAULT_CONTENT.hero, ...(dbData.hero || {}) },
+    trustBadges: Array.isArray(dbData.trustBadges) && dbData.trustBadges.length > 0 ? dbData.trustBadges : DEFAULT_CONTENT.trustBadges,
+    mission: { ...DEFAULT_CONTENT.mission, ...(dbData.mission || {}) },
+    testimonials: Array.isArray(dbData.testimonials) && dbData.testimonials.length > 0 ? dbData.testimonials : DEFAULT_CONTENT.testimonials,
+    distributorCta: { ...DEFAULT_CONTENT.distributorCta, ...(dbData.distributorCta || {}) },
+    footer: { ...DEFAULT_CONTENT.footer, ...(dbData.footer || {}) },
+  };
+};
+
 export const contentService = {
   /**
-   * Get dynamic content with localStorage fallback & backend sync
+   * Get dynamic content from backend Mongo API
    */
   getContent: async () => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      let content = saved ? JSON.parse(saved) : DEFAULT_CONTENT;
-
-      try {
-        const res = await api.get("/site-settings");
-        if (res.data && typeof res.data === "object") {
-          content = { ...content, ...res.data };
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
-        }
-      } catch {
-        // Fall back gracefully to local stored content
+      const res = await api.get("/site-settings");
+      if (res.data) {
+        const merged = mergeContent(res.data);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        return merged;
       }
-
-      return content;
     } catch (err) {
-      console.error("Error reading site dynamic content:", err);
-      return DEFAULT_CONTENT;
+      console.warn("Backend fetch error for site settings, using fallback cache:", err);
     }
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // Corrupted storage
+    }
+    return DEFAULT_CONTENT;
   },
 
   /**
@@ -91,16 +102,14 @@ export const contentService = {
    */
   updateContent: async (newContent) => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newContent));
-      try {
-        await api.post("/site-settings", newContent);
-      } catch {
-        // Endpoint optional, local storage sync is complete
-      }
-      return newContent;
+      const res = await api.post("/site-settings", newContent);
+      const merged = mergeContent(res.data || newContent);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      return merged;
     } catch (err) {
       console.error("Error saving site dynamic content:", err);
-      throw err;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newContent));
+      return newContent;
     }
   },
 
@@ -108,7 +117,14 @@ export const contentService = {
    * Reset content to default initial state
    */
   resetContent: async () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_CONTENT));
-    return DEFAULT_CONTENT;
+    try {
+      const res = await api.post("/site-settings", DEFAULT_CONTENT);
+      const merged = mergeContent(res.data || DEFAULT_CONTENT);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      return merged;
+    } catch (err) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_CONTENT));
+      return DEFAULT_CONTENT;
+    }
   }
 };

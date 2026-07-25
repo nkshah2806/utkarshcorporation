@@ -11,7 +11,11 @@ const GALLERY = [
   "https://images.unsplash.com/photo-1585328000852-779be6a6582b?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
 ];
 
+import { useContent } from "@/context/ContentContext";
+
 export default function HealthCamps() {
+  const { content } = useContent();
+  const { healthCamps } = content;
   const { toast } = useToast();
   const [camps, setCamps] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -29,10 +33,14 @@ export default function HealthCamps() {
     try {
       setLoading(true);
       const data = await contactService.getHealthCamps();
-      setCamps(data);
+      if (Array.isArray(data) && data.length > 0) {
+        setCamps(data);
+      } else {
+        setCamps(healthCamps?.camps || []);
+      }
     } catch (error) {
       console.error("Error loading health camps:", error);
-      setCamps([]);
+      setCamps(healthCamps?.camps || []);
     } finally {
       setLoading(false);
     }
@@ -40,7 +48,7 @@ export default function HealthCamps() {
 
   useEffect(() => {
     loadCamps();
-  }, []);
+  }, [healthCamps]);
 
   const submit = async (e) => {
     e.preventDefault();

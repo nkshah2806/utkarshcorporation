@@ -3,8 +3,11 @@ import { contactService } from "@/services/contactService";
 import { useToast } from "@/hooks/use-toast";
 import { TID } from "@/constants/testIds";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { useContent } from "@/context/ContentContext";
 
 export default function Contact() {
+  const { content } = useContent();
+  const { footer } = content;
   const { toast } = useToast();
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
   const [busy, setBusy] = useState(false);
@@ -52,21 +55,21 @@ export default function Contact() {
                 <div className="w-10 h-10 rounded-full bg-[#C5A059]/20 flex items-center justify-center shrink-0"><Phone className="w-4 h-4 text-[#5C4033]" /></div>
                 <div>
                   <div className="text-xs uppercase tracking-wider text-[#5C4033]">Call us</div>
-                  <div className="text-sm text-[#1A3626] font-semibold">+91 99999 99999</div>
+                  <div className="text-sm text-[#1A3626] font-semibold">{footer?.phone || "+91 99999 99999"}</div>
                 </div>
               </div>
               <div className="flex gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#C5A059]/20 flex items-center justify-center shrink-0"><Mail className="w-4 h-4 text-[#5C4033]" /></div>
                 <div>
                   <div className="text-xs uppercase tracking-wider text-[#5C4033]">Email</div>
-                  <div className="text-sm text-[#1A3626] font-semibold">care@utkarshcorp.com</div>
+                  <div className="text-sm text-[#1A3626] font-semibold">{footer?.email || "care@utkarshcorp.com"}</div>
                 </div>
               </div>
               <div className="flex gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#C5A059]/20 flex items-center justify-center shrink-0"><MapPin className="w-4 h-4 text-[#5C4033]" /></div>
                 <div>
                   <div className="text-xs uppercase tracking-wider text-[#5C4033]">Office</div>
-                  <div className="text-sm text-[#1A3626]">Nashik, Maharashtra, India</div>
+                  <div className="text-sm text-[#1A3626]">{footer?.address || "Nashik, Maharashtra, India"}</div>
                 </div>
               </div>
               <div className="flex gap-3">

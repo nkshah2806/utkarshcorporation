@@ -60,24 +60,23 @@ export default function Distributor() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Benefits */}
+      {/* Benefits */}
         <div>
           <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">Why partner with us</div>
           <h2 className="font-serif-display text-3xl sm:text-4xl text-[#1A3626] mb-8">Grow with a mission-driven brand</h2>
           <div className="space-y-5">
-            {[
-              { icon: TrendingUp, title: "High margins", body: "Attractive per-unit margins with tiered volume bonuses." },
-              { icon: GraduationCap, title: "Complete training", body: "Product knowledge, Ayurvedic basics, sales training — all covered." },
-              { icon: Users, title: "Marketing support", body: "Digital assets, brochures, and lead generation from our network." },
-              { icon: Handshake, title: "Trusted brand", body: "Ride on 40k+ happy customers and 120+ existing partners across India." },
-            ].map((b) => (
+            {(content?.distributorPage?.benefits || [
+              { title: "High Margin Profits", description: "Direct partner margins with attractive volume incentives." },
+              { title: "Marketing & POS Support", description: "Banners, product samples, doctor flyers & digital campaign assistance." },
+              { title: "Zero Franchise Royalty", description: "100% transparent pricing without hidden royalty fees." },
+            ]).map((b) => (
               <div key={b.title} className="flex gap-4">
                 <div className="w-11 h-11 rounded-full bg-[#C5A059]/20 flex items-center justify-center shrink-0">
-                  <b.icon className="w-5 h-5 text-[#5C4033]" />
+                  <TrendingUp className="w-5 h-5 text-[#5C4033]" />
                 </div>
                 <div>
                   <div className="font-semibold text-[#1A3626] mb-1">{b.title}</div>
-                  <div className="text-sm text-[#1A3626]/70">{b.body}</div>
+                  <div className="text-sm text-[#1A3626]/70">{b.description || b.body}</div>
                 </div>
               </div>
             ))}

@@ -1,14 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { Search, ShoppingBag, User, Menu, X, LogOut, Leaf } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
+import { Search, ShoppingBag, Menu, X, Leaf } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useContent } from "@/context/ContentContext";
 import { TID } from "@/constants/testIds";
 import api from "@/lib/api";
 
 export default function Header() {
-  const { user, logout } = useAuth();
   const { count } = useCart();
   const { content } = useContent();
   const { header } = content;
@@ -18,9 +16,8 @@ export default function Header() {
   const [q, setQ] = useState("");
   const [suggest, setSuggest] = useState([]);
   const [showSug, setShowSug] = useState(false);
-  const [showAcct, setShowAcct] = useState(false);
   const sugRef = useRef(null);
-  const acctRef = useRef(null);
+
 
   useEffect(() => {
     const handler = (e) => {
@@ -124,50 +121,34 @@ export default function Header() {
               )}
             </form>
 
-            <Link to="/admin/login" className="hidden sm:inline-flex items-center rounded-full border border-[#1A3626]/15 px-3 py-2 text-sm font-medium text-[#1A3626] hover:bg-[#F9F6F0] transition">
-              Admin Portal
-            </Link>
-
-            {/* Account */}
-            <div className="relative" ref={acctRef}>
-              <button
-                type="button"
-                data-testid={TID.accountIcon}
-                onClick={() => setShowAcct((s) => !s)}
-                className="p-2 rounded-full hover:bg-[#1A3626]/5 transition"
-                aria-label="Account"
+            {/* Redirection Buttons for Member Panel, Admin Portal & Register */}
+            <div className="flex items-center gap-2">
+              <a
+                href="https://uttkarsh-member.vercel.app/"
+                target="_blank"
+                rel="noreferrer"
+                className="hidden sm:inline-flex items-center rounded-full bg-[#1A3626] text-[#F9F6F0] px-3.5 py-1.5 text-xs font-semibold hover:bg-[#2a4d38] transition shadow-xs"
               >
-                <User className="w-5 h-5 text-[#1A3626]" />
-              </button>
-              {showAcct && (
-                <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-lg border border-[#1A3626]/10 py-2 z-50">
-                  {user ? (
-                    <>
-                      <div className="px-4 py-2 text-xs text-[#5C4033] border-b border-[#1A3626]/10">
-                        Hi, <span className="font-semibold text-[#1A3626]">{user.name}</span>
-                      </div>
-                      <Link to="/account" onClick={() => setShowAcct(false)} className="block px-4 py-2 text-sm hover:bg-[#F9F6F0]">My Account</Link>
-                      <button
-                        type="button"
-                        data-testid={TID.logoutBtn}
-                        onClick={() => {
-                          setShowAcct(false);
-                          logout();
-                          navigate("/");
-                        }}
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-[#F9F6F0] flex items-center gap-2 text-[#5C4033]"
-                      >
-                        <LogOut className="w-4 h-4" /> Sign out
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link to="/login" onClick={() => setShowAcct(false)} className="block px-4 py-2 text-sm hover:bg-[#F9F6F0]">Sign in</Link>
-                      <Link to="/register" onClick={() => setShowAcct(false)} className="block px-4 py-2 text-sm hover:bg-[#F9F6F0]">Create account</Link>
-                    </>
-                  )}
-                </div>
-              )}
+                Member Panel
+              </a>
+
+              <a
+                href="https://uttkarsh-admin.vercel.app/"
+                target="_blank"
+                rel="noreferrer"
+                className="hidden sm:inline-flex items-center rounded-full border border-[#1A3626]/20 px-3 py-1.5 text-xs font-semibold text-[#1A3626] hover:bg-[#1A3626]/5 transition"
+              >
+                Admin Portal
+              </a>
+
+              <a
+                href="https://uttkarsh-member.vercel.app/"
+                target="_blank"
+                rel="noreferrer"
+                className="hidden md:inline-flex items-center rounded-full bg-[#C5A059] text-[#1A3626] px-4 py-1.5 text-xs font-bold hover:bg-[#d4b06a] transition shadow-xs"
+              >
+                Register
+              </a>
             </div>
 
             {/* Cart */}
@@ -204,9 +185,37 @@ export default function Header() {
               <Link to="/distributor" className={linkCls} onClick={() => setMenuOpen(false)}>Distributor</Link>
               <Link to="/about" className={linkCls} onClick={() => setMenuOpen(false)}>About</Link>
               <Link to="/contact" className={linkCls} onClick={() => setMenuOpen(false)}>Contact</Link>
+
+              <div className="pt-2 border-t border-[#1A3626]/10 flex flex-col gap-2">
+                <a
+                  href="https://uttkarsh-member.vercel.app/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full text-center rounded-xl bg-[#1A3626] text-[#F9F6F0] py-2.5 text-xs font-semibold"
+                >
+                  Member Panel
+                </a>
+                <a
+                  href="https://uttkarsh-admin.vercel.app/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full text-center rounded-xl border border-[#1A3626]/20 py-2.5 text-xs font-semibold text-[#1A3626]"
+                >
+                  Admin Portal
+                </a>
+                <a
+                  href="https://uttkarsh-member.vercel.app/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full text-center rounded-xl bg-[#C5A059] text-[#1A3626] py-2.5 text-xs font-bold"
+                >
+                  Register
+                </a>
+              </div>
             </div>
           </div>
         )}
+
       </div>
     </header>
   );

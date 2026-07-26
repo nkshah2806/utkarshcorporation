@@ -18,6 +18,7 @@ import Distributor from "@/pages/Distributor";
 import Contact from "@/pages/Contact";
 import Login from "./pages/Login";
 import Register from "@/pages/Register";
+import RegisterSuccess from "@/pages/RegisterSuccess";
 import Account from "@/pages/Account";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -46,6 +47,7 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/register-success" element={<RegisterSuccess />} />
                 <Route path="/account" element={<Account />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />

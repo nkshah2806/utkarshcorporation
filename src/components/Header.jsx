@@ -216,7 +216,7 @@ export default function Header() {
                     <a
                       href="/register"
                       onClick={() => setShowAcct(false)}
-                      className="flex items-center justify-between px-4 py-2.5 text-sm font-bold text-[#C5A059] hover:bg-[#F9F6F0] transition group border-t border-[#1A3626]/5 mt-1"
+                      className="flex items-center justify-between px-4 py-2.5 text-sm font-medium text-[#C5A059] hover:bg-[#F9F6F0] transition group border-t border-[#1A3626]/5 mt-1"
                     >
                       <div className="flex items-center gap-2.5">
                         <UserPlus className="w-4 h-4 text-[#C5A059] group-hover:scale-110 transition-transform" />

@@ -21,7 +21,7 @@ export default function Register() {
         localStorage.setItem("frenchies_member_token", data.token);
       }
       toast.success(data?.message || "Registration successful");
-      navigate("/login");
+      navigate("/register-success", { state: { fullName: form.fullName, email: form.email } });
     } catch (err) {
       toast.error(formatApiError(err));
     } finally {

@@ -16,12 +16,8 @@ import About from "@/pages/About";
 import HealthCamps from "@/pages/HealthCamps";
 import Distributor from "@/pages/Distributor";
 import Contact from "@/pages/Contact";
-import Login from "./pages/Login";
 import Register from "@/pages/Register";
 import RegisterSuccess from "@/pages/RegisterSuccess";
-import Account from "@/pages/Account";
-import AdminLogin from "@/pages/AdminLogin";
-import AdminDashboard from "@/pages/AdminDashboard";
 import Policies from "@/pages/Policies";
 import Layout from "./components/Layout";
 
@@ -45,12 +41,8 @@ function App() {
                 <Route path="/health-camps" element={<HealthCamps />} />
                 <Route path="/distributor" element={<Distributor />} />
                 <Route path="/contact" element={<Contact />} />
-                <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/register-success" element={<RegisterSuccess />} />
-                <Route path="/account" element={<Account />} />
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/policies/:slug" element={<Policies />} />
               </Route>
             </Routes>

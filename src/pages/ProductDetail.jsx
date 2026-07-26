@@ -71,7 +71,10 @@ export default function ProductDetail() {
     navigate("/checkout");
   };
   const toggleWishlist = async () => {
-    if (!user) return navigate("/login");
+    if (!user) {
+      window.open("https://uttkarsh-member.vercel.app/", "_blank", "noopener,noreferrer");
+      return;
+    }
     if (!product) return;
     try {
       const { data } = await productsService.addReview(product.id, {});
@@ -95,7 +98,10 @@ export default function ProductDetail() {
   };
   const submitReview = async (e) => {
     e.preventDefault();
-    if (!user) return navigate("/login");
+    if (!user) {
+      window.open("https://uttkarsh-member.vercel.app/", "_blank", "noopener,noreferrer");
+      return;
+    }
     if (!product) return;
     setPosting(true);
     try {
@@ -281,7 +287,7 @@ export default function ProductDetail() {
             </div>
             <div className="bg-white rounded-2xl p-6 border border-[#1A3626]/10">
               <h4 className="font-serif-display text-xl text-[#1A3626] mb-3">Write a review</h4>
-              {!user && <div className="text-xs text-[#5C4033] bg-[#C5A059]/15 rounded-lg px-3 py-2 mb-3">Please <Link to="/login" className="underline">sign in</Link> to review.</div>}
+              {!user && <div className="text-xs text-[#5C4033] bg-[#C5A059]/15 rounded-lg px-3 py-2 mb-3">Please <a href="https://uttkarsh-member.vercel.app/" target="_blank" rel="noreferrer" className="underline">open the member panel</a> to review.</div>}
               <form onSubmit={submitReview} className="space-y-3">
                 <div>
                   <label className="text-xs text-[#1A3626]/70 block mb-1">Rating</label>

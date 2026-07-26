@@ -29,13 +29,15 @@ export default function RegisterSuccess() {
             <p className="text-sm font-medium">You can now explore our products and manage your membership.</p>
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
-            <Link
-              to="/login"
+            <a
+              href="https://uttkarsh-member.vercel.app/"
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 bg-[#1A3626] text-[#F9F6F0] text-sm font-semibold hover:bg-[#2C4C3B] transition"
             >
               <LogIn className="w-4 h-4" />
-              Go to Login
-            </Link>
+              Go to Member Panel
+            </a>
             <Link
               to="/"
               className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 border border-[#1A3626] text-[#1A3626] text-sm font-semibold hover:bg-[#1A3626] hover:text-[#F9F6F0] transition"

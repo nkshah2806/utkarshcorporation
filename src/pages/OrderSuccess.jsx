@@ -64,7 +64,7 @@ export default function OrderSuccess() {
 
       <div className="flex justify-center gap-3">
         <Link to="/shop" className="rounded-full px-6 py-2.5 border border-[#1A3626] text-[#1A3626] text-sm font-semibold hover:bg-[#1A3626] hover:text-[#F9F6F0] transition">Continue Shopping</Link>
-        <Link to="/account" className="rounded-full px-6 py-2.5 bg-[#1A3626] text-[#F9F6F0] text-sm font-semibold hover:bg-[#2C4C3B] transition">My Orders</Link>
+        <a href="https://uttkarsh-member.vercel.app/" target="_blank" rel="noreferrer" className="rounded-full px-6 py-2.5 bg-[#1A3626] text-[#F9F6F0] text-sm font-semibold hover:bg-[#2C4C3B] transition">Member Panel</a>
       </div>
     </div>
   );

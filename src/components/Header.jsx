@@ -8,9 +8,9 @@ import {
   X,
   Leaf,
   UserCheck,
-  ShieldCheck,
   UserPlus,
   ExternalLink,
+  ShieldCheck,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useContent } from "@/context/ContentContext";
@@ -174,10 +174,10 @@ export default function Header() {
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-[#1A3626]/10 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="px-4 py-2 border-b border-[#1A3626]/10">
                     <div className="text-xs font-bold text-[#1A3626] uppercase tracking-wider">
-                      Portals & Access
+                      Member Access
                     </div>
                     <div className="text-[11px] text-[#5C4033]">
-                      Direct Member & Admin access
+                      Member registration and member portal
                     </div>
                   </div>
 

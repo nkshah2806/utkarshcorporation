@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "@/lib/api";
 import { formatApiError } from "@/lib/api";
 import { toast } from "sonner";
@@ -56,7 +56,10 @@ export default function Register() {
             {busy ? "Creating..." : "Create Account"}
           </button>
           <div className="text-center text-sm text-[#1A3626]/70">
-            Already have an account? <Link to="/login" className="text-[#C5A059] font-semibold hover:underline">Sign in</Link>
+            Need member access?{' '}
+            <a href="https://uttkarsh-member.vercel.app/" target="_blank" rel="noreferrer" className="text-[#C5A059] font-semibold hover:underline">
+              Open Member Panel
+            </a>
           </div>
         </form>
       </div>

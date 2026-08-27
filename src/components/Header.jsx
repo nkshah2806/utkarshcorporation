@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import {
   Search,
-  ShoppingBag,
   User,
   Menu,
   X,
@@ -12,13 +11,11 @@ import {
   ExternalLink,
   ShieldCheck,
 } from "lucide-react";
-import { useCart } from "@/context/CartContext";
 import { useContent } from "@/context/ContentContext";
 import { TID } from "@/constants/testIds";
 import api from "@/lib/api";
 
 export default function Header() {
-  const { count } = useCart();
   const { content } = useContent();
   const { header } = content;
 
@@ -122,7 +119,7 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* Search + Dropdown + Cart */}
+          {/* Search + Dropdown */}
           <div className="flex items-center gap-2 sm:gap-3">
             <form onSubmit={onSearchSubmit} className="relative hidden md:block" ref={sugRef}>
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#1A3626]/50" />
@@ -228,20 +225,6 @@ export default function Header() {
                 </div>
               )}
             </div>
-
-            {/* Cart */}
-            <Link
-              to="/cart"
-              data-testid={TID.cartIcon}
-              className="relative p-2 rounded-full hover:bg-[#1A3626]/5 transition"
-            >
-              <ShoppingBag className="w-5 h-5 text-[#1A3626]" />
-              {count > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-[#C5A059] text-[#1A3626] text-[10px] font-bold rounded-full px-1 flex items-center justify-center">
-                  {count}
-                </span>
-              )}
-            </Link>
 
             {/* Mobile menu toggle button */}
             <button

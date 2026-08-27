@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { CheckCircle2, ArrowRight, Home, LogIn } from "lucide-react";
+import { CheckCircle2, ArrowRight, Clock, LogIn } from "lucide-react";
 
 export default function RegisterSuccess() {
   const location = useLocation();
@@ -15,7 +15,7 @@ export default function RegisterSuccess() {
 
         <h1 className="font-serif-display text-4xl text-[#1A3626] mb-3">Registration Successful!</h1>
         <p className="text-[#1A3626]/70 mb-2">
-          Welcome, <span className="font-semibold text-[#1A3626]">{fullName}</span>! Your account has been created successfully.
+          Welcome, <span className="font-semibold text-[#1A3626]">{fullName}</span>! Your franchise member account has been created successfully.
         </p>
         {email && (
           <p className="text-sm text-[#1A3626]/60 mb-8">
@@ -24,9 +24,12 @@ export default function RegisterSuccess() {
         )}
 
         <div className="bg-white rounded-2xl border border-[#1A3626]/10 p-8 shadow-sm">
-          <div className="flex items-center justify-center gap-3 text-[#1A3626] mb-4">
-            <Home className="w-5 h-5" />
-            <p className="text-sm font-medium">You can now explore our products and manage your membership.</p>
+          <div className="flex items-start justify-center gap-3 text-[#1A3626] mb-4">
+            <Clock className="w-5 h-5 mt-0.5 shrink-0" />
+            <p className="text-sm font-medium leading-relaxed">
+              Your account is currently <span className="font-semibold text-[#C5A059]">pending approval</span>.
+              An administrator will review your registration and approve it before you can access the member portal.
+            </p>
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
             <a

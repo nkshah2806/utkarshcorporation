@@ -49,27 +49,23 @@ export default function Distributor() {
       {/* Hero */}
       <section className="bg-[#5C4033] text-[#F9F6F0] py-20 lg:py-28">
         <div className="max-w-5xl mx-auto px-4 text-center">
-          <div className="text-xs uppercase tracking-[0.2em] text-[#C5A059] mb-3">{distributorCta?.badge || "Business Opportunity"}</div>
+          <div className="text-xs uppercase tracking-[0.2em] text-[#C5A059] mb-3">{distributorCta?.badge || ""}</div>
           <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl mb-4">
-            {distributorCta?.title || "Become an Utkarsh Distributor"}
+            {distributorCta?.title || ""}
           </h1>
           <p className="text-[#F9F6F0]/85 max-w-2xl mx-auto">
-            {distributorCta?.description || "Build a rewarding business selling India's most trusted Ayurvedic products. Attractive margins, complete training, marketing support — and a mission that matters."}
+            {distributorCta?.description || ""}
           </p>
         </div>
       </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20 grid grid-cols-1 lg:grid-cols-2 gap-12">
-      {/* Benefits */}
+        {/* Benefits */}
         <div>
           <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">Why partner with us</div>
           <h2 className="font-serif-display text-3xl sm:text-4xl text-[#1A3626] mb-8">Grow with a mission-driven brand</h2>
           <div className="space-y-5">
-            {(content?.distributorPage?.benefits || [
-              { title: "High Margin Profits", description: "Direct partner margins with attractive volume incentives." },
-              { title: "Marketing & POS Support", description: "Banners, product samples, doctor flyers & digital campaign assistance." },
-              { title: "Zero Franchise Royalty", description: "100% transparent pricing without hidden royalty fees." },
-            ]).map((b) => (
+            {(content?.distributorPage?.benefits || []).map((b) => (
               <div key={b.title} className="flex gap-4">
                 <div className="w-11 h-11 rounded-full bg-[#C5A059]/20 flex items-center justify-center shrink-0">
                   <TrendingUp className="w-5 h-5 text-[#5C4033]" />

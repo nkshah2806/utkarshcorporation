@@ -1,20 +1,11 @@
 import { Link } from "react-router-dom";
-import { ShoppingBag, Star } from "lucide-react";
-import { useCart } from "@/context/CartContext";
-import { toast } from "sonner";
+import { Star } from "lucide-react";
 import { TID } from "@/constants/testIds";
 
 export default function ProductCard({ product }) {
-  const { addItem } = useCart();
   const discount = product.mrp > product.price
     ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
     : 0;
-
-  const add = (e) => {
-    e.preventDefault();
-    addItem(product, 1);
-    toast.success(`${product.name} added to cart`);
-  };
 
   return (
     <Link
@@ -60,14 +51,6 @@ export default function ProductCard({ product }) {
               <span className="text-xs text-[#1A3626]/50 line-through ml-2">₹{product.mrp}</span>
             )}
           </div>
-          <button
-            data-testid={TID.addToCartBtn}
-            onClick={add}
-            className="w-9 h-9 rounded-full bg-[#1A3626] text-[#F9F6F0] flex items-center justify-center hover:bg-[#2C4C3B] transition"
-            aria-label="Add to cart"
-          >
-            <ShoppingBag className="w-4 h-4" />
-          </button>
         </div>
       </div>
     </Link>

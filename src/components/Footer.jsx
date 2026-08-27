@@ -102,9 +102,9 @@ export default function Footer() {
               </button>
             </form>
             <ul className="space-y-2 text-sm text-[#F9F6F0]/70">
-              <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-[#C5A059]" /> {footer?.phone || "+91 99999 99999"}</li>
-              <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-[#C5A059]" /> {footer?.email || "care@utkarshcorp.com"}</li>
-              <li className="flex items-start gap-2"><MapPin className="w-4 h-4 text-[#C5A059] mt-0.5" /> {footer?.address || "Nashik, Maharashtra, India"}</li>
+              <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-[#C5A059]" /> {footer?.phone || ""}</li>
+              <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-[#C5A059]" /> {footer?.email || ""}</li>
+              <li className="flex items-start gap-2"><MapPin className="w-4 h-4 text-[#C5A059] mt-0.5" /> {footer?.address || ""}</li>
             </ul>
           </div>
         </div>

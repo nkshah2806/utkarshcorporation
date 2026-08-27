@@ -4,13 +4,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Calendar, MapPin, Clock, Users, Stethoscope, X } from "lucide-react";
 import { TID } from "@/constants/testIds";
 
-const GALLERY = [
-  "https://images.unsplash.com/photo-1492552085122-36706c238263?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
-  "https://images.unsplash.com/photo-1615485499958-69973683793c?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
-  "https://images.unsplash.com/photo-1525923838299-2312b60f6d69?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
-  "https://images.unsplash.com/photo-1585328000852-779be6a6582b?crop=entropy&cs=srgb&fm=jpg&q=85&w=800",
-];
-
 import { useContent } from "@/context/ContentContext";
 
 export default function HealthCamps() {
@@ -178,27 +171,6 @@ export default function HealthCamps() {
             ))}
           </div>
         )}
-      </section>
-
-      {/* Gallery */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">
-          Past camps
-        </div>
-        <h2 className="font-serif-display text-3xl sm:text-4xl text-[#1A3626] mb-8">
-          Moments from the field
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {GALLERY.map((g, i) => (
-            <div key={i} className="aspect-square rounded-2xl overflow-hidden">
-              <img
-                src={g}
-                alt=""
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* Modal */}

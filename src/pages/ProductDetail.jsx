@@ -3,22 +3,19 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { productsService } from "@/services/productsService";
 import { useToast } from "@/hooks/use-toast";
 import ProductCard from "@/components/ProductCard";
-import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
-import { Minus, Plus, ShoppingBag, Star, Leaf, ShieldCheck, Truck, HeartHandshake, Heart } from "lucide-react";
+import { Star, Leaf, ShieldCheck, Truck, HeartHandshake, Heart } from "lucide-react";
 import { TID } from "@/constants/testIds";
 
 export default function ProductDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { addItem } = useCart();
   const { user, setUser } = useAuth();
 
   const [product, setProduct] = useState(null);
   const [related, setRelated] = useState([]);
   const [reviews, setReviews] = useState([]);
-  const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
   const [reviewForm, setReviewForm] = useState({ rating: 5, title: "", body: "" });
   const [posting, setPosting] = useState(false);
@@ -57,19 +54,6 @@ export default function ProductDetail() {
   const inWishlist = user?.wishlist?.includes(product.id);
   const discount = product.mrp > product.price ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
 
-  const addToCart = () => {
-    if (!product) return;
-    addItem(product, qty);
-    toast({
-      title: "Added to cart",
-      description: `${qty} × ${product.name}`,
-    });
-  };
-  const buyNow = () => {
-    if (!product) return;
-    addItem(product, qty);
-    navigate("/checkout");
-  };
   const toggleWishlist = async () => {
     if (!user) {
       window.open("https://uttkarsh-member.vercel.app/", "_blank", "noopener,noreferrer");
@@ -184,31 +168,10 @@ export default function ProductDetail() {
                 </>
               )}
             </div>
-            <div className="text-xs text-[#1A3626]/60 mb-8">Inclusive of all taxes · Free shipping over ₹499</div>
+            <div className="text-xs text-[#1A3626]/60 mb-8">Inclusive of all taxes</div>
 
-            {/* Quantity + CTAs */}
+            {/* Actions */}
             <div className="flex flex-wrap gap-3 mb-8">
-              <div className="inline-flex items-center border border-[#1A3626]/20 rounded-full">
-                <button data-testid={TID.qtyDecrement} onClick={() => setQty(Math.max(1, qty - 1))} className="w-10 h-10 flex items-center justify-center hover:bg-[#F9F6F0]"><Minus className="w-4 h-4" /></button>
-                <span className="w-10 text-center text-sm font-semibold">{qty}</span>
-                <button data-testid={TID.qtyIncrement} onClick={() => setQty(qty + 1)} className="w-10 h-10 flex items-center justify-center hover:bg-[#F9F6F0]"><Plus className="w-4 h-4" /></button>
-              </div>
-              <button
-                data-testid={TID.addToCartBtn}
-                onClick={addToCart}
-                disabled={product.stock === 0}
-                className="rounded-full px-6 py-3 bg-transparent border border-[#1A3626] text-[#1A3626] font-semibold text-sm hover:bg-[#1A3626] hover:text-[#F9F6F0] transition inline-flex items-center gap-2 disabled:opacity-50"
-              >
-                <ShoppingBag className="w-4 h-4" /> Add to Cart
-              </button>
-              <button
-                data-testid={TID.buyNowBtn}
-                onClick={buyNow}
-                disabled={product.stock === 0}
-                className="rounded-full px-6 py-3 bg-[#1A3626] text-[#F9F6F0] font-semibold text-sm hover:bg-[#2C4C3B] transition disabled:opacity-50"
-              >
-                Buy Now
-              </button>
               <button
                 onClick={toggleWishlist}
                 aria-label="Wishlist"

@@ -11,7 +11,7 @@ const CONTENT = {
 • Consumables opened for use are non-returnable for hygiene reasons.
 
 **How to return**
-1. Email care@utkarshcorp.com or WhatsApp us with your order number.
+1. Email us or WhatsApp us with your order number.
 2. Pack the item securely.
 3. Our courier will pick up within 3-5 business days.
 
@@ -69,7 +69,7 @@ Only to process orders, deliver products, provide customer support, and send opt
 We never sell your data to third parties. Payment details are handled by Razorpay and never stored on our servers.
 
 **Your rights**
-Email care@utkarshcorp.com to access, update, or delete your data at any time.`,
+Email us to access, update, or delete your data at any time.`,
   },
 };
 

@@ -3,15 +3,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 
 import { AuthProvider } from "@/context/AuthContext";
-import { CartProvider } from "@/context/CartContext";
 import { ContentProvider } from "@/context/ContentContext";
 
 import Home from "@/pages/Home";
 import Shop from "@/pages/Shop";
 import ProductDetail from "@/pages/ProductDetail";
-import Cart from "@/pages/Cart";
-import Checkout from "@/pages/Checkout";
-import OrderSuccess from "@/pages/OrderSuccess";
 import About from "@/pages/About";
 import HealthCamps from "@/pages/HealthCamps";
 import Distributor from "@/pages/Distributor";
@@ -25,18 +21,14 @@ function App() {
   return (
     <div className="App">
       <AuthProvider>
-        <CartProvider>
-          <ContentProvider>
-            <BrowserRouter>
-              <Toaster position="top-right" richColors />
+        <ContentProvider>
+          <BrowserRouter>
+            <Toaster position="top-right" richColors />
             <Routes>
               <Route element={<Layout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/shop" element={<Shop />} />
                 <Route path="/product/:slug" element={<ProductDetail />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/order-success/:orderId" element={<OrderSuccess />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/health-camps" element={<HealthCamps />} />
                 <Route path="/distributor" element={<Distributor />} />
@@ -48,8 +40,7 @@ function App() {
             </Routes>
           </BrowserRouter>
         </ContentProvider>
-      </CartProvider>
-    </AuthProvider>
+      </AuthProvider>
     </div>
   );
 }

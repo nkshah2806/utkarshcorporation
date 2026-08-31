@@ -28,7 +28,7 @@ export default function ProductDetail() {
         const productData = await productsService.getProductBySlug(slug);
         setProduct(productData);
         setActiveImg(0);
-        
+
         const [relData, revData] = await Promise.all([
           productsService.getRelatedProducts(productData.id),
           productsService.getProductReviews(productData.id),
@@ -175,9 +175,8 @@ export default function ProductDetail() {
               <button
                 onClick={toggleWishlist}
                 aria-label="Wishlist"
-                className={`w-11 h-11 rounded-full border flex items-center justify-center transition ${
-                  inWishlist ? "bg-[#C5A059] border-[#C5A059] text-[#1A3626]" : "border-[#1A3626]/20 text-[#1A3626] hover:bg-[#F9F6F0]"
-                }`}
+                className={`w-11 h-11 rounded-full border flex items-center justify-center transition ${inWishlist ? "bg-[#C5A059] border-[#C5A059] text-[#1A3626]" : "border-[#1A3626]/20 text-[#1A3626] hover:bg-[#F9F6F0]"
+                  }`}
               >
                 <Heart className={`w-4 h-4 ${inWishlist ? "fill-current" : ""}`} />
               </button>
@@ -219,11 +218,11 @@ export default function ProductDetail() {
           </div>
           <div className="bg-white rounded-2xl p-6 border border-[#1A3626]/10">
             <h3 className="font-serif-display text-xl text-[#1A3626] mb-3">Ingredients</h3>
-            <p className="text-sm text-[#1A3626]/75 leading-relaxed">{product.ingredients}</p>
+            <p className="text-sm text-[#1A3626]/75 leading-relaxed whitespace-pre-line">{product.ingredients}</p>
           </div>
           <div className="bg-white rounded-2xl p-6 border border-[#1A3626]/10">
             <h3 className="font-serif-display text-xl text-[#1A3626] mb-3">How to Use</h3>
-            <p className="text-sm text-[#1A3626]/75 leading-relaxed">{product.usage}</p>
+            <p className="text-sm text-[#1A3626]/75 leading-relaxed whitespace-pre-line">{product.usage}</p>
           </div>
         </div>
 

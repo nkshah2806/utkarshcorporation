@@ -1,39 +1,105 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { contactService } from "@/services/contactService";
-import { useToast } from "@/hooks/use-toast";
-import { Calendar, MapPin, Clock, Users, Stethoscope, X } from "lucide-react";
+import { Calendar, MapPin, Clock, Users, Stethoscope, ArrowRight } from "lucide-react";
 import { TID } from "@/constants/testIds";
-
 import { useContent } from "@/context/ContentContext";
+import HealthCampRegisterModal from "@/components/HealthCampRegisterModal";
+
+/**
+ * Map a camp document (new HealthCamp model) or a legacy CMS fallback item to a
+ * single consistent shape used by this page and the View Details page.
+ */
+export const normalizeCamp = (c) => ({
+  _id: c?._id || c?.id || c?.campId || "",
+  name: c?.name || c?.title || "Health Camp",
+  description: c?.description || "",
+  date: c?.date || "",
+  start_time: c?.start_time || "",
+  end_time: c?.end_time || "",
+  time: c?.time || "",
+  venue: c?.venue || "",
+  address: c?.address || "",
+  city: c?.city || "",
+  state: c?.state || "",
+  pincode: c?.pincode || "",
+  contact_person: c?.contact_person || c?.doctor || "",
+  contact_number: c?.contact_number || "",
+  contact_email: c?.contact_email || "",
+  image: c?.image || "",
+  is_active: c?.is_active !== false,
+  registration_required: Boolean(c?.registration_required),
+  registration_limit: c?.registration_limit || null,
+  registeredCount: Array.isArray(c?.registrations)
+    ? c.registrations.length
+    : Number(c?.registered) || 0,
+  additional_notes: c?.additional_notes || "",
+});
+
+/** "09:30" → "9:30 AM" while leaving already-formatted strings untouched. */
+export const formatCampTime = (value) => {
+  if (!value) return "";
+  if (/am|pm/i.test(value)) return value;
+  const parts = value.split(":");
+  const hours = parseInt(parts[0], 10);
+  if (Number.isNaN(hours)) return value;
+  const suffix = hours >= 12 ? "PM" : "AM";
+  const h12 = hours % 12 || 12;
+  return `${h12}:${parts[1] || "00"} ${suffix}`;
+};
+
+export const formatCampTimeRange = (camp) => {
+  const start = formatCampTime(camp.start_time);
+  const end = formatCampTime(camp.end_time);
+  return [start, end].filter(Boolean).join(" – ") || camp.time || "";
+};
+
+export const formatCampDate = (value) => {
+  if (!value) return "";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+};
+
+export const campLocationLine = (camp) =>
+  [camp.venue, camp.city, camp.state].filter(Boolean).join(", ") || camp.venue || "";
+
+export const campAddressLine = (camp) =>
+  [
+    camp.address,
+    camp.city,
+    camp.state,
+    camp.pincode ? `Pincode: ${camp.pincode}` : "",
+  ]
+    .filter(Boolean)
+    .join(", ") || camp.venue;
+
+const activeOnly = (camps) => (camps || []).filter((c) => c.is_active !== false);
 
 export default function HealthCamps() {
   const { content } = useContent();
   const { healthCamps } = content;
-  const { toast } = useToast();
   const [camps, setCamps] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    age: "",
-    notes: "",
-  });
-  const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const loadCamps = async () => {
     try {
       setLoading(true);
       const data = await contactService.getHealthCamps();
-      if (Array.isArray(data) && data.length > 0) {
-        setCamps(data);
+      const normalized = activeOnly((data || []).map(normalizeCamp));
+      if (normalized.length > 0) {
+        setCamps(normalized);
       } else {
-        setCamps(healthCamps?.camps || []);
+        setCamps(activeOnly((healthCamps?.camps || []).map(normalizeCamp)));
       }
     } catch (error) {
       console.error("Error loading health camps:", error);
-      setCamps(healthCamps?.camps || []);
+      setCamps(activeOnly((healthCamps?.camps || []).map(normalizeCamp)));
     } finally {
       setLoading(false);
     }
@@ -43,43 +109,9 @@ export default function HealthCamps() {
     loadCamps();
   }, [healthCamps]);
 
-  const submit = async (e) => {
-    e.preventDefault();
-    setBusy(true);
-    try {
-      await contactService.submitDistributorInquiry({
-        camp_id: selected.id,
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        age: form.age ? parseInt(form.age) : null,
-        notes: form.notes,
-      });
-      toast({
-        title: "Success",
-        description: "Registration confirmed! We'll reach out with details.",
-      });
-      setSelected(null);
-      setForm({ name: "", email: "", phone: "", age: "", notes: "" });
-      await loadCamps();
-    } catch (err) {
-      const errorMsg =
-        err?.response?.data?.message ||
-        err?.response?.data?.detail ||
-        err?.message ||
-        "Failed to register";
-      toast({
-        title: "Error",
-        description: errorMsg,
-        variant: "destructive",
-      });
-    } finally {
-      setBusy(false);
-    }
+  const refreshRegistrations = async () => {
+    await loadCamps();
   };
-
-  const inputCls =
-    "w-full bg-[#F9F6F0] border border-[#1A3626]/15 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-[#1A3626]";
 
   return (
     <div>
@@ -116,56 +148,78 @@ export default function HealthCamps() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {camps.map((c) => (
               <div
-                key={c.id}
+                key={c._id || c.name}
                 className="bg-white rounded-2xl border border-[#1A3626]/10 overflow-hidden flex flex-col md:flex-row"
               >
-                <img
-                  src={c.image}
-                  alt=""
-                  className="w-full md:w-56 h-48 md:h-auto object-cover"
-                />
+                {c.image ? (
+                  <img
+                    src={c.image}
+                    alt={c.name}
+                    className="w-full md:w-56 h-48 md:h-auto object-cover"
+                  />
+                ) : (
+                  <div className="w-full md:w-56 h-48 md:h-auto flex items-center justify-center bg-[#E9E4D8] text-[#1A3626]/30 shrink-0">
+                    <Stethoscope className="w-10 h-10" />
+                  </div>
+                )}
                 <div className="p-6 flex-1 flex flex-col">
                   <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-2">
                     {c.city}
                   </div>
                   <h3 className="font-serif-display text-2xl text-[#1A3626] mb-3">
-                    {c.title}
+                    {c.name}
                   </h3>
                   <ul className="space-y-1.5 text-sm text-[#1A3626]/75 mb-4">
-                    <li className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-[#C5A059]" />{" "}
-                      {new Date(c.date).toLocaleDateString("en-IN", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-[#C5A059]" /> {c.time}
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <MapPin className="w-4 h-4 text-[#C5A059] mt-0.5" />{" "}
-                      {c.venue}
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Stethoscope className="w-4 h-4 text-[#C5A059]" />{" "}
-                      {c.doctor}
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-[#C5A059]" />{" "}
-                      {c.registered}/{c.seats} registered
-                    </li>
+                    {formatCampDate(c.date) && (
+                      <li className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-[#C5A059]" />{" "}
+                        {formatCampDate(c.date)}
+                      </li>
+                    )}
+                    {formatCampTimeRange(c) && (
+                      <li className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-[#C5A059]" />{" "}
+                        {formatCampTimeRange(c)}
+                      </li>
+                    )}
+                    {campLocationLine(c) && (
+                      <li className="flex items-start gap-2">
+                        <MapPin className="w-4 h-4 text-[#C5A059] mt-0.5" />{" "}
+                        {campLocationLine(c)}
+                      </li>
+                    )}
+                    {c.registration_required && (
+                      <li className="flex items-center gap-2">
+                        <Users className="w-4 h-4 text-[#C5A059]" />{" "}
+                        {c.registeredCount} registered
+                        {c.registration_limit
+                          ? ` / ${c.registration_limit} seats`
+                          : ""}
+                      </li>
+                    )}
                   </ul>
-                  <p className="text-sm text-[#1A3626]/70 mb-4 flex-1">
+                  <p className="text-sm text-[#1A3626]/70 mb-4 flex-1 line-clamp-3">
                     {c.description}
                   </p>
-                  <button
-                    data-testid={TID.campRegisterBtn}
-                    onClick={() => setSelected(c)}
-                    className="self-start rounded-full px-5 py-2 bg-[#1A3626] text-[#F9F6F0] text-sm font-semibold hover:bg-[#2C4C3B] transition"
-                  >
-                    Register Free
-                  </button>
+                  <div className="flex flex-wrap gap-3">
+                    {c._id && (
+                      <Link
+                        to={`/health-camps/${c._id}`}
+                        className="inline-flex items-center gap-1.5 rounded-full px-5 py-2 border border-[#1A3626]/30 text-[#1A3626] text-sm font-semibold hover:bg-[#1A3626] hover:text-[#F9F6F0] transition"
+                      >
+                        View Details <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    )}
+                    {c.registration_required && (
+                      <button
+                        data-testid={TID.campRegisterBtn}
+                        onClick={() => setSelected(c)}
+                        className="rounded-full px-5 py-2 bg-[#1A3626] text-[#F9F6F0] text-sm font-semibold hover:bg-[#2C4C3B] transition"
+                      >
+                        Register Now
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -173,78 +227,13 @@ export default function HealthCamps() {
         )}
       </section>
 
-      {/* Modal */}
+      {/* Registration modal */}
       {selected && (
-        <div
-          className="fixed inset-0 z-50 bg-[#1A3626]/60 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setSelected(null)}
-        >
-          <div
-            className="bg-white rounded-2xl w-full max-w-md p-6 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setSelected(null)}
-              className="absolute top-4 right-4 text-[#1A3626]/60 hover:text-[#1A3626]"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <h3 className="font-serif-display text-2xl text-[#1A3626] mb-1">
-              Register for camp
-            </h3>
-            <p className="text-sm text-[#1A3626]/70 mb-5">
-              {selected.title} · {selected.city}
-            </p>
-            <form onSubmit={submit} className="space-y-3">
-              <input
-                required
-                placeholder="Your name"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className={inputCls}
-              />
-              <input
-                required
-                type="email"
-                placeholder="Email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className={inputCls}
-              />
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  required
-                  placeholder="Phone"
-                  value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className={inputCls}
-                />
-                <input
-                  type="number"
-                  placeholder="Age (optional)"
-                  value={form.age}
-                  onChange={(e) => setForm({ ...form, age: e.target.value })}
-                  className={inputCls}
-                />
-              </div>
-              <textarea
-                rows="3"
-                placeholder="Any health concerns? (optional)"
-                value={form.notes}
-                onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                className={inputCls}
-              />
-              <button
-                type="submit"
-                data-testid={TID.campRegisterSubmit}
-                disabled={busy}
-                className="w-full rounded-full py-2.5 bg-[#1A3626] text-[#F9F6F0] font-semibold text-sm hover:bg-[#2C4C3B] transition disabled:opacity-50"
-              >
-                {busy ? "Submitting..." : "Confirm Registration"}
-              </button>
-            </form>
-          </div>
-        </div>
+        <HealthCampRegisterModal
+          camp={selected}
+          onClose={() => setSelected(null)}
+          onRegistered={refreshRegistrations}
+        />
       )}
     </div>
   );

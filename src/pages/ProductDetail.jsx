@@ -116,9 +116,11 @@ export default function ProductDetail() {
   return (
     <div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
-        <nav className="text-xs text-[#1A3626]/60 mb-6">
-          <Link to="/" className="hover:text-[#C5A059]">Home</Link> ·{" "}
-          <Link to="/shop" className="hover:text-[#C5A059]">Shop</Link> ·{" "}
+        <nav className="text-xs text-[#1A3626]/60 mb-6 flex flex-wrap items-center gap-x-1.5">
+          <Link to="/" className="hover:text-[#C5A059]">Home</Link>
+          <span aria-hidden="true">·</span>
+          <Link to="/shop" className="hover:text-[#C5A059]">Shop</Link>
+          <span aria-hidden="true">·</span>
           <span className="text-[#1A3626]">{product.name}</span>
         </nav>
 
@@ -155,16 +157,30 @@ export default function ProductDetail() {
                   <Star key={i} className={`w-4 h-4 ${i < Math.round(product.rating || 4.5) ? "fill-[#C5A059] text-[#C5A059]" : "text-[#1A3626]/20"}`} />
                 ))}
               </div>
-              <span className="text-sm text-[#1A3626]/70">{product.rating || 4.5} · {product.review_count || 0} reviews</span>
+              <span className="text-sm text-[#1A3626]/70 inline-flex items-center gap-x-1">
+                <span>{product.rating || 4.5}</span>
+                <span aria-hidden="true">·</span>
+                <span>{product.review_count || 0}</span>
+                <span>reviews</span>
+              </span>
             </div>
             <p className="text-[#1A3626]/80 leading-relaxed mb-6">{product.short_description}</p>
 
             <div className="flex items-baseline gap-3 mb-2">
-              <span data-testid={TID.productPrice} className="text-4xl font-serif-display text-[#1A3626]">₹{product.price}</span>
+              <span data-testid={TID.productPrice} className="text-4xl font-serif-display text-[#1A3626] inline-flex items-baseline gap-0.5">
+                <span aria-hidden="true">₹</span>
+                <span>{product.price}</span>
+              </span>
               {discount > 0 && (
                 <>
-                  <span className="text-lg text-[#1A3626]/50 line-through">₹{product.mrp}</span>
-                  <span className="text-sm font-semibold text-[#C5A059]">{discount}% OFF</span>
+                  <span className="text-lg text-[#1A3626]/50 line-through inline-flex items-baseline gap-0.5">
+                    <span aria-hidden="true">₹</span>
+                    <span>{product.mrp}</span>
+                  </span>
+                  <span className="text-sm font-semibold text-[#C5A059] inline-flex items-baseline gap-0.5">
+                    <span>{discount}</span>
+                    <span>% OFF</span>
+                  </span>
                 </>
               )}
             </div>
@@ -184,7 +200,11 @@ export default function ProductDetail() {
 
             {product.stock < 10 && product.stock > 0 && (
               <div className="mb-6 text-sm text-[#5C4033] bg-[#C5A059]/15 rounded-lg px-4 py-2 inline-block">
-                Only {product.stock} left in stock — grab yours!
+                <span className="inline-flex flex-wrap items-baseline gap-x-1">
+                  <span>Only</span>
+                  <span>{product.stock}</span>
+                  <span>left in stock — grab yours!</span>
+                </span>
               </div>
             )}
             {product.stock === 0 && <div className="mb-6 text-sm text-red-700 bg-red-50 rounded-lg px-4 py-2 inline-block">Out of stock</div>}

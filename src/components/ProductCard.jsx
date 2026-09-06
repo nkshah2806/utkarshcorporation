@@ -26,7 +26,10 @@ export default function ProductCard({ product }) {
         )}
         {discount > 0 && (
           <span className="absolute top-3 right-3 bg-[#1A3626] text-[#F9F6F0] text-[10px] font-bold px-2 py-1 rounded-full">
-            {discount}% OFF
+            <span className="inline-flex items-baseline gap-0.5">
+              <span>{discount}</span>
+              <span>% OFF</span>
+            </span>
           </span>
         )}
       </div>
@@ -41,14 +44,24 @@ export default function ProductCard({ product }) {
         <div className="flex items-center gap-1 mb-3">
           <Star className="w-3.5 h-3.5 fill-[#C5A059] text-[#C5A059]" />
           <span className="text-xs text-[#1A3626]">{product.rating || 4.5}</span>
-          <span className="text-xs text-[#1A3626]/50">({product.review_count || 0})</span>
+          <span className="text-xs text-[#1A3626]/50 inline-flex items-baseline gap-0.5">
+            <span aria-hidden="true">(</span>
+            <span>{product.review_count || 0}</span>
+            <span aria-hidden="true">)</span>
+          </span>
         </div>
 
         <div className="flex items-end justify-between gap-2">
           <div>
-            <span className="text-lg font-semibold text-[#1A3626]">₹{product.price}</span>
+            <span className="text-lg font-semibold text-[#1A3626] inline-flex items-baseline gap-0.5">
+              <span aria-hidden="true">₹</span>
+              <span>{product.price}</span>
+            </span>
             {discount > 0 && (
-              <span className="text-xs text-[#1A3626]/50 line-through ml-2">₹{product.mrp}</span>
+              <span className="text-xs text-[#1A3626]/50 line-through ml-2 inline-flex items-baseline gap-0.5">
+                <span aria-hidden="true">₹</span>
+                <span>{product.mrp}</span>
+              </span>
             )}
           </div>
         </div>

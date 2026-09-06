@@ -115,7 +115,16 @@ export default function Shop() {
         >
           <SlidersHorizontal className="w-4 h-4" /> Filters
         </button>
-        <div className="text-sm text-[#1A3626]/60">{loading ? "Loading..." : `${products.length} products`}</div>
+        <div className="text-sm text-[#1A3626]/60">
+          {loading ? (
+            <span>Loading...</span>
+          ) : (
+            <span className="inline-flex items-center gap-x-1">
+              <span>{products.length}</span>
+              <span>products</span>
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           <span className="hidden sm:inline text-xs text-[#1A3626]/60">Sort:</span>
           <select

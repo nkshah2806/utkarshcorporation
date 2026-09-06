@@ -68,8 +68,7 @@ export default function Header() {
   };
 
   const linkCls = ({ isActive }) =>
-    `text-sm font-medium transition-colors ${
-      isActive ? "text-[#1A3626]" : "text-[#1A3626]/70 hover:text-[#1A3626]"
+    `text-sm font-medium transition-colors ${isActive ? "text-[#1A3626]" : "text-[#1A3626]/70 hover:text-[#1A3626]"
     }`;
 
   return (
@@ -147,7 +146,12 @@ export default function Header() {
                       <img src={s.images?.[0]} alt="" className="w-10 h-10 rounded object-cover" />
                       <div className="flex-1 min-w-0">
                         <div className="text-sm text-[#1A3626] truncate">{s.name}</div>
-                        <div className="text-xs text-[#5C4033]">₹{s.price}</div>
+                        <div className="text-xs text-[#5C4033]">
+                          <span className="inline-flex items-baseline gap-0.5">
+                            <span aria-hidden="true">₹</span>
+                            <span>{s.price}</span>
+                          </span>
+                        </div>
                       </div>
                     </Link>
                   ))}

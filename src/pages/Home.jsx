@@ -114,10 +114,9 @@ export default function Home() {
               key={c.id}
               data-testid={TID.categoryCard}
               to={`/shop?category=${c.slug}`}
-              className={`group relative rounded-2xl overflow-hidden bg-white border border-[#1A3626]/10 hover:shadow-lg transition-all ${
-                idx === 0 ? "lg:col-span-2 lg:row-span-2 aspect-square lg:aspect-auto" :
-                idx === 3 ? "lg:col-span-2" : ""
-              }`}
+              className={`group relative rounded-2xl overflow-hidden bg-white border border-[#1A3626]/10 hover:shadow-lg transition-all ${idx === 0 ? "lg:col-span-2 lg:row-span-2 aspect-square lg:aspect-auto" :
+                  idx === 3 ? "lg:col-span-2" : ""
+                }`}
             >
               <div className="absolute inset-0">
                 <img src={c.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -212,7 +211,11 @@ export default function Home() {
           {testimonials.map((t, i) => (
             <div key={t.id || i} data-testid={TID.testimonial} className="bg-white rounded-2xl p-8 border border-[#1A3626]/10 relative">
               <Quote className="w-8 h-8 text-[#C5A059]/40 mb-4" />
-              <p className="text-[#1A3626]/85 leading-relaxed mb-6">"{t.body}"</p>
+              <p className="text-[#1A3626]/85 leading-relaxed mb-6">
+                <span aria-hidden="true">"</span>
+                <span>{t.body}</span>
+                <span aria-hidden="true">"</span>
+              </p>
               <div className="flex items-center justify-between">
                 <div className="text-sm font-semibold text-[#1A3626]">{t.name}</div>
                 <div className="flex gap-0.5">

@@ -110,7 +110,11 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 pt-6 border-t border-[#F9F6F0]/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#F9F6F0]/50">
-          <div>© {new Date().getFullYear()} {footer?.copyrightText || "Utkarsh Corporation. All rights reserved."}</div>
+          <div className="inline-flex flex-wrap items-center gap-x-1">
+            <span aria-hidden="true">©</span>
+            <span>{new Date().getFullYear()}</span>
+            <span>{footer?.copyrightText || "Utkarsh Corporation. All rights reserved."}</span>
+          </div>
           <div className="flex gap-4">
             <span>GMP Certified</span>
             <span>·</span>

@@ -57,6 +57,9 @@ export const TID = {
   registerPhone: "register-phone-input",
   registerPassword: "register-password-input",
   registerSubmit: "register-submit-button",
+  registerConsent: "register-consent-input",
+  registerTermsLink: "register-terms-link",
+  registerPrivacyLink: "register-privacy-link",
   logoutBtn: "logout-button",
 
   // Forms

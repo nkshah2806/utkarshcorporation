@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "@/lib/api";
 import { formatApiError } from "@/lib/api";
 import { toast } from "sonner";
@@ -9,11 +9,16 @@ import { Leaf } from "lucide-react";
 export default function Register() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ fullName: "", mobileNumber: "", email: "", address: "", city: "", state: "", pinCode: "", password: "" });
+  const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState(false);
   const upd = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   const submit = async (e) => {
     e.preventDefault();
+    if (!consent) {
+      toast.error("Please accept the Terms and Conditions and Privacy Policy to continue.");
+      return;
+    }
     setBusy(true);
     try {
       const { data } = await api.post("/members/register", form);
@@ -52,6 +57,40 @@ export default function Register() {
           </div>
           <input required placeholder="Pin Code" value={form.pinCode} onChange={upd("pinCode")} className={inputCls} />
           <input data-testid={TID.registerPassword} type="password" required minLength="8" placeholder="Password (min 8 chars)" value={form.password} onChange={upd("password")} className={inputCls} />
+
+          {/* Registration consent — unchecked by default; submit is blocked until accepted */}
+          <div className="flex items-start gap-2.5 text-sm text-[#1A3626]/80">
+            <input
+              data-testid={TID.registerConsent}
+              id="register-consent"
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#1A3626]/25 accent-[#1A3626] cursor-pointer"
+            />
+            <label htmlFor="register-consent" className="leading-relaxed cursor-pointer">
+              <span>
+                By registering, I agree to the{" "}
+                <Link
+                  data-testid={TID.registerTermsLink}
+                  to="/policies/terms"
+                  className="text-[#C5A059] font-semibold hover:underline cursor-pointer"
+                >
+                  Terms and Conditions
+                </Link>{" "}
+                and{" "}
+                <Link
+                  data-testid={TID.registerPrivacyLink}
+                  to="/policies/privacy"
+                  className="text-[#C5A059] font-semibold hover:underline cursor-pointer"
+                >
+                  Privacy Policy
+                </Link>
+                .
+              </span>
+            </label>
+          </div>
+
           <button data-testid={TID.registerSubmit} disabled={busy} className="w-full rounded-full py-3 bg-[#1A3626] text-[#F9F6F0] font-semibold text-sm hover:bg-[#2C4C3B] transition disabled:opacity-50">
             {busy ? "Creating..." : "Create Account"}
           </button>

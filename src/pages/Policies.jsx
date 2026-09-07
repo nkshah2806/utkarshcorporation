@@ -1,5 +1,15 @@
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import {
+  legalContentService,
+  LEGAL_CONTENT_TYPES,
+} from "@/services/legalContentService";
 
+// ---------------------------------------------------------------------------
+// Static policy pages (no backend-managed content exists for these).
+// Return & Shipping policies are intentionally kept local.
+// ---------------------------------------------------------------------------
 const CONTENT = {
   return: {
     title: "Return & Refund Policy",
@@ -37,47 +47,94 @@ Once dispatched, you'll receive a tracking number via SMS/email. You can also vi
 **Cash on Delivery**
 Available across India. No extra charges.`,
   },
-  terms: {
-    title: "Terms & Conditions",
-    body: `Welcome to Utkarsh Corporation. By using this website you agree to the following terms.
-
-**Product use**
-Our products are Ayurvedic wellness formulations. They are not intended to diagnose, treat, cure, or prevent any disease. Please consult a qualified physician before use, especially if pregnant, nursing, or on medication.
-
-**Orders and payments**
-All prices are in INR and inclusive of GST. We reserve the right to cancel any order that fails fraud checks.
-
-**Intellectual property**
-All content on this site — including images, product descriptions, and brand marks — belongs to Utkarsh Corporation.
-
-**Governing law**
-These terms are governed by the laws of India. Jurisdiction: Nashik, Maharashtra.`,
-  },
-  privacy: {
-    title: "Privacy Policy",
-    body: `Your privacy is important to us.
-
-**What we collect**
-• Name, email, phone, delivery address at checkout.
-• Order history, wishlist, product reviews.
-• Basic browsing analytics (cookies) to improve the site.
-
-**How we use it**
-Only to process orders, deliver products, provide customer support, and send optional wellness updates (with your consent).
-
-**What we don't do**
-We never sell your data to third parties. Payment details are handled by Razorpay and never stored on our servers.
-
-**Your rights**
-Email us to access, update, or delete your data at any time.`,
-  },
 };
+
+// Terms & Conditions and Privacy Policy are served from the backend so the
+// site always shows the currently-active documents configured by the admin.
+const SLUG_TO_TYPE = {
+  terms: LEGAL_CONTENT_TYPES.TERMS_CONDITIONS,
+  privacy: LEGAL_CONTENT_TYPES.PRIVACY_POLICY,
+};
+
+/**
+ * Renders policy body text. Blocks that are exactly a `**Heading**` line are
+ * turned into headings; everything else is rendered as a paragraph.
+ */
+function PolicyBody({ body }) {
+  return String(body || "")
+    .split("\n\n")
+    .map((para, i) => {
+      const heading = para.match(/^\*\*(.+)\*\*$/);
+      if (heading) {
+        return (
+          <h2
+            key={i}
+            className="font-bold text-[#1A3626] text-lg mt-6 mb-2 first:mt-0"
+          >
+            <span>{heading[1]}</span>
+          </h2>
+        );
+      }
+      return (
+        <p
+          key={i}
+          className="text-[#1A3626]/85 leading-relaxed mb-4 whitespace-pre-line"
+        >
+          <span>{para}</span>
+        </p>
+      );
+    });
+}
+
+function PolicyLinks() {
+  return (
+    <div className="mt-8 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+      <Link to="/policies/return" className="text-[#1A3626]/70 hover:text-[#C5A059]">Returns</Link>
+      <Link to="/policies/shipping" className="text-[#1A3626]/70 hover:text-[#C5A059]">Shipping</Link>
+      <Link to="/policies/terms" className="text-[#1A3626]/70 hover:text-[#C5A059]">Terms</Link>
+      <Link to="/policies/privacy" className="text-[#1A3626]/70 hover:text-[#C5A059]">Privacy</Link>
+    </div>
+  );
+}
 
 export default function Policies() {
   const { slug } = useParams();
-  const item = CONTENT[slug];
+  const liveType = SLUG_TO_TYPE[slug];
+  const isLive = Boolean(liveType);
+  const staticItem = CONTENT[slug];
 
-  if (!item) {
+  const [live, setLive] = useState(null);
+  const [loadState, setLoadState] = useState(isLive ? "loading" : "ready"); // loading | ready | error
+  const [errorMsg, setErrorMsg] = useState("");
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    if (!isLive) return;
+    let cancelled = false;
+    setLoadState("loading");
+    setLive(null);
+    setErrorMsg("");
+    (async () => {
+      try {
+        const active = await legalContentService.getActiveContent(liveType);
+        if (cancelled) return;
+        setLive(active);
+        setLoadState("ready");
+      } catch (err) {
+        if (cancelled) return;
+        setErrorMsg(err?.message || "Unable to load this policy right now.");
+        setLoadState("error");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [liveType, isLive, attempt]);
+
+  // -------------------------------------------------------------------------
+  // Unknown slug
+  // -------------------------------------------------------------------------
+  if (!isLive && !staticItem) {
     return (
       <div className="max-w-3xl mx-auto p-16 text-center">
         <h1 className="font-serif-display text-3xl text-[#1A3626] mb-4">Policy not found</h1>
@@ -86,21 +143,77 @@ export default function Policies() {
     );
   }
 
+  // -------------------------------------------------------------------------
+  // Backend-driven pages (terms / privacy)
+  // -------------------------------------------------------------------------
+  if (isLive) {
+    let body = null;
+
+    if (loadState === "loading") {
+      body = (
+        <div className="flex items-center justify-center py-16 text-[#1A3626]/70">
+          <Loader2 className="w-5 h-5 animate-spin mr-2" />
+          <span>Loading latest policy…</span>
+        </div>
+      );
+    } else if (loadState === "error") {
+      body = (
+        <div className="text-center py-14">
+          <div className="text-[#1A3626]/80 text-sm mb-4">{errorMsg}</div>
+          <button
+            type="button"
+            onClick={() => setAttempt((a) => a + 1)}
+            className="rounded-full px-5 py-2 bg-[#1A3626] text-[#F9F6F0] text-sm font-semibold hover:bg-[#2C4C3B] transition"
+          >
+            Try again
+          </button>
+        </div>
+      );
+    } else if (!live) {
+      body = (
+        <div className="text-center py-14">
+          <div className="font-serif-display text-xl text-[#1A3626] mb-2">
+            This policy has not been published yet
+          </div>
+          <p className="text-sm text-[#1A3626]/70 max-w-md mx-auto">
+            Please check back soon. Our team updates this page as soon as new
+            content is made available.
+          </p>
+        </div>
+      );
+    } else {
+      body = (
+        <div className="bg-white rounded-2xl border border-[#1A3626]/10 p-8">
+          <PolicyBody body={live.content} />
+        </div>
+      );
+    }
+
+    return (
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+        <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">Policies</div>
+        <h1 className="font-serif-display text-4xl sm:text-5xl text-[#1A3626] mb-8">
+          <span>{live && loadState === "ready" ? live.title : slug === "privacy" ? "Privacy Policy" : "Terms & Conditions"}</span>
+        </h1>
+        {body}
+        <PolicyLinks />
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------------------------
+  // Static pages (return / shipping)
+  // -------------------------------------------------------------------------
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
       <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">Policies</div>
-      <h1 className="font-serif-display text-4xl sm:text-5xl text-[#1A3626] mb-8">{item.title}</h1>
+      <h1 className="font-serif-display text-4xl sm:text-5xl text-[#1A3626] mb-8">
+        <span>{staticItem.title}</span>
+      </h1>
       <div className="bg-white rounded-2xl border border-[#1A3626]/10 p-8">
-        {item.body.split("\n\n").map((para, i) => (
-          <p key={i} className="text-[#1A3626]/85 leading-relaxed mb-4 whitespace-pre-line">{para}</p>
-        ))}
+        <PolicyBody body={staticItem.body} />
       </div>
-      <div className="mt-8 flex gap-4 text-sm">
-        <Link to="/policies/return" className="text-[#1A3626]/70 hover:text-[#C5A059]">Returns</Link>
-        <Link to="/policies/shipping" className="text-[#1A3626]/70 hover:text-[#C5A059]">Shipping</Link>
-        <Link to="/policies/terms" className="text-[#1A3626]/70 hover:text-[#C5A059]">Terms</Link>
-        <Link to="/policies/privacy" className="text-[#1A3626]/70 hover:text-[#C5A059]">Privacy</Link>
-      </div>
+      <PolicyLinks />
     </div>
   );
 }

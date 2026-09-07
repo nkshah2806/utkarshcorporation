@@ -17,6 +17,7 @@ import Register from "@/pages/Register";
 import RegisterSuccess from "@/pages/RegisterSuccess";
 import Policies from "@/pages/Policies";
 import Layout from "./components/Layout";
+import ScrollToTop from "@/components/ScrollToTop";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
       <AuthProvider>
         <ContentProvider>
           <BrowserRouter>
+            <ScrollToTop />
             <Toaster position="top-right" richColors />
             <Routes>
               <Route element={<Layout />}>

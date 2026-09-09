@@ -1,5 +1,6 @@
 import { Leaf, ShieldCheck, HeartHandshake, Sparkles } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
+import { mediaSrc } from "@/lib/api";
 
 const ICON_MAP = { Leaf, ShieldCheck, HeartHandshake, Sparkles };
 
@@ -12,7 +13,7 @@ export default function About() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src={about?.heroImage || mission?.image} alt="" className="w-full h-full object-cover" />
+          <img src={mediaSrc(about?.heroImage || mission?.image)} alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 hero-overlay" />
         </div>
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-40 text-[#F9F6F0] text-center">
@@ -68,7 +69,7 @@ export default function About() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="rounded-2xl overflow-hidden aspect-[5/4]">
-            <img src={about?.heroImage || mission?.image} alt="" className="w-full h-full object-cover" />
+            <img src={mediaSrc(about?.heroImage || mission?.image)} alt="" className="w-full h-full object-cover" />
           </div>
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">Certifications</div>

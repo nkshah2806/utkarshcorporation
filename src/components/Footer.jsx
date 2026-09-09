@@ -70,6 +70,7 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li><Link to="/about" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">About Us</Link></li>
               <li><Link to="/health-camps" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Health Camps</Link></li>
+              <li><Link to="/gallery" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Gallery</Link></li>
               <li><Link to="/distributor" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Become a Distributor</Link></li>
               <li><Link to="/contact" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Contact</Link></li>
               <li><Link to="/policies/shipping" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Shipping Policy</Link></li>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { productsService } from "@/services/productsService";
+import { mediaSrc } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import ProductCard from "@/components/ProductCard";
 import { useAuth } from "@/context/AuthContext";
@@ -128,7 +129,7 @@ export default function ProductDetail() {
           {/* Gallery */}
           <div>
             <div className="aspect-square bg-white rounded-2xl overflow-hidden border border-[#1A3626]/10 mb-4">
-              <img src={product.images?.[activeImg]} alt={product.name} className="w-full h-full object-cover" />
+              <img src={mediaSrc(product.images?.[activeImg])} alt={product.name} className="w-full h-full object-cover" />
             </div>
             <div className="flex gap-3">
               {product.images?.map((img, i) => (
@@ -137,7 +138,7 @@ export default function ProductDetail() {
                   onClick={() => setActiveImg(i)}
                   className={`w-20 h-20 rounded-xl overflow-hidden border-2 ${activeImg === i ? "border-[#1A3626]" : "border-transparent"}`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={mediaSrc(img)} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

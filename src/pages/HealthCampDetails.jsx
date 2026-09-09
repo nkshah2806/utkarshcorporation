@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { contactService } from "@/services/contactService";
+import { mediaSrc } from "@/lib/api";
 import {
     ArrowLeft,
     Calendar,
@@ -124,7 +125,7 @@ export default function HealthCampDetails() {
                     <div className="lg:col-span-2 space-y-8">
                         {camp.image && (
                             <img
-                                src={camp.image}
+                                src={mediaSrc(camp.image)}
                                 alt={camp.name}
                                 className="w-full h-72 sm:h-96 object-cover rounded-2xl"
                             />

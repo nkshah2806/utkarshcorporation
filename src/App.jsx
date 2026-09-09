@@ -11,6 +11,7 @@ import ProductDetail from "@/pages/ProductDetail";
 import About from "@/pages/About";
 import HealthCamps from "@/pages/HealthCamps";
 import HealthCampDetails from "@/pages/HealthCampDetails";
+import Gallery from "@/pages/Gallery";
 import Distributor from "@/pages/Distributor";
 import Contact from "@/pages/Contact";
 import Register from "@/pages/Register";
@@ -35,6 +36,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/health-camps" element={<HealthCamps />} />
                 <Route path="/health-camps/:campId" element={<HealthCampDetails />} />
+                <Route path="/gallery" element={<Gallery />} />
                 <Route path="/distributor" element={<Distributor />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/register" element={<Register />} />

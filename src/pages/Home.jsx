@@ -6,6 +6,7 @@ import ProductCard from "@/components/ProductCard";
 import { ArrowRight, ShieldCheck, Leaf, Truck, HeartHandshake, Sparkles, Quote } from "lucide-react";
 import { TID } from "@/constants/testIds";
 import { useContent } from "@/context/ContentContext";
+import { mediaSrc } from "@/lib/api";
 
 const ICON_MAP = {
   ShieldCheck,
@@ -46,7 +47,7 @@ export default function Home() {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src={hero.bgImage} alt="Hero Banner" className="w-full h-full object-cover" />
+          <img src={mediaSrc(hero.bgImage)} alt="Hero Banner" className="w-full h-full object-cover" />
           <div className="absolute inset-0 hero-overlay" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-36 lg:py-44">
@@ -115,11 +116,11 @@ export default function Home() {
               data-testid={TID.categoryCard}
               to={`/shop?category=${c.slug}`}
               className={`group relative rounded-2xl overflow-hidden bg-white border border-[#1A3626]/10 hover:shadow-lg transition-all ${idx === 0 ? "lg:col-span-2 lg:row-span-2 aspect-square lg:aspect-auto" :
-                  idx === 3 ? "lg:col-span-2" : ""
+                idx === 3 ? "lg:col-span-2" : ""
                 }`}
             >
               <div className="absolute inset-0">
-                <img src={c.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <img src={mediaSrc(c.image)} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A3626] via-[#1A3626]/75 to-[#1A3626]/20" />
               </div>
               <div className="relative h-full min-h-[180px] p-5 flex items-end">
@@ -152,7 +153,7 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="relative rounded-2xl overflow-hidden aspect-[4/5]">
-            <img src={mission.image} alt="Herbs preparation" className="w-full h-full object-cover" />
+            <img src={mediaSrc(mission.image)} alt="Herbs preparation" className="w-full h-full object-cover" />
           </div>
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">{mission.badge}</div>

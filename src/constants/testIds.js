@@ -5,6 +5,7 @@ export const TID = {
   navHome: "nav-home",
   navShop: "nav-shop",
   navCamps: "nav-camps",
+  navGallery: "nav-gallery",
   navDistributor: "nav-distributor",
   navAbout: "nav-about",
   navContact: "nav-contact",
@@ -65,6 +66,17 @@ export const TID = {
   // Forms
   distributorSubmit: "distributor-submit-button",
   campRegisterBtn: "camp-register-button",
+
+  // Gallery
+  galleryTab: "gallery-tab",
+  galleryPhotoCard: "gallery-photo-card",
+  galleryVideoCard: "gallery-video-card",
+  galleryLightbox: "gallery-lightbox",
+  galleryLightboxClose: "gallery-lightbox-close",
+  galleryLightboxPrev: "gallery-lightbox-prev",
+  galleryLightboxNext: "gallery-lightbox-next",
+  galleryVideoModal: "gallery-video-modal",
+  galleryVideoModalClose: "gallery-video-modal-close",
   campRegisterSubmit: "camp-register-submit-button",
   contactSubmit: "contact-submit-button",
 

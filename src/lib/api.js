@@ -1,7 +1,18 @@
 import axios from "axios";
 
-const BACKEND_URL = import.meta.env.VITE_API_URL || "https://uttkarsh-backend.onrender.com";
+export const BACKEND_URL = import.meta.env.VITE_API_URL || "https://uttkarsh-backend.onrender.com";
 export const API = `${BACKEND_URL}/api`;
+
+/**
+ * Resolve a server-relative media reference (`/uploads/<folder>/<file>`) to a
+ * full URL the browser can load. Legacy external URLs pass through untouched.
+ */
+export function mediaSrc(value) {
+  if (!value) return "";
+  if (/^https?:\/\//.test(value)) return value;
+  if (value.startsWith("/uploads/")) return `${BACKEND_URL}${value}`;
+  return value;
+}
 
 const api = axios.create({ baseURL: API });
 

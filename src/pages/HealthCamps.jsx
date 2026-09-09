@@ -5,6 +5,7 @@ import { Calendar, MapPin, Clock, Users, Stethoscope, ArrowRight } from "lucide-
 import { TID } from "@/constants/testIds";
 import { useContent } from "@/context/ContentContext";
 import HealthCampRegisterModal from "@/components/HealthCampRegisterModal";
+import { mediaSrc } from "@/lib/api";
 
 /**
  * Map a camp document (new HealthCamp model) or a legacy CMS fallback item to a
@@ -153,7 +154,7 @@ export default function HealthCamps() {
               >
                 {c.image ? (
                   <img
-                    src={c.image}
+                    src={mediaSrc(c.image)}
                     alt={c.name}
                     className="w-full md:w-56 h-48 md:h-auto object-cover"
                   />

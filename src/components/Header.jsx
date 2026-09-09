@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
 import { TID } from "@/constants/testIds";
+import { mediaSrc } from "@/lib/api";
 import api from "@/lib/api";
 
 export default function Header() {
@@ -107,6 +108,9 @@ export default function Header() {
             <Link to="/health-camps" className={linkCls} data-testid={TID.navCamps}>
               Health Camps
             </Link>
+            <Link to="/gallery" className={linkCls} data-testid={TID.navGallery}>
+              Gallery
+            </Link>
             <Link to="/distributor" className={linkCls} data-testid={TID.navDistributor}>
               Distributor
             </Link>
@@ -143,7 +147,7 @@ export default function Header() {
                       }}
                       className="flex items-center gap-3 px-3 py-2 hover:bg-[#F9F6F0] transition"
                     >
-                      <img src={s.images?.[0]} alt="" className="w-10 h-10 rounded object-cover" />
+                      <img src={mediaSrc(s.images?.[0])} alt="" className="w-10 h-10 rounded object-cover" />
                       <div className="flex-1 min-w-0">
                         <div className="text-sm text-[#1A3626] truncate">{s.name}</div>
                         <div className="text-xs text-[#5C4033]">
@@ -254,6 +258,9 @@ export default function Header() {
               </Link>
               <Link to="/health-camps" className={linkCls} onClick={() => setMenuOpen(false)}>
                 Health Camps
+              </Link>
+              <Link to="/gallery" className={linkCls} onClick={() => setMenuOpen(false)}>
+                Gallery
               </Link>
               <Link to="/distributor" className={linkCls} onClick={() => setMenuOpen(false)}>
                 Distributor

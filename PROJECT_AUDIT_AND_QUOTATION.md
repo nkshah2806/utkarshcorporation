@@ -1,13 +1,15 @@
 # Complete Project Audit, Scope Analysis & Client Cost Estimation
 ## Utkarsh Corporation — 4-App Monorepo
 
-**Document Type:** Final Audit & Client Quotation
-**Date:** 25-Aug-2026
+**Document Type:** Final Audit & Client Quotation (Updated)
+**Date:** 07-Sep-2026 (v2.0 — reflects modules delivered since v1.0 of 25-Aug-2026)
 **Scope Covered:** 100% of all source files across all 4 applications + documentation (no code was modified during this analysis)
 
 ---
 
 # PART 1 — COMPLETE PROJECT AUDIT
+
+> **Reading note (v2.0):** The audit tables in Part 1 reflect the **original v1.0 audit (25-Aug-2026)**. Since then, the modules listed in §1.2 (Health Camps, Legal Content, Medicines, Parameter Categories, Scan Pricing) have been **built and mounted** in the backend and frontends. Where a Part 1 finding conflicts with §1.2, **§1.2 reflects the current live state** and that item is excluded from pricing.
 
 ## 1. Project Overview
 
@@ -24,6 +26,21 @@ The workspace contains **4 applications** in a single monorepo:
 - **Quantum Resonance Health Analysis** is the flagship workflow: a patient registers → a visit is created → quantum machine parameters are entered (manual or CSV) → an analysis engine auto-generates health findings → a consultant reviews/selects content → a PDF-style report is produced and shared with the patient (currently via browser print + WhatsApp text link).
 - The **root frontend** sells Ayurvedic products, promotes health camps, and collects distributor inquiries.
 - **CMS** allows the client to edit all marketing content (hero, mission, testimonials, products, categories, policies, etc.) without code changes.
+
+### 1.2 Modules Delivered Since v1.0 (verified against live code on 07-Sep-2026)
+
+> **Important:** These modules are **already built and mounted** in the backend ([`server.js`](Uttkarsh-Backend/server.js:48)) and the Admin/Member frontends. They are **not** re-quoted — the pricing in Part 4 covers only the **remaining** scope.
+
+| Module | Backend Route (mounted) | Admin UI | Status |
+|---|---|---|---|
+| Health Camps (list + registration) | `/api/health-camps` | [`HealthCampsCMS.jsx`](Uttkarsh-Admin/src/pages/FrontendCMS/HealthCampsCMS.jsx) + details | ✅ Live |
+| Legal Content (Policies, Terms, Privacy) | `/api/v1/legal-content` | [`LegalContentManagement.jsx`](Uttkarsh-Admin/src/pages/FrontendCMS/LegalContentManagement.jsx) | ✅ Live |
+| Medicines Management | `/api/v1/admin/medicines` | [`MedicineManagement.jsx`](Uttkarsh-Admin/src/pages/HealthAnalysis/MedicineManagement.jsx) | ✅ Live |
+| Parameter Categories | `/api/v1/admin/parameter-categories` | [`CategoryManagement.jsx`](Uttkarsh-Admin/src/pages/HealthAnalysis/CategoryManagement.jsx) | ✅ Live |
+| Scan Pricing | `/api/v1/scan-pricing` | [`ScanPricingManagement.jsx`](Uttkarsh-Admin/src/pages/HealthAnalysis/ScanPricingManagement.jsx) | ✅ Live |
+| Patient Details enhancements + report improvements | `/api/v1/patients`, `/api/v1/visits` | [`PatientDetails.jsx`](Uttkarsh-Admin/src/pages/HealthAnalysis/PatientDetails.jsx) | ✅ Live |
+
+> ⚠️ **Still open (sold in this quotation):** e-commerce/checkout/orders API, contact/distributor/newsletter APIs, real PDF generation, WhatsApp file share, security hardening (secrets in [`environment.json`](Uttkarsh-Backend/config/environment.json)), RBAC on unprotected routes, live dashboards, and the franchise module (routes exist in [`franchiseRoutes.js`](Uttkarsh-Backend/routes/franchiseRoutes.js) but are **not mounted**).
 
 ---
 
@@ -477,42 +494,44 @@ Assumes **1 senior full-stack developer** (8 hrs/day). With a second developer, 
 
 ## 4.2 Three Pricing Options
 
-### Option 1 — BUDGET: ₹4,50,000 (fix what's broken)
-- **Scope:** All of A (Bug Fixes) + core of E1–E4 + F1–F2 + H1–H2 (basic tests). Excludes redesigns, new features, real PDF.
-- **Hours:** ≈ 400 (incl. 10% contingency)
-- **Timeline:** ~8 weeks
+### Option 1 — BUDGET: ₹5,00,000 (fix what's broken)
+- **Scope:** Remaining bug fixes (orders/checkout API, Order Success crash, contact/distributor/newsletter endpoints, wishlist, search-suggest) + security basics (env-only secrets, RBAC on key routes) + basic tests. Excludes redesigns, new features, real PDF.
+- **Hours:** ≈ 450 (incl. 10% contingency)
+- **Timeline:** ~8–9 weeks
 - **Deliverables:** Working checkout (COD), working contact/distributor/camps/newsletter, wishlist fixed, security hardening, orders API. Checkout still "print-based" PDF; no Razorpay, no redesigns.
 - **Milestones:** 30 / 30 / 25 / 15
 
-### Option 2 — RECOMMENDED: ₹8,00,000 (stabilize + modernize) ✅ **Most suitable**
-- **Scope:** All of Part 2 (A + B + C + E + F + G + H + I) plus **D1, D2, D3, D5, D6, D11**. Excludes optional D7–D10 (notifications, franchise module, Client Management, Report tools) unless the client confirms them as in-scope.
-- **Hours:** ≈ 750 (incl. 10% contingency)
+### Option 2 — RECOMMENDED: ₹8,50,000 (stabilize + modernize) ✅ **Most suitable**
+- **Scope:** Remaining scope of Part 2 (A + B + C + E + F + G + H + I) **plus** **D1, D2, D3, D5, D6, D11** — applied only to what is **not yet delivered** (see §1.2). Excludes optional D7–D10 (notifications, franchise module, Client Management, Report tools) unless the client confirms them as in-scope.
+- **Hours:** ≈ 780 (incl. 10% contingency)
 - **Timeline:** ~110 working days (1 dev) / ~60 days (2 devs)
-- **Deliverables:** Real Razorpay, order management, real PDF, WhatsApp file share, redesigned dashboards, all forms/leads live, hardened security, CI tests, deployment + monitoring.
+- **Deliverables:** Real Razorpay, order management, real PDF, WhatsApp file share, redesigned dashboards, all forms/leads live, hardened security, CI tests, deployment + monitoring — **on top of the already-delivered modules** (Health Camps, Legal Content, Medicines, Parameter Categories, Scan Pricing).
 - **Milestones:** 20 / 25 / 25 / 20 / 10
 
-### Option 3 — PREMIUM: ₹11,50,000 (full platform transformation)
-- **Scope:** Everything in Recommended **plus** D7 (notifications), D8 (franchise module), D9 (Client Management), D10 (Report Designer/Entry), extended multi-browser/device QA, 2 rounds of post-launch polish, priority support for 6 months.
-- **Hours:** ≈ 1,000 (incl. 10% contingency)
+### Option 3 — PREMIUM: ₹12,00,000 (full platform transformation)
+- **Scope:** Everything in Recommended **plus** D7 (notifications), D8 (franchise module — routes exist, need mounting), D9 (Client Management), D10 (Report Designer/Entry), extended multi-browser/device QA, 2 rounds of post-launch polish, priority support for 6 months.
+- **Hours:** ≈ 1,050 (incl. 10% contingency)
 - **Timeline:** ~130 working days (1 dev) / ~70 days (2 devs)
 - **Milestones:** 20 / 25 / 25 / 20 / 10
 
 > **Note on out-of-scope items that incur extra cost:** WhatsApp Business API account approval & per-message pricing (platform fees), Razorpay gateway setup fees/charges, server/DB hosting (Vercel/Render/MongoDB Atlas), third-party SMS/email gateways, and any new design assets (images, illustrations) beyond what exists.
 
-## 4.3 Hour-Cost Reconciliation (Recommended)
+## 4.3 Hour-Cost Reconciliation (Recommended — ₹8,50,000)
+
+> Applies to the **remaining scope only** (§1.2). Already-delivered modules are excluded.
 
 | Category | Hrs | Rate (₹) | Amount (₹) |
 |---|---|---|---|
-| Frontend | 300 | 1,000 | 3,00,000 |
-| Backend/API | 170 | 1,100 | 1,87,000 |
-| Database | 30 | 900 | 27,000 |
+| Frontend | 290 | 1,050 | 3,04,500 |
+| Backend/API | 175 | 1,100 | 1,92,500 |
+| Database | 28 | 900 | 25,200 |
 | UI/UX | 80 | 1,000 | 80,000 |
 | PDF/Report | 58 | 1,000 | 58,000 |
-| QA | 68 | 700 | 47,600 |
-| DevOps | 30 | 900 | 27,000 |
-| Subtotal | 736 | | 7,26,600 |
-| Contingency 10% | 74 | | 72,660 |
-| **Total** | **810** | | **≈ ₹7,99,260 → ₹8,00,000** |
+| QA | 62 | 700 | 43,400 |
+| DevOps | 28 | 900 | 25,200 |
+| Subtotal | 721 | | 7,28,800 |
+| Contingency 10% | 72 | | 72,880 |
+| **Total** | **793** | | **≈ ₹8,01,680 → ₹8,50,000** (rounded up with profit margin) |
 
 ---
 
@@ -523,10 +542,10 @@ Assumes **1 senior full-stack developer** (8 hrs/day). With a second developer, 
 # UTKARSH CORPORATION — PROJECT QUOTATION
 
 **Project:** End-to-End Stabilization & Modernization of the Utkarsh Platform
-**Version:** v1.0 · **Date:** 25-Aug-2026 · **Quotation Ref:** UC-2026-08-25
+**Version:** v2.0 · **Date:** 07-Sep-2026 · **Quotation Ref:** UC-2026-09-07
 
 ## 1. Executive Summary
-We have completed a 100% source-level audit of all 4 applications (public website, admin portal, member portal, backend API). The Quantum Health Analysis module (patient → visit → data entry → analysis → report review → PDF/WhatsApp) is **fundamentally working and is the strongest asset**. However, the **entire public e-commerce pipeline is non-functional** (checkout 404s, order pages crash), all public lead forms (contact, distributor, health camps, newsletter) return 404s, and security requires hardening (committed credentials, client-side-only admin checks, unprotected routes). This quotation proposes to fix, modernize, and secure the platform in 8 phases.
+We have completed a 100% source-level audit of all 4 applications (public website, admin portal, member portal, backend API). The Quantum Health Analysis module (patient → visit → data entry → analysis → report review → PDF/WhatsApp) is **fundamentally working and is the strongest asset**, and significant modules have been **already delivered since the v1.0 quotation**: Health Camps (list + registration), Legal Content management, Medicines Management, Parameter Categories, Scan Pricing, and Patient Details/report enhancements — all mounted and live in the backend ([`server.js`](Uttkarsh-Backend/server.js:48)). What remains is the **entire public e-commerce pipeline** (checkout 404s, order pages crash), the public lead forms (contact, distributor, newsletter) that still return 404s, real PDF/WhatsApp file sharing, and security hardening (committed credentials, client-side-only admin checks, unprotected routes). This quotation covers that remaining scope in 8 phases.
 
 ## 2. Scope of Work (what is included)
 - **A. Bug Fixes (162 hrs):** Orders/checkout API, Order Success crash fix, contact/distributor/camps/newsletter, wishlist, search-suggest, franchise route mount, dashboards, patient_code race, dead code cleanup.
@@ -540,9 +559,17 @@ We have completed a 100% source-level audit of all 4 applications (public websit
 - **I. Deployment (34 hrs):** CI/CD, secrets management, Sentry monitoring, go-live checklist.
 
 ## 3. Modules Delivered
-1. Public marketing site — fully functional commerce (Razorpay), working leads, modern auth.
-2. Admin portal — real-time dashboards, order management, franchise (as scoped), CMS, master data, disclaimers.
-3. Member portal — working dashboard, profile, full Quantum workflow.
+**Already delivered (excluded from pricing — see §1.2):**
+1. Health Camps — list + registration, live at `/api/health-camps` with Admin CMS.
+2. Legal Content Management — policies/terms/privacy CMS (`/api/v1/legal-content`).
+3. Medicines Management, Parameter Categories, Scan Pricing — live admin modules.
+4. Patient Details + report enhancements — live in Admin/Member.
+5. Quantum Health Analysis workflow — patient → visit → data entry → analysis → report review (fundamentally working).
+
+**To be delivered under this quotation:**
+1. Public marketing site — functional commerce (Razorpay), working leads, modern auth.
+2. Admin portal — real-time dashboards, order management, CMS polish, master data, disclaimers.
+3. Member portal — working dashboard, profile, full Quantum workflow completion.
 4. Backend — hardened, RBAC-protected, complete API surface with tests.
 5. PDF & WhatsApp — true PDF reports shared as actual files.
 
@@ -567,26 +594,26 @@ We have completed a 100% source-level audit of all 4 applications (public websit
 | Orphan pages & dead code | Clean, routed, maintainable app |
 
 ## 6. Hours & Timeline
-- **Estimated effort:** ~750 hours (incl. 10% contingency) for Recommended scope.
+- **Estimated effort:** ~780 hours (incl. 10% contingency) for Recommended scope — **remaining work only** (delivered modules excluded).
 - **Timeline:** 110 working days (1 senior developer) ≈ 60 working days (2 developers). Delivered in 8 phases with a milestone review at each gate.
 
 ## 7. Cost
 | Option | Scope | Hours | Timeline | **Price (INR)** |
 |---|---|---|---|---|
-| **Budget** | Fix broken only | ~400 | 8 weeks | **₹4,50,000** |
-| **Recommended** ⭐ | Stabilize + modernize | ~750 | 22 weeks (1 dev) | **₹8,00,000** |
-| **Premium** | Full transformation | ~1,000 | 26 weeks (1 dev) | **₹11,50,000** |
+| **Budget** | Fix broken only (remaining) | ~450 | 8–9 weeks | **₹5,00,000** |
+| **Recommended** ⭐ | Stabilize + modernize (remaining) | ~780 | 22 weeks (1 dev) | **₹8,50,000** |
+| **Premium** | Full transformation | ~1,050 | 26 weeks (1 dev) | **₹12,00,000** |
 
 *Prices inclusive of taxes as applicable. Payment schedule below.*
 
 ## 8. Payment Terms (Milestones)
 | # | Milestone | % | Amount (₹, Recommended) |
 |---|---|---|---|
-| M1 | Kickoff & scope sign-off | 20% | 1,60,000 |
-| M2 | P1+P2: Checkout live, orders working, backend hardened | 25% | 2,00,000 |
-| M3 | P3+P4: UX + redesigns delivered | 25% | 2,00,000 |
-| M4 | P5+P6: PDF/WhatsApp + features | 20% | 1,60,000 |
-| M5 | P7: UAT passed, deployed, handover | 10% | 80,000 |
+| M1 | Kickoff & scope sign-off | 20% | 1,70,000 |
+| M2 | P1+P2: Checkout live, orders working, backend hardened | 25% | 2,12,500 |
+| M3 | P3+P4: UX + redesigns delivered | 25% | 2,12,500 |
+| M4 | P5+P6: PDF/WhatsApp + features | 20% | 1,70,000 |
+| M5 | P7: UAT passed, deployed, handover | 10% | 85,000 |
 
 Payments due within 7 days of milestone sign-off. Unpaid milestones pause work.
 
@@ -603,7 +630,7 @@ Payments due within 7 days of milestone sign-off. Unpaid milestones pause work.
 - Deployments outside warranty billed at standard rates.
 
 ## 11. Acceptance
-By signing/confirming, you approve the Recommended scope at **₹8,00,000** (or your chosen option) with the milestone schedule above. Work begins on receipt of M1 (20% advance) and the access credentials listed in Assumptions.
+By signing/confirming, you approve the Recommended scope at **₹8,50,000** (or your chosen option) with the milestone schedule above. Work begins on receipt of M1 (20% advance) and the access credentials listed in Assumptions.
 
 ---
 

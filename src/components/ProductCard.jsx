@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
 import { TID } from "@/constants/testIds";
+import { mediaSrc } from "@/lib/api";
 
 export default function ProductCard({ product }) {
   const discount = product.mrp > product.price
@@ -15,7 +16,7 @@ export default function ProductCard({ product }) {
     >
       <div className="relative aspect-square bg-[#F9F6F0] overflow-hidden">
         <img
-          src={product.images?.[0]}
+          src={mediaSrc(product.images?.[0])}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />

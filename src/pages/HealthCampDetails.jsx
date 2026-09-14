@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { contactService } from "@/services/contactService";
 import { mediaSrc } from "@/lib/api";
+import LocalizedText from "@/components/LocalizedText";
+import { PageLoader } from "@/components/Loader";
 import {
     ArrowLeft,
     Calendar,
@@ -28,6 +31,7 @@ import {
 export default function HealthCampDetails() {
     const { campId } = useParams();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const { toast } = useToast();
     const { content } = useContent();
     const { healthCamps } = content;
@@ -56,8 +60,8 @@ export default function HealthCampDetails() {
                 if (cancelled) return;
                 if (!found) {
                     toast({
-                        title: "Camp not found",
-                        description: "This health camp is no longer available.",
+                        title: t("healthCamps.campNotFound"),
+                        description: t("healthCamps.campNotFoundDesc"),
                         variant: "destructive",
                     });
                     navigate("/health-camps", { replace: true });
@@ -68,8 +72,8 @@ export default function HealthCampDetails() {
                 console.error("Error loading health camp:", error);
                 if (cancelled) return;
                 toast({
-                    title: "Error",
-                    description: "Unable to load this health camp.",
+                    title: t("distributor.errorTitle"),
+                    description: t("healthCamps.loadErrorDetails"),
                     variant: "destructive",
                 });
                 navigate("/health-camps", { replace: true });
@@ -80,13 +84,11 @@ export default function HealthCampDetails() {
         return () => {
             cancelled = true;
         };
-    }, [campId, healthCamps, navigate, toast]);
+    }, [campId, healthCamps, navigate, toast, t]);
 
     if (loading) {
         return (
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-[#1A3626]/60">
-                Loading camp details...
-            </div>
+            <PageLoader label={t("healthCamps.loadingDetails")} minHeight="60vh" />
         );
     }
 
@@ -107,15 +109,15 @@ export default function HealthCampDetails() {
                         to="/health-camps"
                         className="inline-flex items-center gap-1.5 text-sm text-[#F9F6F0]/70 hover:text-[#C5A059] transition mb-6"
                     >
-                        <ArrowLeft className="w-4 h-4" /> All health camps
+                        <ArrowLeft className="w-4 h-4" /> {t("healthCamps.allCamps")}
                     </Link>
                     <div className="text-xs uppercase tracking-[0.2em] text-[#C5A059] mb-3">
-                        {camp.city || "Health Camp"}
+                        <LocalizedText value={camp.city} fallback={t("healthCamps.campName")} />
                     </div>
                     <h1 className="font-serif-display text-3xl sm:text-4xl lg:text-5xl leading-tight mb-4 max-w-3xl">
-                        {camp.name}
+                        <LocalizedText value={camp.name} fallback={t("healthCamps.campName")} />
                     </h1>
-                    <p className="text-[#F9F6F0]/80 max-w-2xl">{camp.description}</p>
+                    <p className="text-[#F9F6F0]/80 max-w-2xl"><LocalizedText value={camp.description} /></p>
                 </div>
             </section>
 
@@ -133,14 +135,14 @@ export default function HealthCampDetails() {
 
                         <div className="bg-white rounded-2xl border border-[#1A3626]/10 p-6">
                             <h2 className="font-serif-display text-2xl text-[#1A3626] mb-4">
-                                Camp Details
+                                {t("healthCamps.campDetails")}
                             </h2>
                             <ul className="space-y-3 text-sm text-[#1A3626]/80">
                                 {formatCampDate(camp.date) && (
                                     <li className="flex items-start gap-3">
                                         <Calendar className="w-5 h-5 text-[#C5A059] shrink-0 mt-0.5" />
                                         <div>
-                                            <span className="font-semibold text-[#1A3626]">Date:</span>{" "}
+                                            <span className="font-semibold text-[#1A3626]">{t("healthCamps.dateLabel")}</span>{" "}
                                             {formatCampDate(camp.date)}
                                         </div>
                                     </li>
@@ -149,7 +151,7 @@ export default function HealthCampDetails() {
                                     <li className="flex items-start gap-3">
                                         <Clock className="w-5 h-5 text-[#C5A059] shrink-0 mt-0.5" />
                                         <div>
-                                            <span className="font-semibold text-[#1A3626]">Time:</span>{" "}
+                                            <span className="font-semibold text-[#1A3626]">{t("healthCamps.timeLabel")}</span>{" "}
                                             {formatCampTimeRange(camp)}
                                         </div>
                                     </li>
@@ -158,10 +160,10 @@ export default function HealthCampDetails() {
                                     <MapPin className="w-5 h-5 text-[#C5A059] shrink-0 mt-0.5" />
                                     <div>
                                         <span className="font-semibold text-[#1A3626]">
-                                            Venue / Location:
+                                            {t("healthCamps.venueLocation")}
                                         </span>
                                         <br />
-                                        {campAddressLine(camp)}
+                                        {campAddressLine(camp, t("healthCamps.pincode"))}
                                     </div>
                                 </li>
                             </ul>
@@ -170,10 +172,10 @@ export default function HealthCampDetails() {
                         {camp.description && (
                             <div className="bg-white rounded-2xl border border-[#1A3626]/10 p-6">
                                 <h2 className="font-serif-display text-2xl text-[#1A3626] mb-3">
-                                    About this camp
+                                    {t("healthCamps.aboutCamp")}
                                 </h2>
                                 <p className="text-sm text-[#1A3626]/75 leading-relaxed whitespace-pre-line">
-                                    {camp.description}
+                                    <LocalizedText value={camp.description} />
                                 </p>
                             </div>
                         )}
@@ -181,11 +183,10 @@ export default function HealthCampDetails() {
                         {camp.additional_notes && (
                             <div className="bg-[#F9F6F0] rounded-2xl border border-[#C5A059]/30 p-6">
                                 <h2 className="font-serif-display text-xl text-[#1A3626] mb-3 flex items-center gap-2">
-                                    <Sparkles className="w-5 h-5 text-[#C5A059]" /> Notes for
-                                    attendees
+                                    <Sparkles className="w-5 h-5 text-[#C5A059]" /> {t("healthCamps.notesForAttendees")}
                                 </h2>
                                 <p className="text-sm text-[#1A3626]/75 whitespace-pre-line">
-                                    {camp.additional_notes}
+                                    <LocalizedText value={camp.additional_notes} />
                                 </p>
                             </div>
                         )}
@@ -196,7 +197,7 @@ export default function HealthCampDetails() {
                             camp.contact_email) && (
                                 <div className="bg-white rounded-2xl border border-[#1A3626]/10 p-6">
                                     <h2 className="font-serif-display text-2xl text-[#1A3626] mb-4">
-                                        Contact
+                                        {t("healthCamps.contact")}
                                     </h2>
                                     <ul className="space-y-3 text-sm text-[#1A3626]/80">
                                         {camp.contact_person && (
@@ -226,18 +227,18 @@ export default function HealthCampDetails() {
                     <aside>
                         <div className="bg-white rounded-2xl border border-[#1A3626]/10 p-6 sticky top-24">
                             <h3 className="font-serif-display text-xl text-[#1A3626] mb-2">
-                                Registration
+                                {t("healthCamps.registration")}
                             </h3>
                             {canRegister ? (
                                 <>
                                     <p className="text-sm text-[#1A3626]/70 mb-4">
-                                        Limited seats available. Register now to reserve your spot.
+                                        {t("healthCamps.limitedSeats")}
                                     </p>
                                     <div className="flex items-center gap-2 text-sm text-[#1A3626]/75 mb-5">
                                         <Users className="w-4 h-4 text-[#C5A059]" />
                                         {camp.registration_limit
-                                            ? `${seatsLeft} of ${camp.registration_limit} seats left`
-                                            : `${camp.registeredCount} registered so far`}
+                                            ? t("healthCamps.seatsLeft", { left: seatsLeft, limit: camp.registration_limit })
+                                            : t("healthCamps.registeredSoFar", { count: camp.registeredCount })}
                                     </div>
                                     <button
                                         data-testid={TID.campRegisterBtn}
@@ -245,18 +246,17 @@ export default function HealthCampDetails() {
                                         disabled={seatsLeft === 0}
                                         className="w-full rounded-full py-3 bg-[#1A3626] text-[#F9F6F0] font-semibold text-sm hover:bg-[#2C4C3B] transition disabled:opacity-50"
                                     >
-                                        {seatsLeft === 0 ? "Registration Full" : "Register Now"}
+                                        {seatsLeft === 0 ? t("healthCamps.registrationFull") : t("healthCamps.registerNow")}
                                     </button>
                                 </>
                             ) : (
                                 <p className="text-sm text-[#1A3626]/70">
-                                    This is an open camp — no registration needed. Just walk in and
-                                    meet our team.
+                                    {t("healthCamps.openCamp")}
                                 </p>
                             )}
                             <div className="mt-6 pt-5 border-t border-[#1A3626]/10 flex items-center gap-2 text-xs text-[#1A3626]/60">
                                 <Stethoscope className="w-4 h-4 text-[#C5A059] shrink-0" />
-                                Free consultations · Nadi Pariksha · Wellness guidance
+                                {t("healthCamps.freeConsultations")}
                             </div>
                         </div>
                     </aside>

@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { contactService } from "@/services/contactService";
 import { useToast } from "@/hooks/use-toast";
 import { TID } from "@/constants/testIds";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { useContent } from "@/context/ContentContext";
+import LocalizedText from "@/components/LocalizedText";
 
 export default function Contact() {
+  const { t } = useTranslation();
   const { content } = useContent();
   const { footer } = content;
   const { toast } = useToast();
@@ -19,8 +22,8 @@ export default function Contact() {
     try {
       await contactService.submitContactForm(form);
       toast({
-        title: "Success",
-        description: "Message sent! We'll be in touch shortly.",
+        title: t("contact.successTitle"),
+        description: t("contact.successDesc"),
       });
       setForm({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (err) {
@@ -28,9 +31,9 @@ export default function Contact() {
         err?.response?.data?.message ||
         err?.response?.data?.detail ||
         err?.message ||
-        "Failed to send message";
+        t("contact.errorDesc");
       toast({
-        title: "Error",
+        title: t("contact.errorTitle"),
         description: errorMsg,
         variant: "destructive",
       });
@@ -42,8 +45,8 @@ export default function Contact() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
       <div className="text-center mb-12">
-        <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">Get in touch</div>
-        <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl text-[#1A3626]">We'd love to hear from you</h1>
+        <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">{t("contact.getInTouch")}</div>
+        <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl text-[#1A3626]">{t("contact.headline")}</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -54,29 +57,29 @@ export default function Contact() {
               <div className="flex gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#C5A059]/20 flex items-center justify-center shrink-0"><Phone className="w-4 h-4 text-[#5C4033]" /></div>
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-[#5C4033]">Call us</div>
-                  <div className="text-sm text-[#1A3626] font-semibold">{footer?.phone || ""}</div>
+                  <div className="text-xs uppercase tracking-wider text-[#5C4033]">{t("contact.callUs")}</div>
+                  <div className="text-sm text-[#1A3626] font-semibold"><LocalizedText value={footer?.phone} /></div>
                 </div>
               </div>
               <div className="flex gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#C5A059]/20 flex items-center justify-center shrink-0"><Mail className="w-4 h-4 text-[#5C4033]" /></div>
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-[#5C4033]">Email</div>
-                  <div className="text-sm text-[#1A3626] font-semibold">{footer?.email || ""}</div>
+                  <div className="text-xs uppercase tracking-wider text-[#5C4033]">{t("contact.emailLabel")}</div>
+                  <div className="text-sm text-[#1A3626] font-semibold"><LocalizedText value={footer?.email} /></div>
                 </div>
               </div>
               <div className="flex gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#C5A059]/20 flex items-center justify-center shrink-0"><MapPin className="w-4 h-4 text-[#5C4033]" /></div>
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-[#5C4033]">Office</div>
-                  <div className="text-sm text-[#1A3626]">{footer?.address || ""}</div>
+                  <div className="text-xs uppercase tracking-wider text-[#5C4033]">{t("contact.office")}</div>
+                  <div className="text-sm text-[#1A3626]"><LocalizedText value={footer?.address} /></div>
                 </div>
               </div>
               <div className="flex gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#C5A059]/20 flex items-center justify-center shrink-0"><Clock className="w-4 h-4 text-[#5C4033]" /></div>
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-[#5C4033]">Hours</div>
-                  <div className="text-sm text-[#1A3626]">Mon-Sat · 10am-7pm IST</div>
+                  <div className="text-xs uppercase tracking-wider text-[#5C4033]">{t("contact.hours")}</div>
+                  <div className="text-sm text-[#1A3626]">{t("contact.hoursValue")}</div>
                 </div>
               </div>
             </div>
@@ -92,23 +95,23 @@ export default function Contact() {
 
         {/* Form */}
         <div className="bg-white rounded-2xl border border-[#1A3626]/10 p-6 md:p-8">
-          <h3 className="font-serif-display text-2xl text-[#1A3626] mb-1">Send us a message</h3>
-          <p className="text-sm text-[#1A3626]/70 mb-5">We respond within 1 business day.</p>
+          <h3 className="font-serif-display text-2xl text-[#1A3626] mb-1">{t("contact.sendMessageTitle")}</h3>
+          <p className="text-sm text-[#1A3626]/70 mb-5">{t("contact.respondWithin")}</p>
           <form onSubmit={submit} className="space-y-3">
-            <input required placeholder="Full name" value={form.name} onChange={upd("name")} className={inputCls} />
+            <input required placeholder={t("contact.fullName")} value={form.name} onChange={upd("name")} className={inputCls} />
             <div className="grid grid-cols-2 gap-3">
-              <input required type="email" placeholder="Email" value={form.email} onChange={upd("email")} className={inputCls} />
-              <input placeholder="Phone (optional)" value={form.phone} onChange={upd("phone")} className={inputCls} />
+              <input required type="email" placeholder={t("contact.email")} value={form.email} onChange={upd("email")} className={inputCls} />
+              <input placeholder={t("contact.phoneOptional")} value={form.phone} onChange={upd("phone")} className={inputCls} />
             </div>
-            <input required placeholder="Subject" value={form.subject} onChange={upd("subject")} className={inputCls} />
-            <textarea required rows="5" placeholder="Your message" value={form.message} onChange={upd("message")} className={inputCls} />
+            <input required placeholder={t("contact.subject")} value={form.subject} onChange={upd("subject")} className={inputCls} />
+            <textarea required rows="5" placeholder={t("contact.yourMessage")} value={form.message} onChange={upd("message")} className={inputCls} />
             <button
               type="submit"
               data-testid={TID.contactSubmit}
               disabled={busy}
               className="w-full rounded-full py-3 bg-[#1A3626] text-[#F9F6F0] font-semibold text-sm hover:bg-[#2C4C3B] transition disabled:opacity-50"
             >
-              {busy ? "Sending..." : "Send Message"}
+              {busy ? t("contact.sending") : t("contact.send")}
             </button>
           </form>
         </div>

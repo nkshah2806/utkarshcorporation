@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { galleryService } from "@/services/galleryService";
 import { BACKEND_URL } from "@/lib/api";
+import LocalizedText from "@/components/LocalizedText";
+import { Loader } from "@/components/Loader";
 import {
     LayoutGrid,
     Camera,
@@ -34,13 +37,13 @@ export const getVideoThumbnail = (item) => mediaSrc(item?.thumbnail_url || "");
 
 /* ------------------------------------------------------------------ */
 
-const TABS = [
-    { key: "all", label: "All", icon: LayoutGrid },
-    { key: "photo", label: "Photos", icon: Camera },
-    { key: "video", label: "Videos", icon: Film },
-];
-
 export default function Gallery() {
+    const { t } = useTranslation();
+    const TABS = [
+        { key: "all", label: t("gallery.all"), icon: LayoutGrid },
+        { key: "photo", label: t("gallery.photos"), icon: Camera },
+        { key: "video", label: t("gallery.videos"), icon: Film },
+    ];
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -58,7 +61,7 @@ export default function Gallery() {
             setItems(data || []);
         } catch (err) {
             console.error("Error loading gallery:", err);
-            setError("We couldn't load the gallery right now. Please try again later.");
+            setError(t("gallery.loadError"));
         } finally {
             setLoading(false);
         }
@@ -135,16 +138,16 @@ export default function Gallery() {
                     </div>
                     <div className="p-5">
                         <h3 className="font-serif-display text-lg text-[#1A3626] mb-1 line-clamp-1">
-                            {p.title}
+                            <LocalizedText value={p.title} />
                         </h3>
                         {p.category && (
                             <div className="inline-flex items-center gap-1 text-xs text-[#5C4033] mb-2">
                                 <Tag className="w-3.5 h-3.5 text-[#C5A059]" />
-                                {p.category}
+                                <LocalizedText value={p.category} />
                             </div>
                         )}
                         {p.description && (
-                            <p className="text-sm text-[#1A3626]/70 line-clamp-2">{p.description}</p>
+                            <p className="text-sm text-[#1A3626]/70 line-clamp-2"><LocalizedText value={p.description} /></p>
                         )}
                     </div>
                 </button>
@@ -185,16 +188,16 @@ export default function Gallery() {
                         </div>
                         <div className="p-5">
                             <h3 className="font-serif-display text-lg text-[#1A3626] mb-1 line-clamp-1">
-                                {v.title}
+                                <LocalizedText value={v.title} />
                             </h3>
                             {v.category && (
                                 <div className="inline-flex items-center gap-1 text-xs text-[#5C4033] mb-2">
                                     <Tag className="w-3.5 h-3.5 text-[#C5A059]" />
-                                    {v.category}
+                                    <LocalizedText value={v.category} />
                                 </div>
                             )}
                             {v.description && (
-                                <p className="text-sm text-[#1A3626]/70 line-clamp-2">{v.description}</p>
+                                <p className="text-sm text-[#1A3626]/70 line-clamp-2"><LocalizedText value={v.description} /></p>
                             )}
                         </div>
                     </button>
@@ -214,10 +217,10 @@ export default function Gallery() {
             </div>
             <p className="text-lg font-medium text-[#1A3626]/70">
                 {activeTab === "all"
-                    ? "No gallery items yet — check back soon."
+                    ? t("gallery.emptyAll")
                     : activeTab === "video"
-                        ? "No videos added yet — check back soon."
-                        : "No photos added yet — check back soon."}
+                        ? t("gallery.emptyVideos")
+                        : t("gallery.emptyPhotos")}
             </p>
         </div>
     );
@@ -228,14 +231,13 @@ export default function Gallery() {
             <section className="bg-[#1A3626] text-[#F9F6F0] py-20 lg:py-28">
                 <div className="max-w-4xl mx-auto px-4 text-center">
                     <div className="text-xs uppercase tracking-[0.2em] text-[#C5A059] mb-3">
-                        Moments of Wellness
+                        {t("gallery.momentsOfWellness")}
                     </div>
                     <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl mb-4 leading-tight">
-                        Photo & Video Gallery
+                        {t("gallery.heading")}
                     </h1>
                     <p className="text-[#F9F6F0]/80 max-w-2xl mx-auto">
-                        A glimpse into our health camps, awareness programs and community
-                        events — watch our journey towards a healthier, more aware India.
+                        {t("gallery.description")}
                     </p>
                 </div>
             </section>
@@ -277,8 +279,7 @@ export default function Gallery() {
 
                 {loading ? (
                     <div className="text-center text-[#1A3626]/60 py-16">
-                        <div className="mx-auto w-12 h-12 rounded-full border-4 border-[#1A3626]/10 border-t-[#C5A059] animate-spin mb-4" />
-                        <p>Loading gallery...</p>
+                        <Loader size={40} label={t("gallery.loading")} className="mx-auto" style={{ flexDirection: "column" }} />
                     </div>
                 ) : error ? (
                     <div className="text-center text-[#1A3626]/60 py-16">{error}</div>
@@ -303,7 +304,7 @@ export default function Gallery() {
                     <button
                         type="button"
                         data-testid={TID.galleryLightboxClose}
-                        aria-label="Close"
+                        aria-label={t("gallery.close")}
                         onClick={closeLightbox}
                         className="absolute top-5 right-5 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition z-10"
                     >
@@ -315,7 +316,7 @@ export default function Gallery() {
                             <button
                                 type="button"
                                 data-testid={TID.galleryLightboxPrev}
-                                aria-label="Previous photo"
+                                aria-label={t("gallery.prevPhoto")}
                                 onClick={prevPhoto}
                                 className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition z-10"
                             >
@@ -324,7 +325,7 @@ export default function Gallery() {
                             <button
                                 type="button"
                                 data-testid={TID.galleryLightboxNext}
-                                aria-label="Next photo"
+                                aria-label={t("gallery.nextPhoto")}
                                 onClick={nextPhoto}
                                 className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition z-10"
                             >
@@ -346,16 +347,16 @@ export default function Gallery() {
                             </div>
                         )}
                         <figcaption className="mt-5 text-center text-[#F9F6F0]">
-                            <div className="font-serif-display text-xl">{currentPhoto.title}</div>
+                            <div className="font-serif-display text-xl"><LocalizedText value={currentPhoto.title} /></div>
                             {currentPhoto.category && (
                                 <div className="inline-flex items-center gap-1 text-xs text-[#C5A059] mt-1">
                                     <Tag className="w-3.5 h-3.5" />
-                                    {currentPhoto.category}
+                                    <LocalizedText value={currentPhoto.category} />
                                 </div>
                             )}
                             {currentPhoto.description && (
                                 <p className="text-sm text-[#F9F6F0]/70 mt-2 max-w-2xl mx-auto">
-                                    {currentPhoto.description}
+                                    <LocalizedText value={currentPhoto.description} />
                                 </p>
                             )}
                             <div className="text-xs text-[#F9F6F0]/50 mt-3">
@@ -378,7 +379,7 @@ export default function Gallery() {
                     <button
                         type="button"
                         data-testid={TID.galleryVideoModalClose}
-                        aria-label="Close video"
+                        aria-label={t("gallery.closeVideo")}
                         onClick={closeVideo}
                         className="absolute top-5 right-5 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition z-10"
                     >
@@ -399,22 +400,22 @@ export default function Gallery() {
                                 <div className="w-full h-full flex flex-col items-center justify-center text-[#F9F6F0]/70 gap-3">
                                     <Film className="w-12 h-12 text-[#F9F6F0]/40" />
                                     <p className="text-sm px-6 text-center">
-                                        This video could not be played here.
+                                        {t("gallery.videoUnavailable")}
                                     </p>
                                 </div>
                             )}
                         </div>
                         <div className="mt-5 text-center text-[#F9F6F0]">
-                            <div className="font-serif-display text-xl">{videoItem.title}</div>
+                            <div className="font-serif-display text-xl"><LocalizedText value={videoItem.title} /></div>
                             {videoItem.category && (
                                 <div className="inline-flex items-center gap-1 text-xs text-[#C5A059] mt-1">
                                     <Tag className="w-3.5 h-3.5" />
-                                    {videoItem.category}
+                                    <LocalizedText value={videoItem.category} />
                                 </div>
                             )}
                             {videoItem.description && (
                                 <p className="text-sm text-[#F9F6F0]/70 mt-2 max-w-2xl mx-auto">
-                                    {videoItem.description}
+                                    <LocalizedText value={videoItem.description} />
                                 </p>
                             )}
                         </div>

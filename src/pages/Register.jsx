@@ -5,18 +5,29 @@ import { formatApiError } from "@/lib/api";
 import { toast } from "sonner";
 import { TID } from "@/constants/testIds";
 import { Leaf } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Register() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [form, setForm] = useState({ fullName: "", mobileNumber: "", email: "", address: "", city: "", state: "", pinCode: "", password: "" });
   const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState(false);
   const upd = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
+  // Keep the mobile number to digits only (max 10) so the same real number is
+  // always submitted in one consistent format and duplicate detection works.
+  const updPhone = (e) =>
+    setForm({ ...form, mobileNumber: e.target.value.replace(/\D/g, "").slice(0, 10) });
+
   const submit = async (e) => {
     e.preventDefault();
     if (!consent) {
-      toast.error("Please accept the Terms and Conditions and Privacy Policy to continue.");
+      toast.error(t("register.acceptTerms"));
+      return;
+    }
+    if (!/^\d{10}$/.test(form.mobileNumber)) {
+      toast.error("Please enter a valid 10-digit mobile number.");
       return;
     }
     setBusy(true);
@@ -25,7 +36,7 @@ export default function Register() {
       if (data?.token) {
         localStorage.setItem("frenchies_member_token", data.token);
       }
-      toast.success(data?.message || "Registration successful");
+      toast.success(data?.message || t("register.success"));
       navigate("/register-success", { state: { fullName: form.fullName, email: form.email } });
     } catch (err) {
       toast.error(formatApiError(err));
@@ -43,20 +54,33 @@ export default function Register() {
           <div className="w-12 h-12 rounded-full bg-[#1A3626] flex items-center justify-center mx-auto mb-4">
             <Leaf className="w-5 h-5 text-[#C5A059]" />
           </div>
-          <h1 className="font-serif-display text-4xl text-[#1A3626] mb-2">Frenchies Member Registration</h1>
-          <p className="text-sm text-[#1A3626]/70">Create your Frenchies membership account</p>
+          <h1 className="font-serif-display text-4xl text-[#1A3626] mb-2">{t("register.title")}</h1>
+          <p className="text-sm text-[#1A3626]/70">{t("register.subtitle")}</p>
         </div>
         <form onSubmit={submit} className="bg-white rounded-2xl border border-[#1A3626]/10 p-8 space-y-4">
-          <input data-testid={TID.registerName} required placeholder="Full Name" value={form.fullName} onChange={upd("fullName")} className={inputCls} />
-          <input data-testid={TID.registerPhone} required placeholder="Mobile Number" value={form.mobileNumber} onChange={upd("mobileNumber")} className={inputCls} />
-          <input data-testid={TID.registerEmail} type="email" required placeholder="Email" value={form.email} onChange={upd("email")} className={inputCls} />
-          <textarea required placeholder="Address" value={form.address} onChange={upd("address")} className={inputCls} rows="3" />
+          <input data-testid={TID.registerName} required placeholder={t("register.fullName")} value={form.fullName} onChange={upd("fullName")} className={inputCls} />
+          <input
+            data-testid={TID.registerPhone}
+            required
+            type="tel"
+            inputMode="numeric"
+            autoComplete="tel"
+            pattern="\d{10}"
+            maxLength={10}
+            title="Enter a 10-digit mobile number"
+            placeholder={t("register.mobileNumber")}
+            value={form.mobileNumber}
+            onChange={updPhone}
+            className={inputCls}
+          />
+          <input data-testid={TID.registerEmail} type="email" required placeholder={t("register.email")} value={form.email} onChange={upd("email")} className={inputCls} />
+          <textarea required placeholder={t("register.address")} value={form.address} onChange={upd("address")} className={inputCls} rows="3" />
           <div className="grid gap-4 md:grid-cols-2">
-            <input required placeholder="City" value={form.city} onChange={upd("city")} className={inputCls} />
-            <input required placeholder="State" value={form.state} onChange={upd("state")} className={inputCls} />
+            <input required placeholder={t("register.city")} value={form.city} onChange={upd("city")} className={inputCls} />
+            <input required placeholder={t("register.state")} value={form.state} onChange={upd("state")} className={inputCls} />
           </div>
-          <input required placeholder="Pin Code" value={form.pinCode} onChange={upd("pinCode")} className={inputCls} />
-          <input data-testid={TID.registerPassword} type="password" required minLength="8" placeholder="Password (min 8 chars)" value={form.password} onChange={upd("password")} className={inputCls} />
+          <input required placeholder={t("register.pinCode")} value={form.pinCode} onChange={upd("pinCode")} className={inputCls} />
+          <input data-testid={TID.registerPassword} type="password" required minLength="8" placeholder={t("register.password")} value={form.password} onChange={upd("password")} className={inputCls} />
 
           {/* Registration consent — unchecked by default; submit is blocked until accepted */}
           <div className="flex items-start gap-2.5 text-sm text-[#1A3626]/80">
@@ -70,21 +94,21 @@ export default function Register() {
             />
             <label htmlFor="register-consent" className="leading-relaxed cursor-pointer">
               <span>
-                By registering, I agree to the{" "}
+                {t("register.consentPrefix")}{" "}
                 <Link
                   data-testid={TID.registerTermsLink}
                   to="/policies/terms"
                   className="text-[#C5A059] font-semibold hover:underline cursor-pointer"
                 >
-                  Terms and Conditions
+                  {t("register.terms")}
                 </Link>{" "}
-                and{" "}
+                {t("register.and")}{" "}
                 <Link
                   data-testid={TID.registerPrivacyLink}
                   to="/policies/privacy"
                   className="text-[#C5A059] font-semibold hover:underline cursor-pointer"
                 >
-                  Privacy Policy
+                  {t("register.privacy")}
                 </Link>
                 .
               </span>
@@ -92,12 +116,12 @@ export default function Register() {
           </div>
 
           <button data-testid={TID.registerSubmit} disabled={busy} className="w-full rounded-full py-3 bg-[#1A3626] text-[#F9F6F0] font-semibold text-sm hover:bg-[#2C4C3B] transition disabled:opacity-50">
-            {busy ? "Creating..." : "Create Account"}
+            {busy ? t("register.creating") : t("register.createAccount")}
           </button>
           <div className="text-center text-sm text-[#1A3626]/70">
-            Need member access?{' '}
+            {t("register.needAccess")}{' '}
             <a href="https://uttkarsh-member.vercel.app/" target="_blank" rel="noreferrer" className="text-[#C5A059] font-semibold hover:underline">
-              Open Member Panel
+              {t("register.openMemberPanel")}
             </a>
           </div>
         </form>

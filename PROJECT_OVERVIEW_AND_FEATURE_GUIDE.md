@@ -1,13 +1,5 @@
 # Uttkarsh Quantum Health Platform
 
-## Complete Project Overview & Feature Guide
-
-**Document purpose:** This guide explains the entire Uttkarsh Quantum Health Platform in simple, everyday language — no technical terms. It is written so that business owners, franchise partners, new team members, and clients can read it once and clearly explain the project to anyone else.
-
-**How this guide was created:** Every feature described in this guide was verified by examining the actual project — the public website, the member portal, the admin portal, and the central data store. Nothing has been invented. Where a feature is only partially built, it is clearly marked as **"Partially Implemented"** so that no one mistakes it for a finished feature.
-
----
-
 ### 1. Executive Summary
 
 The Uttkarsh Quantum Health Platform is a complete business software system built for a wellness and Ayurvedic health business. It helps the company run its "Quantum Machine Health Analysis" service from start to finish.

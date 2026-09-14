@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { contactService } from "@/services/contactService";
 import { Calendar, MapPin, Clock, Users, Stethoscope, ArrowRight } from "lucide-react";
 import { TID } from "@/constants/testIds";
 import { useContent } from "@/context/ContentContext";
 import HealthCampRegisterModal from "@/components/HealthCampRegisterModal";
 import { mediaSrc } from "@/lib/api";
+import LocalizedText from "@/components/LocalizedText";
+import { Loader } from "@/components/Loader";
 
 /**
  * Map a camp document (new HealthCamp model) or a legacy CMS fallback item to a
@@ -13,7 +16,7 @@ import { mediaSrc } from "@/lib/api";
  */
 export const normalizeCamp = (c) => ({
   _id: c?._id || c?.id || c?.campId || "",
-  name: c?.name || c?.title || "Health Camp",
+  name: c?.name || c?.title || "",
   description: c?.description || "",
   date: c?.date || "",
   start_time: c?.start_time || "",
@@ -69,12 +72,12 @@ export const formatCampDate = (value) => {
 export const campLocationLine = (camp) =>
   [camp.venue, camp.city, camp.state].filter(Boolean).join(", ") || camp.venue || "";
 
-export const campAddressLine = (camp) =>
+export const campAddressLine = (camp, pincodeLabel = "Pincode") =>
   [
     camp.address,
     camp.city,
     camp.state,
-    camp.pincode ? `Pincode: ${camp.pincode}` : "",
+    camp.pincode ? `${pincodeLabel}: ${camp.pincode}` : "",
   ]
     .filter(Boolean)
     .join(", ") || camp.venue;
@@ -82,6 +85,7 @@ export const campAddressLine = (camp) =>
 const activeOnly = (camps) => (camps || []).filter((c) => c.is_active !== false);
 
 export default function HealthCamps() {
+  const { t } = useTranslation();
   const { content } = useContent();
   const { healthCamps } = content;
   const [camps, setCamps] = useState([]);
@@ -120,16 +124,14 @@ export default function HealthCamps() {
       <section className="bg-[#1A3626] text-[#F9F6F0] py-20 lg:py-28">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="text-xs uppercase tracking-[0.2em] text-[#C5A059] mb-3">
-            Free Wellness Events
+            {t("healthCamps.freeWellnessEvents")}
           </div>
           <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl mb-4 leading-tight">
-            Health Camps &<br />
-            Ayurveda Awareness
+            {t("healthCamps.heroLine1")}<br />
+            {t("healthCamps.heroLine2")}
           </h1>
           <p className="text-[#F9F6F0]/80 max-w-2xl mx-auto">
-            Meet our doctors in person. Free consultations, pulse diagnosis
-            (Nadi Pariksha), dosha assessment and wellness guidance — right in
-            your city.
+            {t("healthCamps.heroDescription")}
           </p>
         </div>
       </section>
@@ -137,13 +139,15 @@ export default function HealthCamps() {
       {/* Upcoming */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h2 className="font-serif-display text-3xl sm:text-4xl text-[#1A3626] mb-8">
-          Upcoming camps
+          {t("healthCamps.upcomingCamps")}
         </h2>
         {loading ? (
-          <div className="text-[#1A3626]/60">Loading health camps...</div>
+          <div className="py-10 text-center text-[#1A3626]/60">
+            <Loader size={40} label={t("healthCamps.loading")} style={{ flexDirection: "column" }} />
+          </div>
         ) : camps.length === 0 ? (
           <div className="text-[#1A3626]/60">
-            No camps scheduled — check back soon.
+            {t("healthCamps.noCampsShort")}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -165,10 +169,10 @@ export default function HealthCamps() {
                 )}
                 <div className="p-6 flex-1 flex flex-col">
                   <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-2">
-                    {c.city}
+                    <LocalizedText value={c.city} />
                   </div>
                   <h3 className="font-serif-display text-2xl text-[#1A3626] mb-3">
-                    {c.name}
+                    <LocalizedText value={c.name} fallback={t("healthCamps.campName")} />
                   </h3>
                   <ul className="space-y-1.5 text-sm text-[#1A3626]/75 mb-4">
                     {formatCampDate(c.date) && (
@@ -192,15 +196,15 @@ export default function HealthCamps() {
                     {c.registration_required && (
                       <li className="flex items-center gap-2">
                         <Users className="w-4 h-4 text-[#C5A059]" />{" "}
-                        {c.registeredCount} registered
+                        {c.registeredCount} {t("healthCamps.registered")}
                         {c.registration_limit
-                          ? ` / ${c.registration_limit} seats`
+                          ? ` / ${c.registration_limit} ${t("healthCamps.seats")}`
                           : ""}
                       </li>
                     )}
                   </ul>
                   <p className="text-sm text-[#1A3626]/70 mb-4 flex-1 line-clamp-3">
-                    {c.description}
+                    <LocalizedText value={c.description} />
                   </p>
                   <div className="flex flex-wrap gap-3">
                     {c._id && (
@@ -208,7 +212,7 @@ export default function HealthCamps() {
                         to={`/health-camps/${c._id}`}
                         className="inline-flex items-center gap-1.5 rounded-full px-5 py-2 border border-[#1A3626]/30 text-[#1A3626] text-sm font-semibold hover:bg-[#1A3626] hover:text-[#F9F6F0] transition"
                       >
-                        View Details <ArrowRight className="w-4 h-4" />
+                        {t("healthCamps.viewDetails")} <ArrowRight className="w-4 h-4" />
                       </Link>
                     )}
                     {c.registration_required && (
@@ -217,7 +221,7 @@ export default function HealthCamps() {
                         onClick={() => setSelected(c)}
                         className="rounded-full px-5 py-2 bg-[#1A3626] text-[#F9F6F0] text-sm font-semibold hover:bg-[#2C4C3B] transition"
                       >
-                        Register Now
+                        {t("healthCamps.registerNow")}
                       </button>
                     )}
                   </div>

@@ -7,6 +7,8 @@ import ProductCard from "@/components/ProductCard";
 import { useAuth } from "@/context/AuthContext";
 import { Star, Leaf, ShieldCheck, Truck, HeartHandshake, Heart } from "lucide-react";
 import { TID } from "@/constants/testIds";
+import LocalizedText from "@/components/LocalizedText";
+import { PageLoader } from "@/components/Loader";
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -50,7 +52,7 @@ export default function ProductDetail() {
     })();
   }, [slug, navigate, toast]);
 
-  if (loading) return <div className="max-w-7xl mx-auto p-8 text-[#1A3626]/60">Loading...</div>;
+  if (loading) return <PageLoader label="Loading product…" minHeight="70vh" />;
 
   const inWishlist = user?.wishlist?.includes(product.id);
   const discount = product.mrp > product.price ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
@@ -122,7 +124,7 @@ export default function ProductDetail() {
           <span aria-hidden="true">·</span>
           <Link to="/shop" className="hover:text-[#C5A059]">Shop</Link>
           <span aria-hidden="true">·</span>
-          <span className="text-[#1A3626]">{product.name}</span>
+          <span className="text-[#1A3626]"><LocalizedText value={product.name} /></span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
@@ -150,7 +152,7 @@ export default function ProductDetail() {
               {product.category_slug?.replace(/-/g, " ")}
             </div>
             <h1 data-testid={TID.productTitle} className="font-serif-display text-4xl lg:text-5xl text-[#1A3626] mb-4">
-              {product.name}
+              <LocalizedText value={product.name} />
             </h1>
             <div className="flex items-center gap-3 mb-6">
               <div className="flex gap-0.5">
@@ -165,7 +167,7 @@ export default function ProductDetail() {
                 <span>reviews</span>
               </span>
             </div>
-            <p className="text-[#1A3626]/80 leading-relaxed mb-6">{product.short_description}</p>
+            <p className="text-[#1A3626]/80 leading-relaxed mb-6"><LocalizedText value={product.short_description} /></p>
 
             <div className="flex items-baseline gap-3 mb-2">
               <span data-testid={TID.productPrice} className="text-4xl font-serif-display text-[#1A3626] inline-flex items-baseline gap-0.5">
@@ -223,7 +225,7 @@ export default function ProductDetail() {
                 <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-2">Helps with</div>
                 <div className="flex flex-wrap gap-2">
                   {product.ailments.map((a) => (
-                    <span key={a} className="rounded-full bg-[#C5A059]/15 text-[#5C4033] px-3 py-1 text-xs font-semibold uppercase tracking-wider">{a}</span>
+                    <span key={a} className="rounded-full bg-[#C5A059]/15 text-[#5C4033] px-3 py-1 text-xs font-semibold uppercase tracking-wider"><LocalizedText value={a} /></span>
                   ))}
                 </div>
               </div>
@@ -235,15 +237,15 @@ export default function ProductDetail() {
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-white rounded-2xl p-6 border border-[#1A3626]/10">
             <h3 className="font-serif-display text-xl text-[#1A3626] mb-3">Description</h3>
-            <p className="text-sm text-[#1A3626]/75 leading-relaxed whitespace-pre-line">{product.description}</p>
+            <p className="text-sm text-[#1A3626]/75 leading-relaxed whitespace-pre-line"><LocalizedText value={product.description} /></p>
           </div>
           <div className="bg-white rounded-2xl p-6 border border-[#1A3626]/10">
             <h3 className="font-serif-display text-xl text-[#1A3626] mb-3">Ingredients</h3>
-            <p className="text-sm text-[#1A3626]/75 leading-relaxed whitespace-pre-line">{product.ingredients}</p>
+            <p className="text-sm text-[#1A3626]/75 leading-relaxed whitespace-pre-line"><LocalizedText value={product.ingredients} /></p>
           </div>
           <div className="bg-white rounded-2xl p-6 border border-[#1A3626]/10">
             <h3 className="font-serif-display text-xl text-[#1A3626] mb-3">How to Use</h3>
-            <p className="text-sm text-[#1A3626]/75 leading-relaxed whitespace-pre-line">{product.usage}</p>
+            <p className="text-sm text-[#1A3626]/75 leading-relaxed whitespace-pre-line"><LocalizedText value={product.usage} /></p>
           </div>
         </div>
 
@@ -263,8 +265,8 @@ export default function ProductDetail() {
                       ))}
                     </div>
                   </div>
-                  <div className="font-semibold text-[#1A3626] mb-1">{r.title}</div>
-                  <div className="text-sm text-[#1A3626]/75">{r.body}</div>
+                  <div className="font-semibold text-[#1A3626] mb-1"><LocalizedText value={r.title} /></div>
+                  <div className="text-sm text-[#1A3626]/75"><LocalizedText value={r.body} /></div>
                 </div>
               ))}
             </div>

@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { TID } from "@/constants/testIds";
 import { mediaSrc } from "@/lib/api";
+import LocalizedText from "@/components/LocalizedText";
 
 export default function ProductCard({ product }) {
+  const { t } = useTranslation();
   const discount = product.mrp > product.price
     ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
     : 0;
@@ -22,14 +25,14 @@ export default function ProductCard({ product }) {
         />
         {product.is_bestseller && (
           <span className="absolute top-3 left-3 bg-[#C5A059] text-[#1A3626] text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full">
-            Bestseller
+            {t("product.bestseller")}
           </span>
         )}
         {discount > 0 && (
           <span className="absolute top-3 right-3 bg-[#1A3626] text-[#F9F6F0] text-[10px] font-bold px-2 py-1 rounded-full">
             <span className="inline-flex items-baseline gap-0.5">
               <span>{discount}</span>
-              <span>% OFF</span>
+              <span>{t("product.off")}</span>
             </span>
           </span>
         )}
@@ -37,10 +40,10 @@ export default function ProductCard({ product }) {
 
       <div className="p-4 flex flex-col flex-1">
         <div className="text-[10px] uppercase tracking-[0.15em] text-[#5C4033] mb-1">
-          {product.category_slug?.replace(/-/g, " ")}
+          <LocalizedText value={product.category_name || product.category_slug?.replace(/-/g, " ")} />
         </div>
-        <h3 className="font-serif-display text-lg text-[#1A3626] mb-1 line-clamp-2 font-bold">{product.name}</h3>
-        <p className="text-xs text-[#1A3626]/70 line-clamp-2 mb-3 flex-1">{product.short_description}</p>
+        <h3 className="font-serif-display text-lg text-[#1A3626] mb-1 line-clamp-2 font-bold"><LocalizedText value={product.name} /></h3>
+        <p className="text-xs text-[#1A3626]/70 line-clamp-2 mb-3 flex-1"><LocalizedText value={product.short_description} /></p>
 
         <div className="flex items-center gap-1 mb-3">
           <Star className="w-3.5 h-3.5 fill-[#C5A059] text-[#C5A059]" />

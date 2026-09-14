@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Search,
   User,
@@ -15,10 +16,19 @@ import { useContent } from "@/context/ContentContext";
 import { TID } from "@/constants/testIds";
 import { mediaSrc } from "@/lib/api";
 import api from "@/lib/api";
+import LanguageSelector from "@/components/LanguageSelector";
+import { useTranslatedText } from "@/hooks/useTranslatedText";
 
 export default function Header() {
+  const { t } = useTranslation();
   const { content } = useContent();
   const { header } = content;
+  // Dynamic CMS values (admin-created) go through the translation layer.
+  const announcement = useTranslatedText(header?.announcement, t("header.announcement"));
+  const searchPlaceholder = useTranslatedText(
+    header?.searchPlaceholder,
+    t("header.searchPlaceholder"),
+  );
 
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -76,8 +86,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#F9F6F0]/85 border-b border-[#1A3626]/10">
       {/* Top promo strip */}
       <div className="bg-[#1A3626] text-[#F9F6F0] text-xs py-2 text-center tracking-wider uppercase px-4">
-        {header?.announcement ||
-          "Free Shipping on Orders Over ₹499 · 100% Natural · GMP Certified"}
+        {announcement}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -100,30 +109,31 @@ export default function Header() {
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-8">
             <Link to="/" end className={linkCls} data-testid={TID.navHome}>
-              Home
+              {t("nav.home")}
             </Link>
             <Link to="/shop" className={linkCls} data-testid={TID.navShop}>
-              Shop
+              {t("nav.shop")}
             </Link>
             <Link to="/health-camps" className={linkCls} data-testid={TID.navCamps}>
-              Health Camps
+              {t("nav.healthCamps")}
             </Link>
             <Link to="/gallery" className={linkCls} data-testid={TID.navGallery}>
-              Gallery
+              {t("nav.gallery")}
             </Link>
             <Link to="/distributor" className={linkCls} data-testid={TID.navDistributor}>
-              Distributor
+              {t("nav.distributor")}
             </Link>
             <Link to="/about" className={linkCls} data-testid={TID.navAbout}>
-              About
+              {t("nav.about")}
             </Link>
             <Link to="/contact" className={linkCls} data-testid={TID.navContact}>
-              Contact
+              {t("nav.contact")}
             </Link>
           </nav>
 
           {/* Search + Dropdown */}
           <div className="flex items-center gap-2 sm:gap-3">
+            <LanguageSelector />
             <form onSubmit={onSearchSubmit} className="relative hidden md:block" ref={sugRef}>
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#1A3626]/50" />
               <input
@@ -131,7 +141,7 @@ export default function Header() {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 onFocus={() => q && setShowSug(true)}
-                placeholder={header?.searchPlaceholder || "Search herbs, remedies..."}
+                placeholder={searchPlaceholder}
                 className="w-56 lg:w-72 pl-9 pr-3 py-2 text-sm rounded-full bg-white border border-[#1A3626]/15 focus:border-[#1A3626] focus:ring-1 focus:ring-[#1A3626] outline-none"
               />
               {showSug && suggest.length > 0 && (
@@ -170,7 +180,7 @@ export default function Header() {
                 data-testid={TID.accountIcon}
                 onClick={() => setShowAcct((s) => !s)}
                 className="p-2.5 rounded-full border border-[#1A3626]/15 hover:bg-[#1A3626]/10 transition flex items-center justify-center text-[#1A3626]"
-                aria-label="Account & Portals Dropdown"
+                aria-label={t("header.accountAria")}
               >
                 <User className="w-5 h-5 text-[#1A3626]" />
               </button>
@@ -179,10 +189,10 @@ export default function Header() {
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-[#1A3626]/10 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="px-4 py-2 border-b border-[#1A3626]/10">
                     <div className="text-xs font-bold text-[#1A3626] uppercase tracking-wider">
-                      Member Access
+                      {t("header.memberAccess")}
                     </div>
                     <div className="text-[11px] text-[#5C4033]">
-                      Member registration and member portal
+                      {t("header.memberAccessDesc")}
                     </div>
                   </div>
 
@@ -197,7 +207,7 @@ export default function Header() {
                     >
                       <div className="flex items-center gap-2.5">
                         <UserCheck className="w-4 h-4 text-[#1A3626] group-hover:scale-110 transition-transform" />
-                        <span>Member Panel</span>
+                        <span>{t("header.memberPanel")}</span>
                       </div>
                       <ExternalLink className="w-3.5 h-3.5 text-[#5C4033] opacity-60 group-hover:opacity-100" />
                     </a>
@@ -212,7 +222,7 @@ export default function Header() {
                     >
                       <div className="flex items-center gap-2.5">
                         <ShieldCheck className="w-4 h-4 text-[#1A3626] group-hover:scale-110 transition-transform" />
-                        <span>Admin Portal</span>
+                        <span>{t("header.adminPortal")}</span>
                       </div>
                       <ExternalLink className="w-3.5 h-3.5 text-[#5C4033] opacity-60 group-hover:opacity-100" />
                     </a>
@@ -225,7 +235,7 @@ export default function Header() {
                     >
                       <div className="flex items-center gap-2.5">
                         <UserPlus className="w-4 h-4 text-[#C5A059] group-hover:scale-110 transition-transform" />
-                        <span>Register</span>
+                        <span>{t("header.register")}</span>
                       </div>
                       <ExternalLink className="w-3.5 h-3.5 text-[#C5A059] opacity-60 group-hover:opacity-100" />
                     </a>
@@ -239,7 +249,7 @@ export default function Header() {
               data-testid={TID.mobileMenuBtn}
               onClick={() => setMenuOpen((o) => !o)}
               className="lg:hidden p-2 rounded-full hover:bg-[#1A3626]/5"
-              aria-label="Menu"
+              aria-label={t("header.menu")}
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -251,31 +261,31 @@ export default function Header() {
           <div className="lg:hidden pb-4 border-t border-[#1A3626]/10">
             <div className="pt-4 flex flex-col gap-3">
               <Link to="/" end className={linkCls} onClick={() => setMenuOpen(false)}>
-                Home
+                {t("nav.home")}
               </Link>
               <Link to="/shop" className={linkCls} onClick={() => setMenuOpen(false)}>
-                Shop
+                {t("nav.shop")}
               </Link>
               <Link to="/health-camps" className={linkCls} onClick={() => setMenuOpen(false)}>
-                Health Camps
+                {t("nav.healthCamps")}
               </Link>
               <Link to="/gallery" className={linkCls} onClick={() => setMenuOpen(false)}>
-                Gallery
+                {t("nav.gallery")}
               </Link>
               <Link to="/distributor" className={linkCls} onClick={() => setMenuOpen(false)}>
-                Distributor
+                {t("nav.distributor")}
               </Link>
               <Link to="/about" className={linkCls} onClick={() => setMenuOpen(false)}>
-                About
+                {t("nav.about")}
               </Link>
               <Link to="/contact" className={linkCls} onClick={() => setMenuOpen(false)}>
-                Contact
+                {t("nav.contact")}
               </Link>
 
               {/* Mobile Portal Links */}
               <div className="pt-3 border-t border-[#1A3626]/10 flex flex-col gap-2">
                 <div className="text-[11px] font-bold uppercase text-[#5C4033] tracking-wider px-1">
-                  Portals & Access
+                  {t("header.portalsAndAccess")}
                 </div>
                 <a
                   href="https://uttkarsh-member.vercel.app/"
@@ -284,7 +294,7 @@ export default function Header() {
                   className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#1A3626] text-[#F9F6F0] text-xs font-semibold"
                 >
                   <span className="flex items-center gap-2">
-                    <UserCheck className="w-4 h-4" /> Member Panel
+                    <UserCheck className="w-4 h-4" /> {t("header.memberPanel")}
                   </span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
@@ -295,7 +305,7 @@ export default function Header() {
                   className="flex items-center justify-between px-3 py-2.5 rounded-xl border border-[#1A3626]/20 text-[#1A3626] text-xs font-semibold"
                 >
                   <span className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4" /> Admin Portal
+                    <ShieldCheck className="w-4 h-4" /> {t("header.adminPortal")}
                   </span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
@@ -306,7 +316,7 @@ export default function Header() {
                   className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#C5A059] text-[#1A3626] text-xs font-bold"
                 >
                   <span className="flex items-center gap-2">
-                    <UserPlus className="w-4 h-4" /> Register
+                    <UserPlus className="w-4 h-4" /> {t("header.register")}
                   </span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>

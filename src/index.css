@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+/* Indian-language (Devanagari + Gujarati) Unicode fonts for Hindi/Gujarati UI */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
@@ -28,12 +30,23 @@
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
   @keyframes accordion-down {
-    from { height: 0; }
-    to { height: var(--radix-accordion-content-height); }
+    from {
+      height: 0;
+    }
+
+    to {
+      height: var(--radix-accordion-content-height);
+    }
   }
+
   @keyframes accordion-up {
-    from { height: var(--radix-accordion-content-height); }
-    to { height: 0; }
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+
+    to {
+      height: 0;
+    }
   }
 }
 
@@ -41,11 +54,29 @@
 body {
   margin: 0;
   /* font-family: 'Manrope', system-ui, -apple-system, sans-serif; */
-  font-family: "Nunito Sans", sans-serif;
+  font-family: "Nunito Sans", "Noto Sans Devanagari", "Noto Sans Gujarati", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #F9F6F0;
   color: #1A3626;
+}
+
+/* Language-aware typography: keep headings on-brand and ensure Hindi/Gujarati
+   use a font that contains the required glyphs (no tofu boxes). */
+[lang="hi"] body,
+html[lang="hi"] {
+  font-family: "Noto Sans Devanagari", "Nunito Sans", system-ui, sans-serif;
+}
+
+[lang="gu"] body,
+html[lang="gu"] {
+  font-family: "Noto Sans Gujarati", "Nunito Sans", system-ui, sans-serif;
+}
+
+html[lang="hi"] .font-serif-display,
+html[lang="gu"] .font-serif-display {
+  font-family: "Noto Sans Devanagari", "Noto Sans Gujarati", "Cormorant Garamond", serif;
+  letter-spacing: 0;
 }
 
 .font-serif-display {
@@ -56,15 +87,19 @@ body {
 
 @layer base {
   :root {
-    --background: 42 38% 95%;          /* #F9F6F0 */
-    --foreground: 145 40% 16%;         /* #1A3626 */
+    --background: 42 38% 95%;
+    /* #F9F6F0 */
+    --foreground: 145 40% 16%;
+    /* #1A3626 */
     --card: 0 0% 100%;
     --card-foreground: 145 40% 16%;
     --popover: 0 0% 100%;
     --popover-foreground: 145 40% 16%;
-    --primary: 145 40% 16%;            /* Deep forest green */
+    --primary: 145 40% 16%;
+    /* Deep forest green */
     --primary-foreground: 42 38% 95%;
-    --secondary: 39 47% 56%;           /* Mustard gold #C5A059 */
+    --secondary: 39 47% 56%;
+    /* Mustard gold #C5A059 */
     --secondary-foreground: 145 40% 16%;
     --muted: 42 20% 92%;
     --muted-foreground: 145 15% 30%;
@@ -104,13 +139,33 @@ body {
 }
 
 /* Utility classes */
-.brand-green { color: #1A3626; }
-.bg-brand-green { background-color: #1A3626; }
-.brand-gold { color: #C5A059; }
-.bg-brand-gold { background-color: #C5A059; }
-.bg-brand-cream { background-color: #F9F6F0; }
-.brand-brown { color: #5C4033; }
-.bg-brand-brown { background-color: #5C4033; }
+.brand-green {
+  color: #1A3626;
+}
+
+.bg-brand-green {
+  background-color: #1A3626;
+}
+
+.brand-gold {
+  color: #C5A059;
+}
+
+.bg-brand-gold {
+  background-color: #C5A059;
+}
+
+.bg-brand-cream {
+  background-color: #F9F6F0;
+}
+
+.brand-brown {
+  color: #5C4033;
+}
+
+.bg-brand-brown {
+  background-color: #5C4033;
+}
 
 .leaf-divider {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='40' viewBox='0 0 100 40'%3E%3Cpath d='M50 10 Q60 20 50 30 Q40 20 50 10 Z' fill='%23C5A059' opacity='0.4'/%3E%3C/svg%3E");
@@ -120,29 +175,58 @@ body {
 }
 
 .hero-overlay {
-  background: linear-gradient(180deg, rgba(26,54,38,0.55) 0%, rgba(26,54,38,0.25) 60%, rgba(26,54,38,0.7) 100%);
+  background: linear-gradient(180deg, rgba(26, 54, 38, 0.55) 0%, rgba(26, 54, 38, 0.25) 60%, rgba(26, 54, 38, 0.7) 100%);
 }
 
 /* Smooth scroll */
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 /* Selection */
-::selection { background: #C5A059; color: #1A3626; }
+::selection {
+  background: #C5A059;
+  color: #1A3626;
+}
 
 /* Hide scrollbar utility */
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 @layer base {
-    [data-debug-wrapper="true"] {
-        display: contents !important;
-    }
-    [data-debug-wrapper="true"] > * {
-        margin-left: inherit; margin-right: inherit; margin-top: inherit; margin-bottom: inherit;
-        padding-left: inherit; padding-right: inherit; padding-top: inherit; padding-bottom: inherit;
-        column-gap: inherit; row-gap: inherit; gap: inherit;
-        border-left-width: inherit; border-right-width: inherit; border-top-width: inherit; border-bottom-width: inherit;
-        border-left-style: inherit; border-right-style: inherit; border-top-style: inherit; border-bottom-style: inherit;
-        border-left-color: inherit; border-right-color: inherit; border-top-color: inherit; border-bottom-color: inherit;
-    }
+  [data-debug-wrapper="true"] {
+    display: contents !important;
+  }
+
+  [data-debug-wrapper="true"]>* {
+    margin-left: inherit;
+    margin-right: inherit;
+    margin-top: inherit;
+    margin-bottom: inherit;
+    padding-left: inherit;
+    padding-right: inherit;
+    padding-top: inherit;
+    padding-bottom: inherit;
+    column-gap: inherit;
+    row-gap: inherit;
+    gap: inherit;
+    border-left-width: inherit;
+    border-right-width: inherit;
+    border-top-width: inherit;
+    border-bottom-width: inherit;
+    border-left-style: inherit;
+    border-right-style: inherit;
+    border-top-style: inherit;
+    border-bottom-style: inherit;
+    border-left-color: inherit;
+    border-right-color: inherit;
+    border-top-color: inherit;
+    border-bottom-color: inherit;
+  }
 }

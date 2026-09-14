@@ -1,16 +1,26 @@
 import { Link } from "react-router-dom";
 import { Leaf, Mail, Phone, MapPin, Instagram, Facebook, Youtube } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import api, { formatApiError } from "@/lib/api";
 import { toast } from "sonner";
 import { TID } from "@/constants/testIds";
 import { useContent } from "@/context/ContentContext";
+import { useTranslatedText } from "@/hooks/useTranslatedText";
 
 export default function Footer() {
+  const { t } = useTranslation();
   const { content } = useContent();
   const { footer } = content;
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
+
+  // Dynamic (admin-managed) footer content goes through the translation layer.
+  const brandDescription = useTranslatedText(
+    footer?.brandDescription,
+    t("footer.brandDescription"),
+  );
+  const copyrightText = useTranslatedText(footer?.copyrightText, t("footer.copyright"));
 
   const subscribe = async (e) => {
     e.preventDefault();
@@ -18,7 +28,7 @@ export default function Footer() {
     setBusy(true);
     try {
       await api.post("/newsletter", { email });
-      toast.success("Subscribed! Watch your inbox for wellness tips.");
+      toast.success(t("footer.subscribed"));
       setEmail("");
     } catch (err) {
       toast.error(formatApiError(err));
@@ -39,11 +49,11 @@ export default function Footer() {
               </div>
               <div>
                 <div className="font-serif-display text-xl">Utkarsh Corporation</div>
-                <div className="text-[10px] tracking-[0.25em] uppercase text-[#C5A059]">Local for Vocal</div>
+                <div className="text-[10px] tracking-[0.25em] uppercase text-[#C5A059]">{t("footer.localForVocal")}</div>
               </div>
             </div>
             <p className="text-sm text-[#F9F6F0]/70 leading-relaxed">
-              {footer?.brandDescription || "Rooted in ancient Ayurvedic wisdom, we craft trusted herbal products for the progress of every Indian family — from local hands to your home."}
+              {brandDescription}
             </p>
             <div className="flex gap-3 mt-6">
               <a href={footer?.instagramUrl || "#"} target="_blank" rel="noreferrer" className="w-9 h-9 rounded-full border border-[#F9F6F0]/20 flex items-center justify-center hover:bg-[#C5A059] hover:border-[#C5A059] hover:text-[#1A3626] transition"><Instagram className="w-4 h-4" /></a>
@@ -54,42 +64,42 @@ export default function Footer() {
 
           {/* Shop */}
           <div>
-            <h4 className="text-xs tracking-[0.2em] uppercase text-[#C5A059] mb-5">Shop</h4>
+            <h4 className="text-xs tracking-[0.2em] uppercase text-[#C5A059] mb-5">{t("footer.shop")}</h4>
             <ul className="space-y-3 text-sm">
-              <li><Link to="/shop?category=immunity" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Immunity</Link></li>
-              <li><Link to="/shop?category=digestive-health" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Digestive Health</Link></li>
-              <li><Link to="/shop?category=skin-care" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Skin Care</Link></li>
-              <li><Link to="/shop?category=stress-sleep" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Stress & Sleep</Link></li>
-              <li><Link to="/shop?bestseller=true" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Best Sellers</Link></li>
+              <li><Link to="/shop?category=immunity" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.immunity")}</Link></li>
+              <li><Link to="/shop?category=digestive-health" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.digestiveHealth")}</Link></li>
+              <li><Link to="/shop?category=skin-care" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.skinCare")}</Link></li>
+              <li><Link to="/shop?category=stress-sleep" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.stressSleep")}</Link></li>
+              <li><Link to="/shop?bestseller=true" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.bestSellers")}</Link></li>
             </ul>
           </div>
 
           {/* Company */}
           <div>
-            <h4 className="text-xs tracking-[0.2em] uppercase text-[#C5A059] mb-5">Company</h4>
+            <h4 className="text-xs tracking-[0.2em] uppercase text-[#C5A059] mb-5">{t("footer.company")}</h4>
             <ul className="space-y-3 text-sm">
-              <li><Link to="/about" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">About Us</Link></li>
-              <li><Link to="/health-camps" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Health Camps</Link></li>
-              <li><Link to="/gallery" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Gallery</Link></li>
-              <li><Link to="/distributor" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Become a Distributor</Link></li>
-              <li><Link to="/contact" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Contact</Link></li>
-              <li><Link to="/policies/shipping" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Shipping Policy</Link></li>
-              <li><Link to="/policies/return" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Returns & Refund</Link></li>
-              <li><Link to="/policies/terms" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Terms</Link></li>
-              <li><Link to="/policies/privacy" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">Privacy</Link></li>
+              <li><Link to="/about" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.aboutUs")}</Link></li>
+              <li><Link to="/health-camps" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.healthCamps")}</Link></li>
+              <li><Link to="/gallery" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.gallery")}</Link></li>
+              <li><Link to="/distributor" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.becomeDistributor")}</Link></li>
+              <li><Link to="/contact" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.contact")}</Link></li>
+              <li><Link to="/policies/shipping" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.shippingPolicy")}</Link></li>
+              <li><Link to="/policies/return" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.returnsRefund")}</Link></li>
+              <li><Link to="/policies/terms" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.terms")}</Link></li>
+              <li><Link to="/policies/privacy" className="text-[#F9F6F0]/70 hover:text-[#C5A059]">{t("footer.links.privacy")}</Link></li>
             </ul>
           </div>
 
           {/* Newsletter + contact */}
           <div>
-            <h4 className="text-xs tracking-[0.2em] uppercase text-[#C5A059] mb-5">Stay Connected</h4>
-            <p className="text-sm text-[#F9F6F0]/70 mb-4">Weekly wellness tips, launches and 10% off your first order.</p>
+            <h4 className="text-xs tracking-[0.2em] uppercase text-[#C5A059] mb-5">{t("footer.stayConnected")}</h4>
+            <p className="text-sm text-[#F9F6F0]/70 mb-4">{t("footer.newsletterDesc")}</p>
             <form onSubmit={subscribe} className="flex gap-2 mb-6">
               <input
                 data-testid={TID.newsletterInput}
                 type="email"
                 required
-                placeholder="your@email.com"
+                placeholder={t("footer.emailPlaceholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="flex-1 min-w-0 bg-[#F9F6F0]/10 border border-[#F9F6F0]/20 focus:border-[#C5A059] outline-none rounded-full px-4 py-2 text-sm text-[#F9F6F0] placeholder-[#F9F6F0]/40"
@@ -99,7 +109,7 @@ export default function Footer() {
                 disabled={busy}
                 className="rounded-full px-5 py-2 bg-[#C5A059] text-[#1A3626] text-sm font-semibold hover:bg-[#d4b06a] transition disabled:opacity-60"
               >
-                Join
+                {t("footer.join")}
               </button>
             </form>
             <ul className="space-y-2 text-sm text-[#F9F6F0]/70">
@@ -114,14 +124,14 @@ export default function Footer() {
           <div className="inline-flex flex-wrap items-center gap-x-1">
             <span aria-hidden="true">©</span>
             <span>{new Date().getFullYear()}</span>
-            <span>{footer?.copyrightText || "Utkarsh Corporation. All rights reserved."}</span>
+            <span>{copyrightText}</span>
           </div>
           <div className="flex gap-4">
-            <span>GMP Certified</span>
+            <span>{t("footer.gmpCertified")}</span>
             <span>·</span>
-            <span>AYUSH Compliant</span>
+            <span>{t("footer.ayushCompliant")}</span>
             <span>·</span>
-            <span>100% Natural</span>
+            <span>{t("footer.natural")}</span>
           </div>
         </div>
       </div>

@@ -1,53 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Loader2 } from "lucide-react";
+import { PageLoader } from "@/components/Loader";
 import {
   legalContentService,
   LEGAL_CONTENT_TYPES,
 } from "@/services/legalContentService";
-
-// ---------------------------------------------------------------------------
-// Static policy pages (no backend-managed content exists for these).
-// Return & Shipping policies are intentionally kept local.
-// ---------------------------------------------------------------------------
-const CONTENT = {
-  return: {
-    title: "Return & Refund Policy",
-    body: `We stand behind every Utkarsh product. If you're not satisfied, return unopened items within 7 days of delivery for a full refund.
-
-**Eligibility**
-• Product must be unopened and in original packaging.
-• Return request initiated within 7 days.
-• Consumables opened for use are non-returnable for hygiene reasons.
-
-**How to return**
-1. Email us or WhatsApp us with your order number.
-2. Pack the item securely.
-3. Our courier will pick up within 3-5 business days.
-
-**Refund timeline**
-Refunds are processed within 5-7 business days once we receive the item. Amount is credited to the original payment method (or bank transfer for COD orders).`,
-  },
-  shipping: {
-    title: "Shipping Policy",
-    body: `We ship pan-India via trusted courier partners.
-
-**Delivery timelines**
-• Metro cities: 2-4 business days.
-• Other cities/towns: 4-7 business days.
-• Remote pincodes: 7-10 business days.
-
-**Shipping charges**
-• Free shipping on orders above ₹499.
-• Below ₹499: flat ₹49 shipping.
-
-**Order tracking**
-Once dispatched, you'll receive a tracking number via SMS/email. You can also view live status from your account page.
-
-**Cash on Delivery**
-Available across India. No extra charges.`,
-  },
-};
+import LocalizedText from "@/components/LocalizedText";
 
 // Terms & Conditions and Privacy Policy are served from the backend so the
 // site always shows the currently-active documents configured by the admin.
@@ -71,7 +31,7 @@ function PolicyBody({ body }) {
             key={i}
             className="font-bold text-[#1A3626] text-lg mt-6 mb-2 first:mt-0"
           >
-            <span>{heading[1]}</span>
+            <LocalizedText value={heading[1]} />
           </h2>
         );
       }
@@ -80,28 +40,35 @@ function PolicyBody({ body }) {
           key={i}
           className="text-[#1A3626]/85 leading-relaxed mb-4 whitespace-pre-line"
         >
-          <span>{para}</span>
+          <LocalizedText value={para} />
         </p>
       );
     });
 }
 
 function PolicyLinks() {
+  const { t } = useTranslation();
   return (
     <div className="mt-8 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-      <Link to="/policies/return" className="text-[#1A3626]/70 hover:text-[#C5A059]">Returns</Link>
-      <Link to="/policies/shipping" className="text-[#1A3626]/70 hover:text-[#C5A059]">Shipping</Link>
-      <Link to="/policies/terms" className="text-[#1A3626]/70 hover:text-[#C5A059]">Terms</Link>
-      <Link to="/policies/privacy" className="text-[#1A3626]/70 hover:text-[#C5A059]">Privacy</Link>
+      <Link to="/policies/return" className="text-[#1A3626]/70 hover:text-[#C5A059]">{t("policies.returns")}</Link>
+      <Link to="/policies/shipping" className="text-[#1A3626]/70 hover:text-[#C5A059]">{t("policies.shipping")}</Link>
+      <Link to="/policies/terms" className="text-[#1A3626]/70 hover:text-[#C5A059]">{t("policies.terms")}</Link>
+      <Link to="/policies/privacy" className="text-[#1A3626]/70 hover:text-[#C5A059]">{t("policies.privacy")}</Link>
     </div>
   );
 }
 
 export default function Policies() {
+  const { t } = useTranslation();
   const { slug } = useParams();
   const liveType = SLUG_TO_TYPE[slug];
   const isLive = Boolean(liveType);
-  const staticItem = CONTENT[slug];
+  const staticItem =
+    slug === "return"
+      ? { title: t("policies.returnPolicy.title"), body: t("policies.returnPolicy.body") }
+      : slug === "shipping"
+        ? { title: t("policies.shippingPolicy.title"), body: t("policies.shippingPolicy.body") }
+        : null;
 
   const [live, setLive] = useState(null);
   const [loadState, setLoadState] = useState(isLive ? "loading" : "ready"); // loading | ready | error
@@ -122,14 +89,14 @@ export default function Policies() {
         setLoadState("ready");
       } catch (err) {
         if (cancelled) return;
-        setErrorMsg(err?.message || "Unable to load this policy right now.");
+        setErrorMsg(err?.message || t("policies.loadErrorMessage"));
         setLoadState("error");
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [liveType, isLive, attempt]);
+  }, [liveType, isLive, attempt, t]);
 
   // -------------------------------------------------------------------------
   // Unknown slug
@@ -137,8 +104,8 @@ export default function Policies() {
   if (!isLive && !staticItem) {
     return (
       <div className="max-w-3xl mx-auto p-16 text-center">
-        <h1 className="font-serif-display text-3xl text-[#1A3626] mb-4">Policy not found</h1>
-        <Link to="/" className="text-[#C5A059] underline">Back to home</Link>
+        <h1 className="font-serif-display text-3xl text-[#1A3626] mb-4">{t("policies.notFoundTitle")}</h1>
+        <Link to="/" className="text-[#C5A059] underline">{t("policies.backToHome")}</Link>
       </div>
     );
   }
@@ -150,12 +117,7 @@ export default function Policies() {
     let body = null;
 
     if (loadState === "loading") {
-      body = (
-        <div className="flex items-center justify-center py-16 text-[#1A3626]/70">
-          <Loader2 className="w-5 h-5 animate-spin mr-2" />
-          <span>Loading latest policy…</span>
-        </div>
-      );
+      body = <PageLoader label={t("policies.loadingLatest")} minHeight="18rem" />;
     } else if (loadState === "error") {
       body = (
         <div className="text-center py-14">
@@ -165,7 +127,7 @@ export default function Policies() {
             onClick={() => setAttempt((a) => a + 1)}
             className="rounded-full px-5 py-2 bg-[#1A3626] text-[#F9F6F0] text-sm font-semibold hover:bg-[#2C4C3B] transition"
           >
-            Try again
+            {t("policies.tryAgain")}
           </button>
         </div>
       );
@@ -173,11 +135,10 @@ export default function Policies() {
       body = (
         <div className="text-center py-14">
           <div className="font-serif-display text-xl text-[#1A3626] mb-2">
-            This policy has not been published yet
+            {t("policies.notPublished")}
           </div>
           <p className="text-sm text-[#1A3626]/70 max-w-md mx-auto">
-            Please check back soon. Our team updates this page as soon as new
-            content is made available.
+            {t("policies.notPublishedDesc")}
           </p>
         </div>
       );
@@ -191,9 +152,13 @@ export default function Policies() {
 
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
-        <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">Policies</div>
+        <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">{t("policies.title")}</div>
         <h1 className="font-serif-display text-4xl sm:text-5xl text-[#1A3626] mb-8">
-          <span>{live && loadState === "ready" ? live.title : slug === "privacy" ? "Privacy Policy" : "Terms & Conditions"}</span>
+          {live && loadState === "ready" ? (
+            <LocalizedText value={live.title} />
+          ) : (
+            <span>{slug === "privacy" ? t("policies.privacyPolicy") : t("policies.termsConditions")}</span>
+          )}
         </h1>
         {body}
         <PolicyLinks />
@@ -206,7 +171,7 @@ export default function Policies() {
   // -------------------------------------------------------------------------
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
-      <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">Policies</div>
+      <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">{t("policies.title")}</div>
       <h1 className="font-serif-display text-4xl sm:text-5xl text-[#1A3626] mb-8">
         <span>{staticItem.title}</span>
       </h1>

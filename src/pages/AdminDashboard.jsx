@@ -4,6 +4,7 @@ import api from "@/lib/api";
 import { formatApiError } from "@/lib/api";
 import { toast } from "sonner";
 import { Leaf } from "lucide-react";
+import { PageLoader } from "@/components/Loader";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -45,7 +46,9 @@ export default function AdminDashboard() {
           </div>
         </div>
         {loading ? (
-          <div className="bg-white rounded-2xl border border-[#1A3626]/10 p-8 text-center">Loading members...</div>
+          <div className="bg-white rounded-2xl border border-[#1A3626]/10">
+            <PageLoader label="Loading members…" minHeight="16rem" />
+          </div>
         ) : (
           <div className="overflow-x-auto bg-white rounded-2xl border border-[#1A3626]/10">
             <table className="min-w-full text-sm">

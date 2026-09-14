@@ -1,22 +1,39 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { contentService, DEFAULT_CONTENT } from "@/services/contentService";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  contentService,
+  DEFAULT_CONTENT,
+  localizeContent,
+} from "@/services/contentService";
 import { toast } from "sonner";
 
 const ContentContext = createContext({
   content: DEFAULT_CONTENT,
   loading: true,
-  updateContent: async () => {},
-  resetContent: async () => {},
+  updateContent: async () => { },
+  resetContent: async () => { },
 });
 
 export function ContentProvider({ children }) {
-  const [content, setContent] = useState(DEFAULT_CONTENT);
+  // Raw content is kept exactly as returned by the API (may contain localized
+  // leaves such as { en, hi, gu }); `content` is the language-resolved view
+  // that every consumer renders.
+  const [rawContent, setRawContent] = useState(DEFAULT_CONTENT);
   const [loading, setLoading] = useState(true);
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language || "en";
+
+  // Re-resolve dynamic backend content whenever the language changes so the
+  // whole site (including API-driven content) switches instantly.
+  const content = useMemo(
+    () => localizeContent(rawContent, lang),
+    [rawContent, lang]
+  );
 
   const loadContent = async () => {
     try {
       const data = await contentService.getContent();
-      setContent(data);
+      setRawContent(data);
     } catch (err) {
       console.error("Failed to load content context:", err);
     } finally {
@@ -31,11 +48,11 @@ export function ContentProvider({ children }) {
   const handleUpdateContent = async (newContent) => {
     try {
       const updated = await contentService.updateContent(newContent);
-      setContent(updated);
-      toast.success("Site dynamic content updated successfully!");
+      setRawContent(updated);
+      toast.success(t("common.siteContentUpdated"));
       return updated;
     } catch (err) {
-      toast.error("Failed to update site content");
+      toast.error(t("common.siteContentUpdateFailed"));
       throw err;
     }
   };
@@ -43,11 +60,11 @@ export function ContentProvider({ children }) {
   const handleResetContent = async () => {
     try {
       const reset = await contentService.resetContent();
-      setContent(reset);
-      toast.success("Site dynamic content reset to defaults!");
+      setRawContent(reset);
+      toast.success(t("common.siteContentReset"));
       return reset;
     } catch (err) {
-      toast.error("Failed to reset site content");
+      toast.error(t("common.siteContentResetFailed"));
       throw err;
     }
   };

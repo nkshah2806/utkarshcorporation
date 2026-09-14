@@ -74,6 +74,53 @@ export const DEFAULT_CONTENT = {
   }
 };
 
+const LANGUAGE_KEYS = ["en", "hi", "gu"];
+
+/**
+ * True when an object is a localized leaf, i.e. its keys are only language
+ * codes (a subset of { en, hi, gu }). Such objects represent one field that has
+ * per-language values, e.g. `{ en: "Welcome", hi: "स्वागत", gu: "સ્વાગત" }`.
+ */
+const isLocalizedLeaf = (value) =>
+  value &&
+  typeof value === "object" &&
+  !Array.isArray(value) &&
+  Object.keys(value).length > 0 &&
+  Object.keys(value).every((k) => LANGUAGE_KEYS.includes(k));
+
+/**
+ * Resolve a localized leaf into a single string for `lang`, falling back to
+ * English and then to any available translation so the UI never renders blank.
+ */
+export const pickLocalizedValue = (value, lang = "en") => {
+  if (!value || typeof value !== "object") return value;
+  return value[lang] ?? value.en ?? value.hi ?? value.gu ?? "";
+};
+
+/**
+ * Recursively walk a site-content tree and flatten every localized leaf
+ * (`{ en, hi, gu }`) into a plain string for the active language. Plain
+ * strings, numbers and structural objects/arrays are preserved. This lets the
+ * backend store multilingual dynamic content that the public site can render in
+ * any of the supported languages without changing any component.
+ */
+export const localizeContent = (content, lang = "en") => {
+  if (isLocalizedLeaf(content)) {
+    return pickLocalizedValue(content, lang);
+  }
+  if (Array.isArray(content)) {
+    return content.map((item) => localizeContent(item, lang));
+  }
+  if (content && typeof content === "object") {
+    const out = {};
+    for (const [key, value] of Object.entries(content)) {
+      out[key] = localizeContent(value, lang);
+    }
+    return out;
+  }
+  return content;
+};
+
 const mergeContent = (dbData) => {
   if (!dbData || typeof dbData !== "object") return DEFAULT_CONTENT;
   return {

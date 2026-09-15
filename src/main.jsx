@@ -5,7 +5,7 @@ import "./index.css";
 import "./i18n";
 import App from "./App";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { GlobalLoader } from "./components/Loader";
+import { GlobalLoader, TranslationLoader } from "./components/Loader";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,6 +22,7 @@ root.render(
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <GlobalLoader />
+        <TranslationLoader />
         <App />
       </QueryClientProvider>
     </ErrorBoundary>

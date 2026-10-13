@@ -10,6 +10,7 @@ import { useContent } from "@/context/ContentContext";
 import { mediaSrc } from "@/lib/api";
 import LocalizedText from "@/components/LocalizedText";
 import { useTranslatedText } from "@/hooks/useTranslatedText";
+import { ProductCardSkeleton, Skeleton } from "@/components/ui/skeleton-loaders";
 
 const ICON_MAP = {
   ShieldCheck,
@@ -27,6 +28,7 @@ export default function Home() {
   const [featured, setFeatured] = useState([]);
   const [categories, setCategories] = useState([]);
   const [best, setBest] = useState([]);
+  const [productsLoading, setProductsLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
@@ -41,6 +43,8 @@ export default function Home() {
         setCategories(categoriesData || []);
       } catch (error) {
         console.error("Error loading home data:", error);
+      } finally {
+        setProductsLoading(false);
       }
     };
     loadData();
@@ -114,7 +118,11 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 lg:gap-6">
-          {categories.slice(0, 6).map((c, idx) => (
+          {productsLoading
+            ? Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className={`rounded-2xl bg-[#1A3626]/10 min-h-[180px] ${i === 0 ? 'lg:col-span-2 lg:row-span-2' : i === 3 ? 'lg:col-span-2' : ''}`} />
+              ))
+            : categories.slice(0, 6).map((c, idx) => (
             <Link
               key={c.id}
               data-testid={TID.categoryCard}

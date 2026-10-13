@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Loader2 } from "lucide-react";
-import { PageLoader } from "@/components/Loader";
+import { PageSkeleton } from "@/components/ui/skeleton-loaders";
 import {
   legalContentService,
   LEGAL_CONTENT_TYPES,
@@ -117,7 +117,7 @@ export default function Policies() {
     let body = null;
 
     if (loadState === "loading") {
-      body = <PageLoader label={t("policies.loadingLatest")} minHeight="18rem" />;
+      body = <PageSkeleton heroHeight="h-24" contentBlocks={2} />;
     } else if (loadState === "error") {
       body = (
         <div className="text-center py-14">

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { startLoading, stopLoading } from "./globalLoading";
 
-export const BACKEND_URL = import.meta.env.VITE_API_URL || "https://uttkarsh-backend.onrender.com";
+export const BACKEND_URL = import.meta.env.VITE_API_URL || "https://api.utkarshassessment.com";
 export const API = `${BACKEND_URL}/api`;
 
 /**

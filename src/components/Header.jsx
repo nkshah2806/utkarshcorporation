@@ -133,7 +133,6 @@ export default function Header() {
 
           {/* Search + Dropdown */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <LanguageSelector />
             <form onSubmit={onSearchSubmit} className="relative hidden md:block" ref={sugRef}>
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#1A3626]/50" />
               <input
@@ -142,7 +141,7 @@ export default function Header() {
                 onChange={(e) => setQ(e.target.value)}
                 onFocus={() => q && setShowSug(true)}
                 placeholder={searchPlaceholder}
-                className="w-56 lg:w-72 pl-9 pr-3 py-2 text-sm rounded-full bg-white border border-[#1A3626]/15 focus:border-[#1A3626] focus:ring-1 focus:ring-[#1A3626] outline-none"
+                className="w-56 lg:w-60 pl-9 pr-3 py-2 text-sm rounded-full bg-white border border-[#1A3626]/15 focus:border-[#1A3626] focus:ring-1 focus:ring-[#1A3626] outline-none"
               />
               {showSug && suggest.length > 0 && (
                 <div className="absolute top-full mt-2 w-full bg-white rounded-xl shadow-lg border border-[#1A3626]/10 overflow-hidden">
@@ -172,7 +171,7 @@ export default function Header() {
                 </div>
               )}
             </form>
-
+            <LanguageSelector />
             {/* Profile Dropdown containing the 3 links */}
             <div className="relative" ref={acctRef}>
               <button
@@ -199,7 +198,7 @@ export default function Header() {
                   <div className="py-1">
                     {/* Link 1: Member Panel */}
                     <a
-                      href="https://uttkarsh-member.vercel.app/"
+                      href="https://member.utkarshassessment.com/"
                       target="_blank"
                       rel="noreferrer"
                       onClick={() => setShowAcct(false)}
@@ -214,7 +213,7 @@ export default function Header() {
 
                     {/* Link 2: Admin Portal */}
                     <a
-                      href="https://uttkarsh-admin.vercel.app/"
+                      href="https://admin.utkarshassessment.com/"
                       target="_blank"
                       rel="noreferrer"
                       onClick={() => setShowAcct(false)}
@@ -288,7 +287,7 @@ export default function Header() {
                   {t("header.portalsAndAccess")}
                 </div>
                 <a
-                  href="https://uttkarsh-member.vercel.app/"
+                  href="https://member.utkarshassessment.com/"
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#1A3626] text-[#F9F6F0] text-xs font-semibold"
@@ -299,7 +298,7 @@ export default function Header() {
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
                 <a
-                  href="https://uttkarsh-admin.vercel.app/"
+                  href="https://admin.utkarshassessment.com/"
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-between px-3 py-2.5 rounded-xl border border-[#1A3626]/20 text-[#1A3626] text-xs font-semibold"
@@ -310,7 +309,7 @@ export default function Header() {
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
                 <a
-                  href="https://uttkarsh-member.vercel.app/"
+                  href="https://member.utkarshassessment.com/"
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#C5A059] text-[#1A3626] text-xs font-bold"

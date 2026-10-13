@@ -1,14 +1,13 @@
-import { cn } from "@/lib/utils"
-
-function Skeleton({
-  className,
-  ...props
-}) {
-  return (
-    <div
-      className={cn("animate-pulse rounded-md bg-primary/10", className)}
-      {...props} />
-  );
-}
-
-export { Skeleton }
+export {
+  Skeleton,
+  ImageWithSkeleton,
+  ErrorState,
+  EmptyState,
+  ProductCardSkeleton,
+  HealthCampCardSkeleton,
+  GalleryCardSkeleton,
+  TableSkeleton,
+  FormSkeleton,
+  DropdownSkeleton,
+  PageSkeleton,
+} from "./skeleton-loaders";

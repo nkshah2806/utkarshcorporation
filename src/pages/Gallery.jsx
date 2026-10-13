@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { galleryService } from "@/services/galleryService";
 import { BACKEND_URL } from "@/lib/api";
 import LocalizedText from "@/components/LocalizedText";
-import { Loader } from "@/components/Loader";
+import { GalleryCardSkeleton, ErrorState } from "@/components/ui/skeleton-loaders";
 import {
     LayoutGrid,
     Camera,
@@ -278,11 +278,17 @@ export default function Gallery() {
                 </div>
 
                 {loading ? (
-                    <div className="text-center text-[#1A3626]/60 py-16">
-                        <Loader size={40} label={t("gallery.loading")} className="mx-auto" style={{ flexDirection: "column" }} />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {Array.from({ length: 6 }).map((_, i) => (
+                            <GalleryCardSkeleton key={i} isVideo={activeTab === "video"} />
+                        ))}
                     </div>
                 ) : error ? (
-                    <div className="text-center text-[#1A3626]/60 py-16">{error}</div>
+                    <ErrorState
+                        title={t("gallery.loadError") || "Unable to load gallery"}
+                        message="Please check your connection and try again."
+                        onRetry={loadGallery}
+                    />
                 ) : (
                     <>
                         {activeTab !== "video" && photoGrid}

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { contactService } from "@/services/contactService";
 import { mediaSrc } from "@/lib/api";
 import LocalizedText from "@/components/LocalizedText";
-import { PageLoader } from "@/components/Loader";
+import { PageSkeleton } from "@/components/ui/skeleton-loaders";
 import {
     ArrowLeft,
     Calendar,
@@ -87,9 +87,7 @@ export default function HealthCampDetails() {
     }, [campId, healthCamps, navigate, toast, t]);
 
     if (loading) {
-        return (
-            <PageLoader label={t("healthCamps.loadingDetails")} minHeight="60vh" />
-        );
+        return <PageSkeleton heroHeight="h-64" contentBlocks={2} />;
     }
 
     if (!camp) return null;

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { TID } from "@/constants/testIds";
 import { mediaSrc } from "@/lib/api";
 import LocalizedText from "@/components/LocalizedText";
+import { ImageWithSkeleton } from "@/components/ui/skeleton-loaders";
 
 export default function ProductCard({ product }) {
   const { t } = useTranslation();
@@ -18,18 +19,20 @@ export default function ProductCard({ product }) {
       className="group bg-white rounded-2xl overflow-hidden border border-[#1A3626]/10 hover:shadow-lg transition-all flex flex-col"
     >
       <div className="relative aspect-square bg-[#F9F6F0] overflow-hidden">
-        <img
+      <ImageWithSkeleton
           src={mediaSrc(product.images?.[0])}
-          alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          alt={typeof product.name === 'string' ? product.name : ''}
+          aspectRatio="aspect-square"
+          containerClassName="bg-[#F9F6F0]"
+          className="group-hover:scale-105 transition-transform duration-500"
         />
         {product.is_bestseller && (
-          <span className="absolute top-3 left-3 bg-[#C5A059] text-[#1A3626] text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full">
+          <span className="absolute top-3 left-3 bg-[#C5A059] text-[#1A3626] text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full z-10">
             {t("product.bestseller")}
           </span>
         )}
         {discount > 0 && (
-          <span className="absolute top-3 right-3 bg-[#1A3626] text-[#F9F6F0] text-[10px] font-bold px-2 py-1 rounded-full">
+          <span className="absolute top-3 right-3 bg-[#1A3626] text-[#F9F6F0] text-[10px] font-bold px-2 py-1 rounded-full z-10">
             <span className="inline-flex items-baseline gap-0.5">
               <span>{discount}</span>
               <span>{t("product.off")}</span>

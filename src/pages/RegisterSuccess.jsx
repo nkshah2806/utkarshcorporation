@@ -33,7 +33,7 @@ export default function RegisterSuccess() {
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
             <a
-              href="https://uttkarsh-member.vercel.app/"
+              href="https://member.utkarshassessment.com/"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 bg-[#1A3626] text-[#F9F6F0] text-sm font-semibold hover:bg-[#2C4C3B] transition"

@@ -8,7 +8,7 @@ import { useContent } from "@/context/ContentContext";
 import HealthCampRegisterModal from "@/components/HealthCampRegisterModal";
 import { mediaSrc } from "@/lib/api";
 import LocalizedText from "@/components/LocalizedText";
-import { Loader } from "@/components/Loader";
+import { HealthCampCardSkeleton, ErrorState } from "@/components/ui/skeleton-loaders";
 
 /**
  * Map a camp document (new HealthCamp model) or a legacy CMS fallback item to a
@@ -142,8 +142,10 @@ export default function HealthCamps() {
           {t("healthCamps.upcomingCamps")}
         </h2>
         {loading ? (
-          <div className="py-10 text-center text-[#1A3626]/60">
-            <Loader size={40} label={t("healthCamps.loading")} style={{ flexDirection: "column" }} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <HealthCampCardSkeleton key={i} />
+            ))}
           </div>
         ) : camps.length === 0 ? (
           <div className="text-[#1A3626]/60">

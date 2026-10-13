@@ -7,7 +7,8 @@ import ProductCard from "@/components/ProductCard";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { TID } from "@/constants/testIds";
 import LocalizedText from "@/components/LocalizedText";
-import { Loader } from "@/components/Loader";
+import { ProductCardSkeleton, EmptyState } from "@/components/ui/skeleton-loaders";
+import { ShoppingBag } from "lucide-react";
 
 export default function Shop() {
   const { t } = useTranslation();
@@ -221,13 +222,10 @@ export default function Shop() {
         {/* Grid */}
         <div className="lg:col-span-3">
           {loading ? (
-            <div>
-              <Loader size={40} label={t("shop.loading")} className="mb-6" style={{ flexDirection: "column" }} />
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="aspect-[3/4] bg-white rounded-2xl animate-pulse border border-[#1A3626]/10" />
-                ))}
-              </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
             </div>
           ) : products.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl border border-[#1A3626]/10">

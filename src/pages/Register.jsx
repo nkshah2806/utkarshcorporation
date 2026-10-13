@@ -120,7 +120,7 @@ export default function Register() {
           </button>
           <div className="text-center text-sm text-[#1A3626]/70">
             {t("register.needAccess")}{' '}
-            <a href="https://uttkarsh-member.vercel.app/" target="_blank" rel="noreferrer" className="text-[#C5A059] font-semibold hover:underline">
+            <a href="https://member.utkarshassessment.com/" target="_blank" rel="noreferrer" className="text-[#C5A059] font-semibold hover:underline">
               {t("register.openMemberPanel")}
             </a>
           </div>

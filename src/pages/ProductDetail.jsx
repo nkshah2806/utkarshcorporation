@@ -158,19 +158,35 @@ export default function ProductDetail() {
           {/* Gallery */}
           <div>
             <div className="aspect-square bg-white rounded-2xl overflow-hidden border border-[#1A3626]/10 mb-4">
-              <img src={mediaSrc(product.images?.[activeImg])} alt={product.name} className="w-full h-full object-cover" />
+              {mediaSrc(product.images?.[activeImg]) ? (
+                <img
+                  src={mediaSrc(product.images?.[activeImg])}
+                  alt={typeof product.name === "string" ? product.name : ""}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-[#1A3626]/5 text-[#1A3626]/40">
+                  <Leaf className="w-16 h-16 opacity-40" />
+                </div>
+              )}
             </div>
-            <div className="flex gap-3">
-              {product.images?.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImg(i)}
-                  className={`w-20 h-20 rounded-xl overflow-hidden border-2 ${activeImg === i ? "border-[#1A3626]" : "border-transparent"}`}
-                >
-                  <img src={mediaSrc(img)} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
+            {Array.isArray(product.images) && product.images.length > 1 && (
+              <div className="flex gap-3">
+                {product.images.map((img, i) => {
+                  const src = mediaSrc(img);
+                  if (!src) return null;
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => setActiveImg(i)}
+                      className={`w-20 h-20 rounded-xl overflow-hidden border-2 ${activeImg === i ? "border-[#1A3626]" : "border-transparent"}`}
+                    >
+                      <img src={src} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Info */}

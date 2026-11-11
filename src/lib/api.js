@@ -9,10 +9,12 @@ export const API = `${BACKEND_URL}/api`;
  * full URL the browser can load. Legacy external URLs pass through untouched.
  */
 export function mediaSrc(value) {
-  if (!value) return "";
-  if (/^https?:\/\//.test(value)) return value;
-  if (value.startsWith("/uploads/")) return `${BACKEND_URL}${value}`;
-  return value;
+  if (!value || (typeof value === "string" && !value.trim())) return null;
+  if (typeof value === "string") {
+    if (/^https?:\/\//.test(value)) return value;
+    if (value.startsWith("/uploads/")) return `${BACKEND_URL}${value}`;
+  }
+  return value || null;
 }
 
 const api = axios.create({ baseURL: API });

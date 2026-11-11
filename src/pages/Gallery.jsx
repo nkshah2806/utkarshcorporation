@@ -26,14 +26,16 @@ import { TID } from "@/constants/testIds";
  * the browser can load it. Legacy external URLs are still rendered.
  */
 export const mediaSrc = (value) => {
-    if (!value) return "";
-    if (/^https?:\/\//.test(value)) return value; // legacy external refs only
-    if (value.startsWith("/uploads/")) return `${BACKEND_URL}${value}`;
-    return value;
+    if (!value || (typeof value === "string" && !value.trim())) return null;
+    if (typeof value === "string") {
+        if (/^https?:\/\//.test(value)) return value; // legacy external refs only
+        if (value.startsWith("/uploads/")) return `${BACKEND_URL}${value}`;
+    }
+    return value || null;
 };
 
 /** Prefer the admin-uploaded thumbnail for videos. */
-export const getVideoThumbnail = (item) => mediaSrc(item?.thumbnail_url || "");
+export const getVideoThumbnail = (item) => mediaSrc(item?.thumbnail_url) || null;
 
 /* ------------------------------------------------------------------ */
 

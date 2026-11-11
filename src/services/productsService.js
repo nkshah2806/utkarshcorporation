@@ -1,5 +1,23 @@
 import api from "@/lib/api";
 
+const sanitizeProduct = (p) => {
+  if (!p || typeof p !== "object") return p;
+  const rawImages = Array.isArray(p.images)
+    ? p.images
+    : p.image
+    ? [p.image]
+    : [];
+  const images = rawImages
+    .filter((img) => typeof img === "string" && img.trim() !== "")
+    .map((img) => img.trim());
+
+  return {
+    ...p,
+    id: p._id || p.id,
+    images,
+  };
+};
+
 export const productsService = {
   /**
    * Get all products with optional filters
@@ -8,7 +26,7 @@ export const productsService = {
     try {
       const response = await api.get("/products", { params });
       if (Array.isArray(response.data) && response.data.length > 0) {
-        return response.data.map((p) => ({ ...p, id: p._id || p.id }));
+        return response.data.map(sanitizeProduct);
       }
     } catch (error) {
       console.warn("Products API unavailable:", error.message);
@@ -25,7 +43,7 @@ export const productsService = {
         params: { featured: true, limit },
       });
       if (Array.isArray(response.data) && response.data.length > 0) {
-        return response.data.map((p) => ({ ...p, id: p._id || p.id }));
+        return response.data.map(sanitizeProduct);
       }
     } catch (error) {
       console.warn("Featured products API unavailable:", error.message);
@@ -40,7 +58,7 @@ export const productsService = {
     try {
       const response = await api.get(`/products/${slug}`);
       if (response.data) {
-        return { ...response.data, id: response.data._id || response.data.id };
+        return sanitizeProduct(response.data);
       }
     } catch (error) {
       console.warn("Product slug API error:", error.message);
@@ -55,7 +73,7 @@ export const productsService = {
     try {
       const response = await api.get(`/products/${productId}/related`);
       if (Array.isArray(response.data) && response.data.length > 0) {
-        return response.data.map((p) => ({ ...p, id: p._id || p.id }));
+        return response.data.map(sanitizeProduct);
       }
     } catch (error) {
       console.warn("Related products API unavailable:", error.message);
@@ -97,7 +115,7 @@ export const productsService = {
   createProduct: async (productData) => {
     try {
       const response = await api.post("/products", productData);
-      return { ...response.data, id: response.data._id || response.data.id };
+      return sanitizeProduct(response.data);
     } catch (error) {
       console.error("Error creating product:", error);
       throw error;
@@ -110,7 +128,7 @@ export const productsService = {
   updateProduct: async (id, productData) => {
     try {
       const response = await api.put(`/products/${id}`, productData);
-      return { ...response.data, id: response.data._id || response.data.id };
+      return sanitizeProduct(response.data);
     } catch (error) {
       console.error("Error updating product:", error);
       throw error;

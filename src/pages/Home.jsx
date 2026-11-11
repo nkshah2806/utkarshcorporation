@@ -55,7 +55,9 @@ export default function Home() {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src={mediaSrc(hero.bgImage)} alt="Hero Banner" className="w-full h-full object-cover" />
+          {mediaSrc(hero.bgImage) && (
+            <img src={mediaSrc(hero.bgImage)} alt="Hero Banner" className="w-full h-full object-cover" />
+          )}
           <div className="absolute inset-0 hero-overlay" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-36 lg:py-44">
@@ -132,7 +134,11 @@ export default function Home() {
                 }`}
             >
               <div className="absolute inset-0">
-                <img src={mediaSrc(c.image)} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                {mediaSrc(c.image) ? (
+                  <img src={mediaSrc(c.image)} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                ) : (
+                  <div className="w-full h-full bg-[#1A3626]" />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A3626] via-[#1A3626]/75 to-[#1A3626]/20" />
               </div>
               <div className="relative h-full min-h-[180px] p-5 flex items-end">
@@ -164,8 +170,14 @@ export default function Home() {
       {/* Mission story */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          <div className="relative rounded-2xl overflow-hidden aspect-[4/5]">
-            <img src={mediaSrc(mission.image)} alt="Herbs preparation" className="w-full h-full object-cover" />
+          <div className="relative rounded-2xl overflow-hidden aspect-[4/5] bg-[#1A3626]/10">
+            {mediaSrc(mission.image) ? (
+              <img src={mediaSrc(mission.image)} alt="Herbs preparation" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-[#1A3626]/30">
+                <Leaf className="w-16 h-16" />
+              </div>
+            )}
           </div>
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3"><LocalizedText value={mission.badge} fallback={t("home.ourMission")} /></div>

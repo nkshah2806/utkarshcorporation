@@ -94,7 +94,7 @@ export function ImageWithSkeleton({
         </div>
       ) : (
         <img
-          src={src}
+          src={src || null}
           alt={alt}
           onLoad={() => setLoaded(true)}
           onError={() => {

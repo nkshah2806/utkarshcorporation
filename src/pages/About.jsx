@@ -16,7 +16,9 @@ export default function About() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src={mediaSrc(about?.heroImage || mission?.image)} alt="" className="w-full h-full object-cover" />
+          {mediaSrc(about?.heroImage || mission?.image) ? (
+            <img src={mediaSrc(about?.heroImage || mission?.image)} alt="" className="w-full h-full object-cover" />
+          ) : null}
           <div className="absolute inset-0 hero-overlay" />
         </div>
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-40 text-[#F9F6F0] text-center">
@@ -71,8 +73,14 @@ export default function About() {
       {/* Certifications */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="rounded-2xl overflow-hidden aspect-[5/4]">
-            <img src={mediaSrc(about?.heroImage || mission?.image)} alt="" className="w-full h-full object-cover" />
+          <div className="rounded-2xl overflow-hidden aspect-[5/4] bg-[#1A3626]/5">
+            {mediaSrc(about?.heroImage || mission?.image) ? (
+              <img src={mediaSrc(about?.heroImage || mission?.image)} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-[#1A3626]/30">
+                <Leaf className="w-16 h-16" />
+              </div>
+            )}
           </div>
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-[#5C4033] mb-3">{t("about.certifications")}</div>

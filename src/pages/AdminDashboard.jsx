@@ -20,7 +20,7 @@ export default function AdminDashboard() {
 
     const loadMembers = async () => {
       try {
-        const { data } = await api.get("/admin/members", { headers: { Authorization: `Bearer ${token}` } });
+        const { data } = await api.get("/members", { headers: { Authorization: `Bearer ${token}` } });
         setMembers(data.members || []);
       } catch (err) {
         toast.error(formatApiError(err));

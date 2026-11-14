@@ -1,7 +1,11 @@
 import axios from "axios";
 import { startLoading, stopLoading } from "./globalLoading";
 
-export const BACKEND_URL = import.meta.env.VITE_API_URL || "https://api.utkarshassessment.com";
+const rawBackendUrl =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? "http://localhost:1990" : "https://api.utkarshassessment.com");
+
+export const BACKEND_URL = rawBackendUrl.replace(/\/+$/, "");
 export const API = `${BACKEND_URL}/api`;
 
 /**
